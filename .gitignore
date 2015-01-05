@@ -8,3 +8,6 @@ auth\.rb
 secret_token\.rb
 oauth_secret\.rb
 dump.attendance.sql
+config/environments/production.rb
+config/environments/staging.rb
+
