@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+site_one_section_one:
+  name: SiteOneSection1
+  site: one
+
+site_two_section_one:
+  name: SiteTwoSection1
+  site: two
+
+site_two_section_two:
+  name: SiteTwoSection2
+  site: two

@@ -1,0 +1,71 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+nw13_one:
+  site: one
+  user: nw13
+  active: true
+  siteroles: instructor_one
+  sections: site_one_section_one
+
+crs142_one:
+  site: one
+  user: crs142
+  active: true
+  siteroles: instructor_one
+  sections: site_one_section_one
+
+ct37_one:
+  site: one
+  user: ct37
+  active: true
+  siteroles: learner_one
+  sections: site_one_section_one
+
+t_t72_one:
+  site: one
+  user: t_t72
+  active: true
+  siteroles: learner_one
+  sections: site_one_section_one
+  
+js38_one:
+  site: one
+  user: js38
+  active: true
+  siteroles: learner_one
+  sections: site_one_section_one
+
+nw13_two:
+  site: two
+  user: nw13
+  active: true
+  siteroles: instructor_two
+  sections: site_two_section_one, site_two_section_two
+
+crs142_two:
+  site: two
+  user: crs142
+  active: true
+  siteroles: instructor_two
+  sections: site_two_section_one, site_two_section_two
+
+ct37_two:
+  site: two
+  user: ct37
+  active: true
+  siteroles: learner_two
+  sections: site_two_section_one, site_two_section_two
+
+t_t72_two:
+  site: two
+  user: t_t72
+  active: true
+  siteroles: learner_two
+  sections: site_two_section_one, site_two_section_two
+  
+js38_two:
+  site: two
+  user: js38
+  active: true
+  siteroles: learner_two
+  sections: site_two_section_one

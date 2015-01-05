@@ -1,0 +1,21 @@
+<h1>Listing sites</h1>
+
+<table>
+  <tr>
+    <th>Context</th>
+    <th>Context label</th>
+    <th>Context name</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @sites.each do |site| %>
+  <tr>
+    <td><%= site.context_id %></td>
+    <td><%= site.context_label %></td>
+    <td><%= site.context_name %></td>
+    <td><%= link_to 'Show', site %></td>
+  </tr>
+<% end %>
+</table>

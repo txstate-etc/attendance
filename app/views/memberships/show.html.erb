@@ -1,0 +1,36 @@
+<% content_for(:head) do %>
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+<% end %>
+<h2 class="page_header"><%= @membership.user.fullname %>'s attendance for <%= @section.useful_name %></h2>
+<% if @auth_user && @auth_user.take_attendance?(@section.site) %>
+  <div class="navigation_link_back"><%= link_to '< Back', :back %></div>
+<% end %>
+<% unless @membership.record_attendance? %>
+  Attendance is not recorded for this user.
+<% else %>
+
+  <dl class="student-stats">
+    <dt>Last Attended:</dt>
+    <dd><%= @membership.last_attended(@section).strftime('%-m/%d/%y @ %l:%M%P') rescue 'never' %>
+    <dt>Overall Attendance:</dt>
+    <dd><%= ((@membership.appearances(@section).count.to_f / @membership.recorded_meetings(@section).count.to_f)*100).to_i rescue 0 %>%</dd>
+  </dl>
+
+  <div id="user_attendance">
+    <% @attendancetypes.map(&:display_column).uniq.each do |col| %>
+      <% @attendancetypes.select {|at| at.display_column == col}.each do |atype| %>
+        <% ualist = @membership.recorded_attendances(@section).select { |ua| ua.attendancetype_id == atype.id } %>
+        <div class="dates-box">
+          <h4 style="background-color: <%= atype.color %>"><%= atype.name %> (<%= ualist.length %>)</h4>
+          <ul>
+            <% ualist.each do |ua| %>
+              <li class="date"><%= ua.meeting.starttime.strftime('%-m/%d/%y @ %l:%M%P') %></li>
+            <% end %>
+          </ul> 
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+  <div class="clear"></div>
+
+<% end %>

@@ -1,0 +1,51 @@
+@mixin gradient($gradtop, $gradbottom) {
+		background-image:-webkit-gradient(linear,left top,left bottom,from($gradtop),to($gradbottom));
+		background-image:-webkit-linear-gradient($gradtop,$gradbottom);
+		background-image:-moz-linear-gradient($gradtop,$gradbottom);
+		background-image:-ms-linear-gradient($gradtop,$gradbottom);
+		background-image:-o-linear-gradient($gradtop,$gradbottom);
+		background-image:linear-gradient($gradtop,$gradbottom);
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#{$gradtop}', EndColorStr='#{$gradbottom}');
+}
+
+.mobile-section-head {
+	background-color: #451919;
+	color: white;
+	font-size: 12px;
+	padding: 4px 10px;
+	margin: 0px;
+}
+
+ul.mobile-section-body {
+	margin: 0px;
+	padding-left: 0px;
+	li.mobile-linkrow {
+		@include gradient(#fefefe, #e1e1e1);
+		list-style: none;
+		font-size: 22px;
+		line-height: 52px;
+		height: 52px;
+		&.cancelled {
+			@include gradient(#fbdbdb, #fe7878);
+			border-top: 1px solid #999999;
+			border-bottom: 1px solid #999999;
+			a, a:hover, a:visited {
+				text-decoration: line-through;
+				color: #444444;
+			}
+		}
+		a {
+			display: block;
+			text-decoration: none;
+			padding-left: 10px;
+			background: url(arrow-right.png) no-repeat right center;
+			margin-right: 15px;
+			&:hover, &:visited {
+				color: black;
+			}
+			&.back {
+				background: transparent;
+			}
+		}
+	}
+}

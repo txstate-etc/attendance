@@ -1,0 +1,63 @@
+<% content_for(:head) do %>
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+<% end %>
+<h2 class="page_header">
+  Grade settings for <%= @site.context_name %>
+</h2>
+<div class="navigation_link_back"><%= link_to '< Back', session[:return_to] %></div>
+<% if notice %>
+  <p id="notice"><%= notice %></p>
+<% end %>
+
+<%= form_for(@site, :url => {:action => :update_settings}, :method => :post, :html => {:id => 'update_settings', :class => 'update_settings'}) do |f| %>
+  <div class="settings-group">
+    Forgive <input id="gradesettings_forgiven_absences" name="gradesettings_forgiven_absences" size="3" value="<%= @settings.forgiven_absences %>" /> absences, then:
+    <div>
+      <div class="indent">
+        <input type="radio" id="gradesettings_score_proportionally" name="gradesettings_score_type" value="x" <%= @settings.deduction <= 0 ? 'checked' : '' %>/>
+        <label for="gradesettings_score_proportionally">score proportionally</label>
+      </div>
+      <div class="indent">
+        <input type="radio" id="gradesettings_score_deduct" name="gradesettings_score_type" value="y" <%= @settings.deduction > 0 ? 'checked' : '' %>/>
+        <label for="gradesettings_score_deduct">deduct <input id="gradesettings_deduction" name="gradesettings_deduction" size="3" value="<%= (@settings.deduction * 100).to_i %>" <%= @settings.deduction <= 0 ? 'disabled' : '' %>> percentage points per absence</label>
+      </div>
+    </div>
+  </div>
+  <div class="settings-group">
+    Late:
+    <div>
+      <div class="indent">
+        <input type="radio" id="gradesettings_late_partial" name="gradesettings_late" value="x" <%= @settings.tardy_per_absence == 0 ? 'checked' : '' %>/>
+        <label for="gradesettings_late_partial">
+          Give partial credit for a late: <input id="gradesettings_tardy_value" name="gradesettings_tardy_value" size="3" value="<%= (@settings.tardy_value * 100).to_i %>" <%= @settings.tardy_per_absence > 0 ? 'disabled' : '' %>/>%
+        </label>
+      </div>
+      <div class="indent">
+        <input type="radio" id="gradesettings_late_lol" name="gradesettings_late" value="y" <%= @settings.tardy_per_absence > 0 ? 'checked' : '' %>/>
+        <label for="gradesettings_late_lol">
+          Count <input id="gradesettings_tardy_per_absence" name="gradesettings_tardy_per_absence" size="3" value="<%= @settings.tardy_per_absence %>" <%= @settings.tardy_per_absence == 0 ? 'disabled' : '' %>/> late(s) as 1 absence
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="settings-group">
+    Maximum Points:
+    <div>
+      <% if !@multiple_sections %>
+      <div class="indent">
+        <input type="radio" id="gradesettings_points_count" name="gradesettings_points_type" value="count" <%= @settings.auto_max_points ? 'checked' : '' %>/>
+        <label for="gradesettings_points_count">Set maximum points to number of graded sessions</label>
+        <p class="indent2">(total uncancelled past sessions - # of forgiven absences)</p>
+      </div>
+      <% end %>
+      <div class="indent">
+        <input type="radio" id="gradesettings_points_free" name="gradesettings_points_type" value="free" <%= @settings.auto_max_points ? '' : 'checked' %>/>
+        <label for="gradesettings_points_free">
+          Set maximum points to <input id="gradesettings_max_points" name="gradesettings_max_points" size="3" value="<%= @settings.max_points %>"/>
+        </label>
+      </div>
+    </div>
+  </div>
+  <p>Score will automatically update to Gradebook 2 every 5 minutes on the hour.</p>
+  <%= f.submit %>
+<% end %>

@@ -1,0 +1,35 @@
+<h1>Listing attendance_types</h1>
+
+<table>
+  <tr>
+    <th>Order</th>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Display column</th>
+    <th>Color</th>
+    <th>Absent</th>
+    <th>Default</th>
+    <th>Inactive Def</th>
+    <th>Created Def</th>
+    <th></th>
+  </tr>
+
+<% @attendancetypes.each do |attendancetype| %>
+  <tr>
+    <td><%= attendancetype.display_order %></td>
+    <td><%= attendancetype.name %></td>
+    <td><%= attendancetype.description %></td>
+    <td><%= attendancetype.display_column %></td>
+    <td><%= attendancetype.color %></td>
+    <td><%= attendancetype.absent %></td>
+    <td><%= attendancetype.default_type %></td>
+    <td><%= attendancetype.default_inactive %></td>
+    <td><%= attendancetype.default_created %></td>
+    <td><%= link_to 'Edit', edit_attendancetype_path(attendancetype) %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Attendance type', new_attendancetype_path %>

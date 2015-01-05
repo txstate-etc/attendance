@@ -1,0 +1,9 @@
+<% content_for :page_head_title, t(:'static.error_401.title') %>
+
+<div class="error">
+  <div class="error-dialog">
+    <h1><%= t(:'static.error_401.header') %></h1>
+    <p><%= t(:'static.error_401.message').html_safe %></p>
+    <p><%= link_to '< Back', :back %></p>
+  </div>
+</div>

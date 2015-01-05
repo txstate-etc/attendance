@@ -1,0 +1,24 @@
+// Place all the styles related to the Sites controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+#site_attendance_totals {
+	clear: both;
+	@media print {
+		margin-top: 10px;
+	}
+}
+
+#page-actions {
+	width: 500px;
+	@media screen and (max-width: 500px) {
+		width: 100%;
+	}
+	overflow: hidden;
+	@media print {
+		display: none;
+	}
+	.linkbutton {
+		float: right;
+	}
+}

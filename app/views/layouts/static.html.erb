@@ -1,0 +1,13 @@
+<% content_for :content do %>
+
+  <!--
+    This file was automatically generated on <%= Time.zone.now %>.
+    Original file is at <%= __FILE__ %>
+    run `rake static:generate` to rebuild
+  -->
+
+    <%= yield %>
+
+<% end %>
+
+<%= render :file => 'layouts/application' %>

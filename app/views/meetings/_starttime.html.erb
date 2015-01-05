@@ -1,0 +1,6 @@
+<div class="starttime">
+  <label for="meeting_startdate">Start date/time:</label>
+  <input id="meeting_startdate" name="meeting_startdate" size="15" value="<%= @meeting.starttime.strftime('%Y-%m-%d') %>" />
+  <span>at</span>
+  <input id="meeting_starttime" name="meeting_starttime" size="15" value="<%= @meeting.starttime.strftime('%l:%M%P') %>" />
+</div>

@@ -1,0 +1,33 @@
+# Sample localization file for English. Add more files in this directory for other locales.
+# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+
+en:
+ static:
+   error_401:
+     title: "You do not have access to the requested page (401)"
+     header: "You do not have access to the requested page."
+     message: "It appears you do not have permission to view the requested page or take the requested action.  Please contact <a href=\"mailto:tracs@txstate.edu\">TRACS Support</a> for more information."
+   error_404:
+     title: "The page you were looking for doesn't exist (404)"
+     header: "The page you were looking for doesn't exist."
+     message: "You may have mistyped the address or the page may have moved."
+   error_413:
+     title: "The change you wanted was rejected (413)"
+     header: "The change you wanted was rejected."
+     message: "You attempted to upload a file that was too large."
+   error_422:
+     title: "The change you wanted was rejected (422)"
+     header: "The change you wanted was rejected."
+     message: "Maybe you tried to change something you didn't have access to."
+   error_500:
+     title: "We're sorry, but something went wrong (500)"
+     header: "We're sorry, but something went wrong."
+     message: "We've been notified about this issue and we'll take a look at it shortly."
+   error_notready:
+     title: "Tool has not been initialized."
+     header: "Tool has not been initialized."
+     message: "This site does not have any data associated with it yet.  Your instructor must visit the tool at least once to initialize it."
+   error_nostudents:
+     title: "Site has no students"
+     header: "Site has no students"
+     message: "This site does not have any students in its roster. There must be at least one student in the site before attendance can be loaded."

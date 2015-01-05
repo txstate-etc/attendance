@@ -1,0 +1,37 @@
+<h1>Listing roles</h1>
+
+<table>
+  <tr>
+    <th>Roletype</th>
+    <th>Subroletype</th>
+    <th>Roleurn</th>
+    <th>Displayname</th>
+    <th>Displayorder</th>
+    <th>Sets permissions</th>
+    <th>Take</th>
+    <th>Record</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @roles.each do |role| %>
+  <tr>
+    <td><%= role.roletype %></td>
+    <td><%= role.subroletype %></td>
+    <td><%= role.roleurn %></td>
+    <td><%= role.displayname %></td>
+    <td><%= role.displayorder %></td>
+    <td><%= role.sets_permissions %></td>
+    <td><%= role.take_attendance %></td>
+    <td><%= role.record_attendance %></td>
+    <td><%= link_to 'Show', role %></td>
+    <td><%= link_to 'Edit', edit_role_path(role) %></td>
+    <td><%= link_to 'Destroy', role, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Role', new_role_path %>

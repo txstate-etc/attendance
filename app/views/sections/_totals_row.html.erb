@@ -1,0 +1,14 @@
+<tr class="<%= cycle('odd', 'even') %> <%= rowclass %>">
+  <td class="name"><%= link_to record[:membership].user.fullname, section_membership_path(@section, record[:membership])  %></td>
+  <% Attendancetype.getall.each do |atype| %>
+    <% atyperecord = record[:attendancetypes][atype.id] %>
+    <td class="attendancetype">
+      <span title="<% if atyperecord %><%= record[:membership].user.fullname %> was <%= atype.name %> on <%-
+         atyperecord[:meetings].each_with_index do |meeting, index| -%><%- 
+          if atyperecord[:total] > 1 && index == atyperecord[:total] - 1 -%>and <% end %><%= meeting.starttime.strftime('%-m/%d/%y @ %l:%M%P') %><%- 
+          if index < atyperecord[:total] - 2 -%>,<% end %> <% end %><% end %>">
+        <span class="attendancetype-absolute"><%= atyperecord[:total] rescue 0 %></span> <span class="attendancetype-percent">(<%= (100.0 * atyperecord[:total] / @section.past_meeting_count.to_f).round rescue 0 %>%)</span>
+      </span>
+    </td>
+  <% end %>
+</tr>

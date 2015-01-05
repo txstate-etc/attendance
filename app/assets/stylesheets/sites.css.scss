@@ -1,0 +1,173 @@
+// Place all the styles related to the Sites controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+#site_attendance {
+  clear: both;
+  table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    tr.even {
+        background-color: rgb(250, 249, 246);
+    }
+    tr.separator th {
+      border-right: none;
+      border-left: none;
+    }
+    th, td {
+      padding: 5px;
+      line-height: 25px;
+      height: 25px;
+      width: 170px;
+      min-width: 170px;
+      max-width: 170px;
+      white-space: nowrap;
+      overflow: hidden;    
+    }
+    th {
+      border: 1px solid #AAAAAA;
+      text-align: left;
+    }
+    td {
+      border: 1px solid #DDDDDD;
+      text-align: center;
+      &.name {
+        .next-to-remove {
+          display: block;
+          float: left;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          width: 150px;
+        }
+        .remove-user-link {
+          display: block;
+          float: right;
+          width: 20px;
+        }
+        text-align: left;
+      }
+    }
+    .cancelled {
+    }
+  }
+
+  a.action {
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+    &:hover {
+      color: #000;
+      background-color: transparent;
+    }
+    &.edit {
+      background-image: url('pencil.png');
+    }
+    &.show {
+      background-image: url('magnifier.png');
+    }
+    &.delete {
+      background-image: url('delete.png');
+    }
+  }
+}
+
+select {
+  background-color: white;
+}
+
+option.atype {
+  background-color: white;
+}
+
+#site-table-container {
+  overflow: hidden;
+  width: 100%;
+}
+
+#table-name-head {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+#table-head {
+  margin-left: 181px;
+  overflow: hidden;
+
+  th.first_col {
+    border-left: none;
+  }
+}
+
+#table-names {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+
+  a {
+    color: #000;
+    &:hover {
+      color: #000;
+      background-color: transparent;
+    }
+  }
+}
+
+#header-container {
+  position: relative;  
+}
+
+#body-container {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+#table-main {
+  margin-left: 181px;
+  overflow: auto;
+
+  td.first_col {
+    border-left: none;
+  }
+}
+
+h2.collapsed-page-header {
+  position: absolute;
+  margin: 15px 0px 0px 0px;
+  left: 0px;
+  top: 0px;
+}
+#site-actions {
+  position: relative;
+  margin-top: 15px;
+  overflow: hidden;
+  .lessimportant {
+    float: right;
+  }
+}
+
+tr.separator {
+  color: #FFFFFF;
+  background-color: #51504C;
+  cursor: pointer;
+}
+
+#expand-inactives {
+  color: #FFFFFF !important;
+  text-decoration: none;
+  margin-left: 5px;
+}
+
+.settings-group {
+  margin-bottom: 20px;
+}
+.indent {
+  padding-left: 15px;
+  margin-top: 5px;
+}
+.indent2 {
+  padding-left: 45px;
+  marging-top: 5px;
+}

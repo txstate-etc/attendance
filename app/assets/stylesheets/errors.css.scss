@@ -1,0 +1,31 @@
+// Place all the styles related to error pages here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+@import 'variables.scss';
+
+div.error {
+  padding: 100px 0;
+}
+
+div.error-dialog {
+  width: 25em;
+  padding: 0 4em;
+  margin: 0 auto;
+  border: 1px solid $color-grey;
+  border-right-color: $color-light-grey;
+  border-bottom-color: $color-light-grey;
+  
+  h1 { 
+    font-size: 1.2em;
+    font-family: “Helvetica Neue”, Arial, Helvetica, sans-serif;
+    margin: 18px 0;
+    padding: 0;
+    background: none !important;
+    color: $color-red; 
+  }
+  
+  p { 
+    color: $color-light-grey;
+    margin: 18px 0;
+  }
+}

@@ -1,0 +1,55 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+ct37_tomorrow:
+  meeting: tomorrow
+  membership: ct37_one
+  attendancetype: present
+  updated_at: <%= Time.zone.now %>
+
+ct37_nextweek:
+  meeting: nextweek
+  membership: ct37_two
+  attendancetype: tardy
+  updated_at: <%= Time.zone.now %>
+
+ct37_nextmonth:
+  meeting: nextmonth
+  membership: ct37_one
+  attendancetype: absent
+  updated_at: <%= Time.zone.now %>
+
+js38_tomorrow:
+  meeting: tomorrow
+  membership: js38_one
+  attendancetype: absent
+  updated_at: <%= Time.zone.now %>
+
+js38_nextweek:
+  meeting: nextweek
+  membership: js38_two
+  attendancetype: tardy
+  updated_at: <%= Time.zone.now %>
+
+js38_nextmonth:
+  meeting: nextmonth
+  membership: js38_one
+  attendancetype: present
+  updated_at: <%= Time.zone.now %>
+
+t_t72_tomorrow:
+  meeting: tomorrow
+  membership: t_t72_one
+  attendancetype: tardy
+  updated_at: <%= Time.zone.now %>
+
+t_t72_nextweek:
+  meeting: nextweek
+  membership: t_t72_two
+  attendancetype: absent
+  updated_at: <%= Time.zone.now %>
+
+t_t72_nextmonth:
+  meeting: nextmonth
+  membership: t_t72_one
+  attendancetype: present
+  updated_at: <%= Time.zone.now %>

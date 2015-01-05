@@ -1,0 +1,53 @@
+<%= form_for(@attendancetype) do |f| %>
+  <% if @attendancetype.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@attendancetype.errors.count, "error") %> prohibited this attendancetype from being saved:</h2>
+
+      <ul>
+      <% @attendancetype.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :display_order %><br />
+    <%= f.number_field :display_order %>
+  </div>
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :description %><br />
+    <%= f.text_field :description %>
+  </div>
+  <div class="field">
+    <%= f.label :display_column %><br />
+    <%= f.number_field :display_column %>
+  </div>
+  <div class="field">
+    <%= f.label :color %><br />
+    <%= f.text_field :color %>
+  </div>
+  <div class="field">
+    <%= f.label :absent %><br />
+    <%= f.check_box :absent %>
+  </div>
+  <div class="field">
+    <%= f.label :default_type %><br />
+    <%= f.check_box :default_type %>
+  </div>
+  <div class="field">
+    <%= f.label :default_inactive %><br />
+    <%= f.check_box :default_inactive %>
+  </div>
+  <div class="field">
+    <%= f.label :default_created %><br />
+    <%= f.check_box :default_created %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

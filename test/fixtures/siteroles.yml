@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+instructor_one:
+  site: one
+  role: instructor
+  take_attendance: true
+  record_attendance: false
+
+learner_one:
+  site: one
+  role: learner
+  take_attendance: false
+  record_attendance: true
+
+instructor_two:
+  site: two
+  role: instructor
+  take_attendance: true
+  record_attendance: false
+
+learner_two:
+  site: two
+  role: learner
+  take_attendance: false
+  record_attendance: true

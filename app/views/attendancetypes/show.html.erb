@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @attendancetype.name %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @attendancetype.description %>
+</p>
+
+<p>
+  <b>Display column:</b>
+  <%= @attendancetype.display_column %>
+</p>
+
+<p>
+  <b>Color:</b>
+  <%= @attendancetype.color %>
+</p>
+
+<p>
+  <b>Absent:</b>
+  <%= @attendancetype.absent %>
+</p>
+
+
+<%= link_to 'Edit', edit_attendancetype_path(@attendancetype) %> |
+<%= link_to 'Back', attendancetypes_path %>

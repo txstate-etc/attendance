@@ -1,0 +1,83 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+instructor:
+  roletype: 'Instructor'
+  subroletype: ''
+  roleurn: 'urn:lti:role:ims/lis/Instructor'
+  displayname: 'Instructor'
+  displayorder: 0
+  sets_permissions: true
+  take_attendance: true
+  record_attendance: false
+maintainer:
+  roletype: 'Learner/Instructor'
+  subroletype: ''
+  roleurn: 'urn:lti:role:ims/lis/Learner/Instructor'
+  displayname: 'Project Maintainer'
+  displayorder: 1
+  sets_permissions: true
+  take_attendance: true
+  record_attendance: true
+ta:
+  roletype: 'TeachingAssistant'
+  subroletype: ''
+  roleurn: 'urn:lti:role:ims/lis/TeachingAssistant'
+  displayname: 'Teaching Assistant'
+  displayorder: 2
+  sets_permissions: false
+  take_attendance: true
+  record_attendance: false
+grader:
+  roletype: 'TeachingAssistant/Grader'
+  subroletype: ''
+  roleurn: 'urn:lti:role:ims/lis/TeachingAssistant/Grader'
+  displayname: 'Grader'
+  displayorder: 3
+  sets_permissions: false
+  take_attendance: false
+  record_attendance: false
+participant:
+  roletype: 'Member'
+  subroletype: ''
+  roleurn: 'urn:lti:role:ims/lis/Member'
+  displayname: 'Project Participant'
+  displayorder: 4
+  sets_permissions: false
+  take_attendance: false
+  record_attendance: true
+learner:
+  roletype: 'Learner'
+  subroletype: ''
+  roleurn: 'urn:lti:role:ims/lis/Learner'
+  displayname: 'Student'
+  displayorder: 5
+  sets_permissions: false
+  take_attendance: false
+  record_attendance: true
+siteassistant:
+  roletype: 'Instructor/GuestInstructor'
+  subroletype: ''
+  roleurn: 'urn:lti:role:ims/lis/Instructor/GuestInstructor'
+  displayname: 'Site Assistant'
+  displayorder: 6
+  sets_permissions: false
+  take_attendance: false
+  record_attendance: false
+sitecollaborator:
+  roletype: 'Instructor/ExternalInstructor'
+  subroletype: ''
+  roleurn: 'urn:lti:role:ims/lis/Instructor/ExternalInstructor'
+  displayname: 'Site Collaborator'
+  displayorder: 7
+  sets_permissions: false
+  take_attendance: false
+  record_attendance: false
+guest:
+  roletype: 'Learner/GuestLearner'
+  subroletype: ''
+  roleurn: 'urn:lti:role:ims/lis/Learner/GuestLearner'
+  displayname: 'Guest'
+  displayorder: 8
+  sets_permissions: false
+  take_attendance: false
+  record_attendance: false

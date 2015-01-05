@@ -1,0 +1,140 @@
+<% content_for(:javascript) do %>
+  var attendancetype_colors = {
+    <%= @attendancetypes.map { |atype| "#{atype.id} : '#{atype.color.downcase}'" }.join(", ").html_safe %>
+  };
+<% end %>
+
+<h2 class="collapsed-page-header"><%= @section.useful_name %></h2>
+<div id="site-actions">
+  <%= link_to "Add Session", new_section_meeting_path(@section), :class => 'linkbutton' %>
+  <%= link_to "View Totals", {:action => :totals}, :class => 'linkbutton' %>
+  <% if @num_cancelled_meetings > 0 && !@force_show_cancelled %>
+    <a id="toggle_cancelled" href="#" class="linkbutton">Show Cancelled</a>
+  <% end %>
+  <% if @section.site.outcomes_url && @auth_user.edit_gradesettings?(@section.site) %>
+    <%= link_to "Grade Settings", edit_settings_site_path(@section.site), :class => 'linkbutton lessimportant' %>
+  <% end %>
+  <% if @auth_user.set_permissions?(@section.site) %>
+    <%= link_to "Configure Roles", edit_perms_site_path(@section.site), :class => 'linkbutton lessimportant' %>
+  <% end %>
+  <% if @section.site.sections.count > 1 %>
+    <%= link_to "Change Section", site_path(@section.site), :class => 'linkbutton lessimportant' %>
+  <% end %>
+  <%= link_to "Download CSV", {:action => :show, :format => :csv}, :class => 'linkbutton lessimportant' %>
+</div>
+<% if @meetings.empty? %>
+  <p>There are no sessions yet. Please click 'Add Session' above to create one.</p>
+<% else %>
+<%= form_for(@section, :url => {:action => 'record_attendance'}, :method => :post, :html => {:id => 'site_attendance', :class => 'site_attendance'}) do |f| %>
+<div id="site-table-container">
+<div id="header-container">
+<div id="table-name-head">
+<table>
+  <thead>
+    <tr><th>Name</th></tr>
+  </thead>
+</table>
+</div>
+<div id="table-head">
+<table>
+<thead>
+  <tr>
+    <% @meetings.each_with_index do |meeting, index| %>
+      <th class="<%= meeting.cancelled && !@force_show_cancelled ? 'cancelled' : '' %> <%= index == 0 ? 'first_col' : '' %>" data-meeting-id="<%= meeting.id %>">
+        <%= meeting.starttime.strftime('%b %-d @ %l:%M%P') %>
+        <%= link_to '', meeting, class: 'action show', title: 'Show Session' %>
+        <%= link_to '', edit_meeting_path(meeting), class: 'action edit', title: 'Edit Session' %>
+      </th>
+    <% end %>
+  </tr>
+</thead>
+</table>
+</div>
+</div>
+<div id="body-container">
+<div id="table-names">
+<table>
+<tbody>
+  <% started_inactives = false %>
+  <% started_moved = false %>
+  <% @attendances.each do |membership_id, ua_hash| %>
+    <% if !started_inactives && !ua_hash.values.first.membership.active %>
+      <tr class="separator inactive-separator">
+        <th>Inactive <span id="expand-inactives">+</span></th>
+      </tr>
+      <% reset_cycle() %>
+      <% started_inactives = true %>
+    <% end %>
+    <% if !started_moved && !ua_hash.values.first.membership.sections.include?(@section) %>
+      <tr class="separator moved-separator">
+        <th>Moved <span id="expand-moved">+</span></th>
+      </tr>
+      <% reset_cycle() %>
+      <% started_moved = true %>
+    <% end %>
+    <tr class="<%= cycle('odd', 'even') %> <% if started_moved %> <%='moved' %> <% elsif started_inactives %> <%= 'inactive' %> <% end %>">
+      <td class="name"><a class="<%= @show_remove_user_link ? 'next-to-remove' : '' %>" href="<%= section_membership_path(@section, membership_id) %>" title="<%= ua_hash.values.first.membership.user.fullname %>"><%= ua_hash.values.first.membership.user.fullname %></a>
+      <%= if @show_remove_user_link then
+            link_to section_membership_remove_from_section_path(@section, membership_id), :class => 'remove-user-link' do
+              image_tag "cross.png", :alt => "Remove User"
+            end
+          end %></a></td>
+    </tr>
+  <% end %>
+  <% reset_cycle() %>
+</tbody>
+</table>
+</div>
+<div id="table-main">
+</table>
+<table>
+<tbody>
+  <% started_inactives = false %>
+  <% started_moved = false %>
+  <% @attendances.each do |membership_id, ua_hash| %>
+      <% if !started_inactives && !ua_hash.values.first.membership.active %>
+        <tr class="separator inactive-separator">
+        <% @meetings.each do |meeting| %>
+          <th class="<%= 'cancelled' if meeting.cancelled && !@force_show_cancelled %>">&nbsp;</th>
+        <% end %>
+        </tr>
+        <% reset_cycle() %>
+        <% started_inactives = true %>
+      <% end %>
+      <% if !started_moved && !ua_hash.values.first.membership.sections.include?(@section) %>
+        <tr class="separator moved-separator">
+          <%@meetings.each do |meeting| %>
+            <th class="<%= 'cancelled' if meeting.cancelled && !@force_show_cancelled %>">&nbsp;</th>
+          <% end %>
+        </tr>
+        <% reset_cycle() %>
+        <% started_moved = true %>
+      <% end %>
+      <tr class="<%= cycle('odd', 'even') %> <% if started_moved %> <%='moved' %> <% elsif started_inactives %> <%= 'inactive' %> <% end %>">
+      <% @meetings.each_with_index do |meeting, index| %>
+        <td class="attendancetype <%= meeting.cancelled && !@force_show_cancelled ? 'cancelled' : '' %> <%= index == 0 ? 'first_col' : '' %>">
+          <% if ua = ua_hash[meeting.id] %>
+            <% if meeting.active %>
+              <select name="meeting-<%= meeting.id %>_member-<%= membership_id %>">
+              <% @attendancetypes.each do |atype| %>
+                <option class="atype" value="<%= atype.id %>" <%= atype.id == ua.attendancetype_id ? 'selected' : '' %>><%= atype.name %></option>
+              <% end %>
+              </select>
+            <% else %>
+              cancelled
+            <% end %>
+          <% else %>
+            &nbsp;
+          <% end %>
+        </td>
+      <% end %>
+    </tr>
+  <% end %>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<input type="submit" name="submit" value="Save"/>
+<% end %>
+<% end %>

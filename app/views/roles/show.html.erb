@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Roletype:</b>
+  <%= @role.roletype %>
+</p>
+
+<p>
+  <b>Subroletype:</b>
+  <%= @role.subroletype %>
+</p>
+
+<p>
+  <b>Roleurn:</b>
+  <%= @role.roleurn %>
+</p>
+
+<p>
+  <b>Displayname:</b>
+  <%= @role.displayname %>
+</p>
+
+<p>
+  <b>Displayorder:</b>
+  <%= @role.displayorder %>
+</p>
+
+<p>
+  <b>Sets permissions:</b>
+  <%= @role.sets_permissions %>
+</p>
+
+
+<%= link_to 'Edit', edit_role_path(@role) %> |
+<%= link_to 'Back', roles_path %>

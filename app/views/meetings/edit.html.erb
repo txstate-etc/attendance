@@ -1,0 +1,35 @@
+<% content_for(:head) do %>
+  <meta name="viewport" content="width=480, user-scalable=no">
+<% end %>
+
+<h2 class="page_header">Editing Session</h2>
+<div class="navigation_link_back">
+  <% if use_mobile_template? %>
+    <%= link_to '< Back', @meeting %>
+  <% else %>
+    <%= link_to '< Back', @meeting.section %>
+  <% end %>
+</div>
+<%= form_for(@meeting) do |f| %>
+  <%= render 'errors' %>
+  <%= render 'starttime' %>
+  <div class="submit float">
+    <%= f.submit 'Save session' %>|
+  </div>
+<% end %>
+
+<%# Button that will cancel/un-cancel a meeting %>
+<%= form_for(@meeting) do |f| %>
+  <%= hidden_field(:meeting, :cancelled, {value: !@meeting.cancelled}) %>
+  <div class="submit float">
+    <%= f.submit (@meeting.cancelled ? 'Re-activate session' : 'Cancel session') %>|
+  </div>
+<% end %>
+
+<%# Button that will soft delete a meeting %>
+<%= form_for(@meeting) do |f| %>
+  <%= hidden_field(:meeting, :deleted, {value: 'true'}) %>
+  <div class="submit float">
+    <%= f.submit 'Delete session' %>
+  </div>
+<% end %>

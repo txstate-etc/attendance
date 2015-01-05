@@ -1,0 +1,10 @@
+.hg/
+.hgignore
+tmp/
+log/
+tmproj
+.DS_Store
+auth\.rb
+secret_token\.rb
+oauth_secret\.rb
+dump.attendance.sql

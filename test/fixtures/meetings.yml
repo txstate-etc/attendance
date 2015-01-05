@@ -1,0 +1,22 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+tomorrow:
+  section: site_one_section_one
+  starttime: <%= (Time.zone.now + 1.day).beginning_of_hour %>
+  cancelled: false
+  deleted: false
+  updated_at: <%= Time.zone.now %>
+
+nextweek:
+  section: site_two_section_one
+  starttime: <%= (Time.zone.now + 1.week).beginning_of_hour %>
+  cancelled: false
+  deleted: false
+  updated_at: <%= Time.zone.now %>
+
+nextmonth:
+  section: site_one_section_one
+  starttime: <%= (Time.zone.now + 1.month).beginning_of_hour %>
+  cancelled: false
+  deleted: false
+  updated_at: <%= Time.zone.now %>

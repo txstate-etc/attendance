@@ -1,0 +1,75 @@
+<% content_for(:head) do %>
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+<% end %>
+<% content_for(:javascript) do %>
+  var attendancetype_colors = {
+    <%= @attendancetypes.map { |atype| "#{atype.id} : '#{atype.color.downcase}'" }.join(", ").html_safe %>
+  };
+<% end %>
+
+<h2 class="page_header">
+  <%= @meeting.starttime.strftime('%B %-d, %Y - %l:%M%P') %> : <%= @meeting.section.useful_name %>
+</h2>
+<div class="navigation_link_back"><%= link_to '< Back', @meeting.section %></div>
+<% if notice %>
+  <p id="notice"><%= notice %></p>
+<% end %>
+
+<% if use_mobile_template? %>
+  <div id="page-actions">
+    <% if use_mobile_template? %>
+      <%= link_to 'Edit Session', edit_meeting_path(@meeting), class: 'linkbutton' %>
+    <% end %>
+  </div>
+<% end %>
+
+<% unless @meeting.active %>
+  This session has been cancelled.  Re-activate it to record attendance.
+<% else %>
+  <%= form_for(@meeting, :url => {:action => 'record_attendance'}, :method => :post, :html => {:id => 'meeting_attendance', :class => 'meeting_attendance'}) do |f| %>
+    <table class="attendancetypes">
+    <thead>
+    <tr class="header">
+      <th class="name">Name</th>
+      <% @attendancetypes.each do |atype| %>
+        <th class="attendancetype"><%= atype.name %></th>
+      <% end %>
+    </tr>
+    </thead>
+    <tbody>
+      <% started_inactives = false %>
+      <% started_moved = false %>
+      <% @userattendances.each do |ua| %>
+        <% next if !ua.membership.record_attendance? %>
+        <% if !started_inactives && !ua.membership.active %>
+          <tr class="header separator inactive-separator">
+            <th class="name">Inactive <span id="expand-inactives">+</span></th>
+            <% Attendancetype.getall.each do |atype| %>
+              <th><%= atype.name %></th>
+            <% end %>
+          <% reset_cycle() %>
+          <% started_inactives = true %>
+          </tr>
+        <% end %>
+        <% if !started_moved && !ua.membership.sections.include?(@meeting.section) %>
+          <tr class="header separator moved-separator">
+            <th class="name">Moved <span id="expand-moved">+</span></th>
+            <% Attendancetype.getall.each do |atype| %>
+              <th><%= atype.name %></th>
+            <% end %>
+          </tr>
+          <% reset_cycle() %>
+          <% started_moved = true %>
+        <% end %>
+        <tr class="<%= cycle('even', 'odd') %> <% if started_moved %> <%='moved' %> <% elsif started_inactives %> <%= 'inactive' %> <% end %>">
+          <td class="name"><%= link_to ua.membership.user.fullname, section_membership_path(@meeting.section, ua.membership)  %></td>
+          <% @attendancetypes.each do |atype| %>
+            <td class="attendancetype"><input type="radio" name="member-<%= ua.membership.id %>" value="<%= atype.id %>" title="Mark <%= ua.membership.user.fullname %> as <%= atype.name %>" <%= ua.attendancetype_id == atype.id ? 'checked="checked"'.html_safe : '' %> data-atype-name="<%= atype.name %>"/></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+    </table>
+    <input type="submit" name="submit" value="Save"/>
+  <% end %>
+<% end %>

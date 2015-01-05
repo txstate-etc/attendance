@@ -1,0 +1,129 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require_self
+ *= require_tree .
+ *= require jquery.ui.datepicker
+ *= require jquery.timepicker.css
+ */
+
+body {
+	margin: 0px;
+}
+
+h2.page_header {
+	margin-top: 10px;
+	margin-bottom: 4px;
+}
+.navigation_link_back {
+	padding-bottom: 8px;
+	@media print {
+		display: none;
+	}
+}
+.navigation_link_back a {
+	text-decoration: none;
+}
+
+table.attendancetypes {
+	table-layout: fixed;
+	width: 500px;
+	@media screen and (max-width: 500px) {
+		width: 100%;
+	}
+	border-collapse: collapse;
+	margin-bottom: 10px;
+	@media print {
+		width: 100%;
+	}
+	tr.even {
+			background-color: rgb(224, 220, 205);
+			@media print {
+				background-color: white;
+			}
+	}
+	th {
+		border: 1px solid rgb(179,179,179);
+		padding: 4px 0px;
+		color: white;
+		background-color: rgb(81,80,76);
+		font-size: 14px;
+		@media screen and (max-width: 500px) {
+			font-size: 12px;
+			font-weight: normal;
+		}
+		@media print {
+			background-color: white;
+			color: black;
+		}
+	}
+	td {
+		border: 1px solid rgb(188, 186, 174);
+		padding: 12px 0px;
+		@media print {
+			padding: 6px 0px;
+			background-color: white !important;
+		}
+	}
+	th,td {
+		text-align: center;
+		&.name {
+			width: 40%;
+			text-align: left;
+			overflow: hidden;
+			word-wrap: break-word;
+			padding-left: 8px;
+			padding-right: 8px;
+			@media screen and (max-width: 500px) {
+				font-size: 11px;
+				padding-left: 6px;
+				padding-right: 4px;
+			}
+		}
+		&.attendancetype {
+			width: 15%;
+			span.attendancetype-absolute, span.attendancetype-percent {
+				@media screen and (max-width: 500px) {
+					display: block;
+					font-size: 11px;
+					&.attendancetype-percent {
+						font-size: 10px;
+					}
+				}
+			}
+		}
+	}
+}
+
+.linkbutton {
+	display: block;
+	float: left;
+	font: bold 11px Arial;
+	text-decoration: none;
+	background-color: #EEEEEE;
+	color: #111111;
+	padding: 6px;
+	border-top: 1px solid #CCCCCC;
+	border-right: 1px solid #333333;
+	border-bottom: 1px solid #333333;
+	border-left: 1px solid #CCCCCC;
+	margin-right: 5px;
+	margin-bottom: 5px;
+}
+
+a.linkbutton:visited {
+	background-color: #EEEEEE;
+	color: #111111;
+}
+
+a.linkbutton:hover {
+	background-color: #DDDDDD;
+	color: #111111;
+}

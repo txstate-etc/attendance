@@ -1,0 +1,51 @@
+<% content_for(:head) do %>
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+<% end %>
+<h2 class="page_header">Attendance Totals for <%= @section.useful_name %></h2>
+<div class="navigation_link_back"><%= link_to '< Back', @section %></div>
+<div id="page-actions">
+  <a href="#" class="linkbutton" onclick="window.print(); return false;">Print Page</a>
+  <%= link_to "Download CSV", {:action => :totals, :format => :csv}, :class => 'linkbutton' %>
+</div>
+<table id="site_attendance_totals" class="attendancetypes">
+<thead>
+<tr class="header">
+  <th class="name">Student Name</th>
+  <% Attendancetype.getall.each do |atype| %>
+    <th><%= atype.name %></th>
+  <% end %>
+</tr>
+</thead>
+<tbody>
+<% @totals.each do |membershipid, record| %>
+  <%= render 'totals_row', membershipid: membershipid, record: record, rowclass: '' %>
+<% end %>
+
+<% if !@inactive_totals.empty? %>
+  <tr class="header separator inactive-separator">
+    <th class="name">Inactive <span id="expand-inactives">+</span></th>
+    <% Attendancetype.getall.each do |atype| %>
+      <th><%= atype.name %></th>
+    <% end %>
+  </tr>
+  <% reset_cycle() %>
+  <% @inactive_totals.each do |membershipid, record| %>
+    <%= render 'totals_row', membershipid: membershipid, record: record, rowclass: 'inactive' %>
+  <% end %>
+<% end %>
+
+<% if !@moved_totals.empty? %>
+  <tr class="header separator moved-separator">
+    <th class="name">Moved <span id="expand-moved">+</span></th>
+    <% Attendancetype.getall.each do |atype| %>
+      <th><%= atype.name %></th>
+    <% end %>
+  </tr>
+  <% reset_cycle() %>
+  <% @moved_totals.each do |membershipid, record| %>
+    <%= render 'totals_row', membershipid: membershipid, record: record, rowclass: 'moved' %>
+  <% end %>
+<% end %>
+
+</tbody>
+</table>

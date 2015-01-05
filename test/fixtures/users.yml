@@ -1,0 +1,36 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+nw13:
+  netid: nw13
+  lastname: Wing
+  firstname: Nickolaus
+  fullname: Nickolaus Wing
+  admin: true
+
+crs142:
+  netid: crs142
+  lastname: Schauer
+  firstname: Christopher
+  fullname: Christopher Schauer
+  admin: true
+
+ct37:
+  netid: ct37
+  lastname: Tabor
+  firstname: Charles
+  fullname: Charles Tabor
+  admin: false
+
+js38:
+  netid: js38
+  lastname: Snider
+  firstname: Jeff
+  fullname: Jeff Snider
+  admin: false
+
+t_t72:
+  netid: t_t72
+  lastname: Tostanoski
+  firstname: Tom
+  fullname: Tom Tostanoski
+  admin: false

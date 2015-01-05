@@ -1,0 +1,49 @@
+<%= form_for(@role) do |f| %>
+  <% if @role.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@role.errors.count, "error") %> prohibited this role from being saved:</h2>
+
+      <ul>
+      <% @role.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :roletype %><br />
+    <%= f.text_field :roletype %>
+  </div>
+  <div class="field">
+    <%= f.label :subroletype %><br />
+    <%= f.text_field :subroletype %>
+  </div>
+  <div class="field">
+    <%= f.label :roleurn %><br />
+    <%= f.text_field :roleurn %>
+  </div>
+  <div class="field">
+    <%= f.label :displayname %><br />
+    <%= f.text_field :displayname %>
+  </div>
+  <div class="field">
+    <%= f.label :displayorder %><br />
+    <%= f.text_field :displayorder %>
+  </div>
+  <div class="field">
+    <%= f.label :sets_permissions %><br />
+    <%= f.check_box :sets_permissions %>
+  </div>
+  <div class="field">
+    <%= f.label :take_attendance %><br />
+    <%= f.check_box :take_attendance %>
+  </div>
+  <div class="field">
+    <%= f.label :record_attendance %><br />
+    <%= f.check_box :record_attendance %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
