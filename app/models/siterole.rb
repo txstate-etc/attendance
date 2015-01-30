@@ -20,6 +20,7 @@ class Siterole < ActiveRecord::Base
   def set_default_permissions
     self.record_attendance = role.record_attendance
     self.take_attendance = role.take_attendance
+    self.edit_gradesettings = role.edit_gradesettings
     true
   end
   
