@@ -99,7 +99,7 @@ class RosterupdateController < ApplicationController
       user_info = {}
       user_info["user"] = user
 
-      role_node = member.find_first('role')
+      role_node = member.find_first('roles') || member.find_first('role') #LTI spec says roles, but some sakai versions use role
       user_info["roles"] = role_node ? Role.getRolesFromString(role_node.content) : {}
 
       active_node = member.find_first('membership_is_active')
