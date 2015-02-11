@@ -31,7 +31,9 @@ every :day, :at => '2:00 am' do
   rake "db:session_clean DAYS=30"
 end
 
-#Process all grade updates
+# Since we only grade past meetings, sections need to be registered
+# for grade updates when a meeting's starttime passes before processing.
 every 5.minutes do
+  runner "Gradeupdate.update_sections_with_recent_meetings"
   runner "Gradeupdate.process_all"
 end

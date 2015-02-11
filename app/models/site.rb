@@ -6,6 +6,7 @@ class Site < ActiveRecord::Base
   has_many :siteroles, :inverse_of => :site, :dependent => :destroy
   has_many :roles, :through => :siteroles
   has_many :users, :through => :memberships
+  has_one :gradesettings, :inverse_of => :site, :dependent => :destroy
   
   accepts_nested_attributes_for :siteroles
   

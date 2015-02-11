@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141210211830) do
+ActiveRecord::Schema.define(:version => 20150211214345) do
 
   create_table "attendancetypes", :force => true do |t|
     t.string  "name"
@@ -62,15 +62,17 @@ ActiveRecord::Schema.define(:version => 20141210211830) do
   add_index "gradeupdates", ["membership_id"], :name => "index_gradeupdates_on_membership_id"
 
   create_table "meetings", :force => true do |t|
-    t.datetime "starttime",                     :null => false
-    t.boolean  "cancelled",  :default => false, :null => false
-    t.boolean  "deleted",    :default => false, :null => false
-    t.datetime "updated_at",                    :null => false
-    t.integer  "section_id",                    :null => false
+    t.datetime "starttime",                         :null => false
+    t.boolean  "cancelled",      :default => false, :null => false
+    t.boolean  "deleted",        :default => false, :null => false
+    t.datetime "updated_at",                        :null => false
+    t.integer  "section_id",                        :null => false
+    t.boolean  "future_meeting", :default => false, :null => false
   end
 
   add_index "meetings", ["deleted", "cancelled"], :name => "index_meetings_on_site_id_and_deleted_and_cancelled"
   add_index "meetings", ["section_id"], :name => "index_meetings_on_section_id"
+  add_index "meetings", ["starttime"], :name => "index_meetings_on_starttime"
   add_index "meetings", ["updated_at"], :name => "index_meetings_on_updated_at"
 
   create_table "memberships", :force => true do |t|

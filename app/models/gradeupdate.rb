@@ -6,19 +6,6 @@ class Gradeupdate < ActiveRecord::Base
 
   def self.process_all
     ids = Gradeupdate.pluck(:id)
-
-    # Check for sites that have had meetings occur in the past 5 minutes
-    # and have the auto max points setting selected.
-    settings = Gradesettings.where(auto_max_points: true).includes(site: {sections: :meetings})
-    settings.each do |s|
-      section = s.site.max_points_section
-      next unless section
-      if section_has_recent_meeting?(section)
-        update_max_points(section, s)
-        register_site_change(s.site)
-      end
-    end
-
     ids.each do |id|
       update = Gradeupdate.find(id)
       next unless update.process?
@@ -34,20 +21,26 @@ class Gradeupdate < ActiveRecord::Base
     end
   end
 
-  def self.section_has_recent_meeting?(section)
-    now = Time.now
-    section.meetings.each do |m|
-      # Check for meetings that occurred in the last 5.5 minutes
-      # Use 5.5 instead of 5 to avoid possibly missing any meetings
-      return true if (5.5.minutes.ago..now).cover?(m.starttime)
+  def self.update_sections_with_recent_meetings
+    meetings = Meeting.where('starttime < ? and future_meeting = true', Time.now)
+    meetings.each do |m|
+      if s = m.section.site.gradesettings
+        register_section_change(m.section)
+        update_max_points(s) if s.auto_max_points
+      end
+      m.future_meeting = false
+      m.save      
     end
-    return false
   end
 
   def self.register_change(membership_id)
     u = Gradeupdate.find_or_create_by_membership_id(membership_id)
     u.tries = 0
     u.save
+  end
+
+  def self.register_section_change(section)
+    section.memberships.each {|m| Gradeupdate.register_change(m.id) if m.record_attendance?}
   end
 
   def self.register_site_change(site)

@@ -1,5 +1,5 @@
 class Meeting < ActiveRecord::Base
-  attr_accessible :cancelled, :deleted, :starttime
+  attr_accessible :cancelled, :deleted, :starttime, :future_meeting
   attr_accessor :initial_atype
 
   default_scope where(:deleted => false)
@@ -8,7 +8,7 @@ class Meeting < ActiveRecord::Base
   has_many :userattendances, :inverse_of => :meeting, :dependent => :destroy
   
   after_save :update_max_points, :update_grade
-  before_save 'attendances_merged!'
+  before_save 'attendances_merged!', :set_future_meeting
   
   def userattendances_hash
     if @ua_hash.nil?
@@ -38,8 +38,12 @@ class Meeting < ActiveRecord::Base
     !(cancelled || deleted)
   end
 
+  def set_future_meeting
+    self.future_meeting = self.starttime > Time.now
+  end
+
   def update_grade
-    Gradeupdate.register_site_change(self.section.site)
+    Gradeupdate.register_section_change(self.section)
     return true
   end
 
