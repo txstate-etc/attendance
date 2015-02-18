@@ -40,6 +40,7 @@ class Meeting < ActiveRecord::Base
 
   def set_future_meeting
     self.future_meeting = self.starttime > Time.now
+    return true
   end
 
   def update_grade
