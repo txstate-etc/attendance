@@ -41,7 +41,7 @@ group :development do
 	gem 'thin'
 	gem 'capistrano'
 	gem 'capistrano-ext'
-	gem 'rvm-capistrano'
+	gem 'rvm-capistrano', require: false
 	#gem 'rack-mini-profiler'
 end
 
