@@ -1,0 +1,756 @@
+diff -r 87b68247025e src/basiclti/basiclti-api/pom.xml
+--- a/src/basiclti/basiclti-api/pom.xml	Mon Mar 16 14:17:32 2015 -0500
++++ b/src/basiclti/basiclti-api/pom.xml	Mon Apr 27 13:39:02 2015 -0500
+@@ -36,4 +36,4 @@
+             <artifactId>sakai-component-manager</artifactId>
+         </dependency>
+     </dependencies>
+-</project>
+\ No newline at end of file
++</project>
+diff -r 87b68247025e src/basiclti/basiclti-blis/pom.xml
+--- a/src/basiclti/basiclti-blis/pom.xml	Mon Mar 16 14:17:32 2015 -0500
++++ b/src/basiclti/basiclti-blis/pom.xml	Mon Apr 27 13:39:02 2015 -0500
+@@ -54,12 +54,32 @@
+         <dependency>
+             <groupId>org.sakaiproject.edu-services.gradebook</groupId>
+             <artifactId>gradebook-service-api</artifactId>
++            <version>${sakai.version}</version>
++        </dependency>
++        <dependency>
++          <groupId>org.sakaiproject.edu-services.course-management</groupId>
++          <artifactId>coursemanagement-api</artifactId>
++          <version>${sakai.version}</version>
++        </dependency>
++        <dependency>
++          <groupId>org.sakaiproject.edu-services.course-management</groupId>
++          <artifactId>coursemanagement-api</artifactId>
+         </dependency>
+         <dependency>
+             <groupId>commons-logging</groupId>
+             <artifactId>commons-logging</artifactId>
+         </dependency>
+         <dependency>
++            <groupId>org.apache.commons</groupId>
++            <artifactId>commons-lang3</artifactId>
++            <version>3.1</version>
++        </dependency>
++        <dependency>
++            <groupId>org.apache.commons</groupId>
++            <artifactId>commons-lang3</artifactId>
++            <version>3.1</version>
++        </dependency>
++        <dependency>
+             <groupId>javax.servlet</groupId>
+             <artifactId>servlet-api</artifactId>
+         </dependency>
+diff -r 87b68247025e src/basiclti/basiclti-blis/src/java/org/sakaiproject/blti/ServiceServlet.java
+--- a/src/basiclti/basiclti-blis/src/java/org/sakaiproject/blti/ServiceServlet.java	Mon Mar 16 14:17:32 2015 -0500
++++ b/src/basiclti/basiclti-blis/src/java/org/sakaiproject/blti/ServiceServlet.java	Mon Apr 27 13:39:02 2015 -0500
+@@ -27,6 +27,7 @@
+ import java.util.List;
+ import java.util.ArrayList;
+ import java.util.Map;
++import java.util.HashMap;
+ import java.util.TreeMap;
+ import java.util.Properties;
+ import java.util.Enumeration;
+@@ -41,6 +42,8 @@
+ import javax.servlet.http.HttpServletRequest;
+ import javax.servlet.http.HttpServletResponse;
+ 
++import org.apache.commons.lang3.StringUtils;
++
+ import net.oauth.OAuthAccessor;
+ import net.oauth.OAuthConsumer;
+ import net.oauth.OAuthMessage;
+@@ -66,6 +69,10 @@
+ import org.sakaiproject.authz.api.Member;
+ import org.sakaiproject.authz.api.Role;
+ import org.sakaiproject.component.cover.ServerConfigurationService;
++import org.sakaiproject.coursemanagement.api.CourseManagementService;
++import org.sakaiproject.coursemanagement.api.Enrollment;
++import org.sakaiproject.coursemanagement.api.Section;
++import org.sakaiproject.coursemanagement.api.exception.IdNotFoundException;
+ import org.sakaiproject.event.cover.UsageSessionService;
+ import org.sakaiproject.id.cover.IdManager;
+ import org.sakaiproject.site.api.Site;
+@@ -78,6 +85,7 @@
+ import org.sakaiproject.tool.cover.SessionManager;
+ import org.sakaiproject.tool.cover.ToolManager;
+ import org.sakaiproject.user.api.User;
++import org.sakaiproject.user.api.UserNotDefinedException;
+ import org.sakaiproject.user.cover.UserDirectoryService;
+ import org.sakaiproject.util.ResourceLoader;
+ import org.sakaiproject.basiclti.util.SakaiBLTIUtil;
+@@ -95,6 +103,12 @@
+ 
+ import org.sakaiproject.blti.LessonsFacade;
+ 
++import org.sakaiproject.authz.api.AuthzGroupService;
++import org.sakaiproject.service.gradebook.shared.AssessmentNotFoundException;
++import org.sakaiproject.service.gradebook.shared.AssignmentHasIllegalPointsException;
++import org.sakaiproject.service.gradebook.shared.GradebookExternalAssessmentService;
++import org.sakaiproject.service.gradebook.shared.GradebookNotFoundException;
++
+ /**
+  * Notes:
+  * 
+@@ -123,6 +137,9 @@
+ 	private static Log M_log = LogFactory.getLog(ServiceServlet.class);
+ 	private static ResourceLoader rb = new ResourceLoader("blis");
+ 
++	private static CourseManagementService courseManagementService = (CourseManagementService) ComponentManager.get(CourseManagementService.class);
++	private static AuthzGroupService authzGroupService = (AuthzGroupService) ComponentManager.get(AuthzGroupService.class);
++
+     protected static SakaiFoorm foorm = new SakaiFoorm();
+ 
+     protected static LTIService ltiService = null;
+@@ -319,6 +336,9 @@
+ 			} else if( BasicLTIUtil.equals(lti_message_type, "basic-lis-readmembershipsforcontext") ) {
+ 				sourcedid = request.getParameter("id");
+ 				if ( allowRoster != null ) message_type = "roster";
++			} else if (BasicLTIUtil.equals(lti_message_type, "basic-lti-setmaxpoints")) {
++				sourcedid = request.getParameter("id");
++				message_type = "maxpoints";
+ 			} else {
+ 				doError(request, response, theMap, "outcomes.invalid", "lti_message_type="+lti_message_type, null);
+ 				return;
+@@ -474,6 +494,8 @@
+ 			if ( "toolsetting".equals(message_type) ) processSetting(request, response, lti_message_type, site, siteId, placement_id, pitch, user_id, theMap);
+ 
+ 			if ( "roster".equals(message_type) ) processRoster(request, response, lti_message_type, site, siteId, placement_id, pitch, user_id, theMap);
++
++			if ("maxpoints".equals(message_type)) processMaxPoints(request, response, lti_message_type, site, siteId, placement_id, pitch, user_id, theMap);
+ 		}
+ 
+ 	protected void processSetting(HttpServletRequest request, HttpServletResponse response, 
+@@ -639,8 +661,11 @@
+ 				return;
+ 			}
+ 
++			String roleMapProp = pitch.getProperty("rolemap");
+ 			String releaseName = pitch.getProperty(LTIService.LTI_SENDNAME);
+ 			String releaseEmail = pitch.getProperty(LTIService.LTI_SENDEMAILADDR);
++			String releaseStatus = pitch.getProperty("releasestatus");
++			String releaseproviders = pitch.getProperty("releaseproviders");
+ 			String assignment = pitch.getProperty("assignment");
+ 			String allowOutcomes = ServerConfigurationService.getString(
+ 					SakaiBLTIUtil.BASICLTI_OUTCOMES_ENABLED, SakaiBLTIUtil.BASICLTI_OUTCOMES_ENABLED_DEFAULT);
+@@ -653,6 +678,30 @@
+ 			try { 
+ 				List<Map<String,String>> lm = new ArrayList<Map<String,String>>();
+ 				Set<Member> members = site.getMembers();
++				Map<String, String> roleMap = SakaiBLTIUtil.convertRoleMapPropToMap(roleMapProp);
++
++				//Get providerId and sections for the site
++		    Set<String> providerIds = authzGroupService.getProviderIds(SiteService.siteReference(site.getId()));
++		    Map<String, String> userProviderIdMap = new HashMap<String, String>();
++		    for (String providerId : providerIds) {
++	    		try {
++	      		Section section = courseManagementService.getSection(providerId);
++	      		Set<Enrollment> enrollments = courseManagementService.getEnrollments(section.getEnrollmentSet().getEid());
++	      		for (Enrollment enrollment : enrollments) {
++	      			if (!enrollment.isDropped()) {
++		      			if (userProviderIdMap.containsKey(enrollment.getUserId())) {
++		      				userProviderIdMap.put(enrollment.getUserId(), userProviderIdMap.get(enrollment.getUserId()) + "," + providerId);
++		      			} else {
++		      				userProviderIdMap.put(enrollment.getUserId(), providerId);
++		      			}
++	      			}
++	      		}
++	    		} catch (IdNotFoundException ex) {
++	    			// Skip this provider id if a section can't be found.
++	    			M_log.warn("No section found for provider id " + providerId);
++	    		}
++	    	}
++
+ 				for (Member member : members ) {
+ 					Map<String,String> mm = new TreeMap<String,String>();
+ 					Role role = member.getRole();
+@@ -660,6 +709,11 @@
+ 					mm.put("/user_id",ims_user_id);
+ 					String ims_role = "Learner";
+ 					if ( maintainRole != null && maintainRole.equals(role.getId())) ims_role = "Instructor";
++
++					if ( roleMap.containsKey(role.getId()) ) {
++						ims_role = roleMap.get(role.getId());
++					}
++
+ 					mm.put("/role",ims_role);
+ 					User user = null;
+ 					if ( "true".equals(allowOutcomes) && assignment != null ) {
+@@ -669,6 +723,17 @@
+ 						if ( result_sourcedid != null ) mm.put("/lis_result_sourcedid",result_sourcedid);
+ 					}
+ 
++				if ( SakaiBLTIUtil.isPlacement(placement_id) ) {
++					ToolConfiguration placement = SiteService.findTool(placement_id);
++					if ( "on".equals(releaseStatus) ) {
++						mm.put("/membership_is_active", Boolean.toString(member.isActive()));
++					}
++				}
++
++				if ( "on".equals(releaseproviders) ) {
++	        mm.put("/provider_ids", StringUtils.defaultString(userProviderIdMap.get(user.getEid())));
++			  }
++
+ 					if ( "on".equals(releaseName) || "on".equals(releaseEmail) ) {
+ 						if ( user == null ) user = UserDirectoryService.getUser(ims_user_id);
+ 						if ( "on".equals(releaseName) ) {
+@@ -702,6 +767,51 @@
+ 			M_log.debug(theXml);
+ 		}
+ 
++	protected void processMaxPoints(HttpServletRequest request, HttpServletResponse response, 
++		String lti_message_type, 
++			Site site, String siteId, String placement_id, Properties pitch,
++		String user_id,  Map<String, Object> theMap)
++		throws java.io.IOException
++	{
++
++		GradebookExternalAssessmentService gex = (GradebookExternalAssessmentService) ComponentManager
++		  .get("org.sakaiproject.service.gradebook.GradebookExternalAssessmentService");
++
++		String maxPointsStr = request.getParameter("max_points");
++
++		if (maxPointsStr == null) {
++			doError(request, response, theMap, "", "Missing required parameter max_points", null);
++			return;
++		}
++
++		Double maxPoints = null;
++		try {
++			maxPoints = Double.valueOf(maxPointsStr);
++		} catch (NumberFormatException ex) {
++			doError(request, response, theMap, "", "Max points must be a valid number", ex);
++			return;
++		}
++
++		String assignmentName = pitch.getProperty("assignment");
++
++		try {
++			gex.updateExternalAssessment(siteId, placement_id, null, assignmentName, maxPoints, null, false);
++		} catch (AssignmentHasIllegalPointsException ex) {
++			doError(request, response, theMap, "", "Illegal max points, max points must be greater than 0", ex);
++			return;
++		} catch (GradebookNotFoundException ex) {
++			doError(request, response, theMap, "", "No gradebook was found for this site", ex);
++			return;
++		} catch (AssessmentNotFoundException ex) {
++			doError(request, response, theMap, "", "No external assessment was found for this tool", ex);
++			return;
++		}
++
++		theMap.put("/message_response/statusinfo/codemajor", "Success");
++		theMap.put("/message_response/statusinfo/severity", "Status");
++		theMap.put("/message_response/statusinfo/codeminor", "fullsuccess");
++	}
++
+ 	/* IMS POX XML versions of this service */
+ 	public void doErrorXML(HttpServletRequest request,HttpServletResponse response, 
+ 			IMSPOXRequest pox, String s, String message, Exception e) 
+diff -r 87b68247025e src/basiclti/basiclti-common/pom.xml
+--- a/src/basiclti/basiclti-common/pom.xml	Mon Mar 16 14:17:32 2015 -0500
++++ b/src/basiclti/basiclti-common/pom.xml	Mon Apr 27 13:39:02 2015 -0500
+@@ -53,6 +53,11 @@
+             <artifactId>sakai-privacy-api</artifactId>
+         </dependency>
+         <dependency>
++          <groupId>org.sakaiproject.edu-services.course-management</groupId>
++          <artifactId>coursemanagement-api</artifactId>
++          <version>${sakai.version}</version>
++        </dependency>
++        <dependency>
+             <groupId>org.sakaiproject.portal</groupId>
+             <artifactId>sakai-portal-util</artifactId>
+             <version>${sakai.version}</version>
+@@ -74,6 +79,16 @@
+             <artifactId>commons-logging</artifactId>
+         </dependency>
+         <dependency>
++            <groupId>org.apache.commons</groupId>
++            <artifactId>commons-lang3</artifactId>
++            <version>3.1</version>
++        </dependency>
++        <dependency>
++            <groupId>org.apache.commons</groupId>
++            <artifactId>commons-lang3</artifactId>
++            <version>3.1</version>
++        </dependency>
++        <dependency>
+             <groupId>javax.servlet</groupId>
+             <artifactId>servlet-api</artifactId>
+         </dependency>
+diff -r 87b68247025e src/basiclti/basiclti-common/src/java/org/sakaiproject/basiclti/util/SakaiBLTIUtil.java
+--- a/src/basiclti/basiclti-common/src/java/org/sakaiproject/basiclti/util/SakaiBLTIUtil.java	Mon Mar 16 14:17:32 2015 -0500
++++ b/src/basiclti/basiclti-common/src/java/org/sakaiproject/basiclti/util/SakaiBLTIUtil.java	Mon Apr 27 13:39:02 2015 -0500
+@@ -85,6 +85,15 @@
+ import net.oauth.SimpleOAuthValidator;
+ import net.oauth.signature.OAuthSignatureMethod;
+ 
++
++import java.util.ArrayList;
++import java.util.Set;
++import org.apache.commons.lang3.StringUtils;
++import org.sakaiproject.site.api.Group;
++import org.sakaiproject.coursemanagement.api.CourseManagementService;
++import org.sakaiproject.coursemanagement.api.Section;
++import org.sakaiproject.coursemanagement.api.exception.IdNotFoundException;
++
+ /**
+  * Some Sakai Utility code for IMS Basic LTI
+  * This is mostly code to support the Sakai conventions for 
+@@ -119,6 +128,10 @@
+ 	public static final String LTI1_PATH = "/imsblis/service/";
+ 	public static final String LTI2_PATH = "/imsblis/lti2/";
+ 
++	private static CourseManagementService courseManagementService = (CourseManagementService) ComponentManager.get(CourseManagementService.class);
++	private static org.sakaiproject.authz.api.AuthzGroupService authzGroupService = 
++	    (org.sakaiproject.authz.api.AuthzGroupService) ComponentManager.get(org.sakaiproject.authz.api.AuthzGroupService.class);
++
+ 	public static void dPrint(String str)
+ 	{
+ 		if ( verbosePrint ) System.out.println(str);
+@@ -295,7 +308,7 @@
+ 		setProperty(props, BasicLTIConstants.LAUNCH_PRESENTATION_RETURN_URL, returnUrl);
+ 	}
+ 
+-	public static void addRoleInfo(Properties props, Properties lti2subst, String context)
++	public static void addRoleInfo(Properties props, Properties lti2subst, String context, String roleMapProp)
+ 	{
+ 		String theRole = "Learner";
+ 		if ( SecurityService.isSuperUser() )
+@@ -311,6 +324,7 @@
+ 
+ 		String realmId = SiteService.siteReference(context);
+ 		User user = null;
++		Map<String, String> roleMap = convertRoleMapPropToMap(roleMapProp);
+ 		try {
+ 			user = UserDirectoryService.getCurrentUser();
+ 			if ( user != null ) {
+@@ -320,6 +334,7 @@
+ 				if ( realm != null ) role = realm.getUserRole(user.getId());
+ 				if ( role != null ) roleId = role.getId();
+ 				if ( roleId != null && roleId.length() > 0 ) setProperty(props, "ext_sakai_role", roleId);
++				if ( roleMap.containsKey(roleId) ) setProperty(props, BasicLTIConstants.ROLES, roleMap.get(roleId));
+ 			}
+ 		} catch (GroupNotDefinedException e) {
+ 			dPrint("SiteParticipantHelper.getExternalRealmId: site realm not found"+e.getMessage());
+@@ -364,14 +379,80 @@
+ 
+ 		// Add the generic information
+ 		addGlobalData(site, props, null, rb);
+-		addRoleInfo(props, null, context);
++		ToolConfiguration placement = SiteService.findTool(placementId);
++		Properties config = placement.getConfig();
++		String roleMapProp = toNull(getCorrectProperty(config, "rolemap", placement));
++		addRoleInfo(props, null, context, roleMapProp);
+ 		addSiteInfo(props, null, site);
+ 
+ 		// Add Placement Information
+ 		addPlacementInfo(props, placementId);
++		addTracsSpecificInfo(props, site, placementId);
+ 		return true;
+ 	}
+ 
++	public static void addTracsSpecificInfo(Properties props, Site site, String placementId) {
++		ToolConfiguration placement = SiteService.findTool(placementId);
++		Properties config = placement.getConfig();
++		String releaseproviders = toNull(getCorrectProperty(config,"releaseproviders", placement));
++		User user = UserDirectoryService.getCurrentUser();
++		String siteRealmId = SiteService.siteReference(site.getId());
++
++    String setmaxpoints = toNull(getCorrectProperty(config, "useExternalGbAssign", placement));
++
++    if ("true".equals(setmaxpoints)) {
++      String outcome_url = ServerConfigurationService.getString("basiclti.consumer.ext_ims_lis_basic_outcome_url",null);
++      if (outcome_url == null) outcome_url = getOurServerUrl() + "/imsblis/service/";
++      setProperty(props, "ext_ims_lti_set_max_points_url", outcome_url);
++    }
++
++		if ("on".equals(releaseproviders) && user != null) {
++			ArrayList<String> userProviders = new ArrayList<String>();
++
++			// Loop through the site's provider ids and add the ones this user is enrolled in
++			Set<String> providerIds = authzGroupService.getProviderIds(siteRealmId);
++			for (String providerId : providerIds) {
++		    try {
++	        Section section = courseManagementService.getSection(providerId);
++	        String enrollmentSetId = section.getEnrollmentSet().getEid();
++
++	        if (courseManagementService.isEnrolled(user.getEid(), enrollmentSetId)) {
++	            userProviders.add(providerId);
++	        }
++		    } catch (IdNotFoundException ex) {
++	        // Skip this provider id if a section can't be found.
++	        dPrint("No section found for provider id " + providerId);
++		    }
++			}
++
++			String userProvidersString = StringUtils.join(userProviders, ",");
++			setProperty(props, "ext_sakai_provider_ids", userProvidersString);
++		}
++
++		// Create a hash of the modified dates of the sites' realms, so the
++		// tool can know when a roster update is needed.
++		AuthzGroup realm = null;
++		try {
++			realm = AuthzGroupService.getAuthzGroup(SiteService.siteReference(site.getId()));
++		} catch(GroupNotDefinedException ex) {
++			dPrint("No realm found for site with id " + site.getId() + ". Not adding roster has to lti launch.");
++		} 
++
++		if (realm != null) {
++			String modified_dates_base_string = realm.getModifiedDate().toString();
++			for (Group group : site.getGroups()) {
++		    try {
++		      String groupRealmId = SiteService.siteGroupReference(site.getId(), group.getId());
++		      AuthzGroup groupRealm = AuthzGroupService.getAuthzGroup(groupRealmId);
++		      modified_dates_base_string += groupRealm.getModifiedDate().toString();
++		    } catch (GroupNotDefinedException ex) {
++		      dPrint("No realm found for group with id " + group.getId());
++		    }
++			}
++			setProperty(props, "ext_sakai_roster_hash", ShaUtil.sha256Hash(modified_dates_base_string));
++		}
++	}
++
+ 	public static void addPlacementInfo(Properties props, String placementId)
+ 	{
+ 
+@@ -624,7 +705,7 @@
+ 		}
+ 		addGlobalData(site, ltiProps, lti2subst, rb);
+ 		addSiteInfo(ltiProps, lti2subst, site);
+-		addRoleInfo(ltiProps, lti2subst,  context);
++		addRoleInfo(ltiProps, lti2subst,  context, (String)tool.get("rolemap"));
+ 
+ 		if ( deploy != null ) {
+ 			setProperty(lti2subst,"ToolConsumerProfile.url", getOurServerUrl() + 
+@@ -1182,7 +1263,8 @@
+ 		// Look up the assignment so we can find the max points
+ 		GradebookService g = (GradebookService)  ComponentManager
+ 			.get("org.sakaiproject.service.gradebook.GradebookService");
+-
++		GradebookExternalAssessmentService gex = (GradebookExternalAssessmentService) ComponentManager
++		  .get("org.sakaiproject.service.gradebook.GradebookExternalAssessmentService");
+ 
+ 		// Make sure the user exists in the site
+ 		boolean userExistsInSite = false;
+@@ -1208,7 +1290,7 @@
+ 			List gradebookAssignments = g.getAssignments(siteId);
+ 			for (Iterator i=gradebookAssignments.iterator(); i.hasNext();) {
+ 				Assignment gAssignment = (Assignment) i.next();
+-				if ( gAssignment.isExternallyMaintained() ) continue;
++				//if ( gAssignment.isExternallyMaintained() ) continue;
+ 				if ( assignment.equals(gAssignment.getName()) ) { 
+ 					assignmentObject = gAssignment;
+ 					break;
+@@ -1274,9 +1356,15 @@
+ 				if ( theGrade < 0.0 || theGrade > 1.0 ) {
+ 					throw new Exception("Grade out of range");
+ 				}
++
+ 				theGrade = theGrade * assignmentObject.getPoints();
++				
++				if (assignmentObject.isExternallyMaintained()) {
++					gex.updateExternalAssessmentScore(siteId, assignmentObject.getExternalId(), user_id, theGrade.toString());
++				} else {
+ 				g.setAssignmentScore(siteId, assignment, user_id, theGrade, "External Outcome");
+ 				g.setAssignmentScoreComment(siteId, assignment, user_id, comment);
++				}
+ 
+ 				M_log.info("Stored Score=" + siteId + " assignment="+ assignment + " user_id=" + user_id + " score="+ theGrade);
+ 				message = "Result replaced";
+@@ -1517,5 +1605,22 @@
+         SecurityService.popAdvisor();
+     }
+ 
++  /**
++	 * Converts a string from a comma-separated list of role maps to a Map<String, String>.
++	 * Each role mapping in the string should be of the form <sakairole>:<ltirole>.
++	 */
++	public static Map<String, String> convertRoleMapPropToMap(String roleMapProp) {
++		Map<String, String> roleMap = new HashMap<String, String>();
++		if (roleMapProp == null) return roleMap;
+ 
++		String[] roleMapPairs = roleMapProp.split(",");
++		for (String s : roleMapPairs) {
++			String[] roleMapPair = s.split(":");
++			if (roleMapPair.length != 2) {
++				throw new IllegalArgumentException("Malformed rolemap property. Value must be a comma-separated list of values of the form <sakairole>:<ltirole>");
+ }
++			roleMap.put(roleMapPair[0], roleMapPair[1]);
++		}
++		return roleMap;
++	}
++}
+diff -r 87b68247025e src/basiclti/basiclti-portlet/src/bundle/basiclti.properties
+--- a/src/basiclti/basiclti-portlet/src/bundle/basiclti.properties	Mon Mar 16 14:17:32 2015 -0500
++++ b/src/basiclti/basiclti-portlet/src/bundle/basiclti.properties	Mon Apr 27 13:39:02 2015 -0500
+@@ -1,9 +1,9 @@
+ lti.forward = Press to start external tool
+ noiframes = Your browser does not support iframes.
+-noiframe.press.here = Press here to launch.
++noiframe.press.here = Click here to launch this tool in a new window.
+ not.configured = This tool has not yet been configured.
+ 
+-new.page.launch = Content opened in a new window. Make sure pop up windows are allowed in your browser.
++new.page.launch =
+ 
+ edit.exit = Cancel
+ edit.clear.prefs = Clear Stored Preferences
+diff -r 87b68247025e src/basiclti/basiclti-portlet/src/java/org/sakaiproject/portlets/IMSBLTIPortlet.java
+--- a/src/basiclti/basiclti-portlet/src/java/org/sakaiproject/portlets/IMSBLTIPortlet.java	Mon Mar 16 14:17:32 2015 -0500
++++ b/src/basiclti/basiclti-portlet/src/java/org/sakaiproject/portlets/IMSBLTIPortlet.java	Mon Apr 27 13:39:02 2015 -0500
+@@ -239,7 +239,7 @@
+ 						text.append("</script>\n");
+ 					}
+ 					text.append(rb.getString("new.page.launch"));
+-					text.append("<br><a href=\""+iframeUrl+"\" onclick=\""+windowOpen+"\" target=\"BasicLTI\">"+rb.getString("noiframe.press.here")+"</a>");
++					text.append("<br><a href=\""+iframeUrl+"\" target=\"BasicLTI\">"+rb.getString("noiframe.press.here")+"</a>");
+ 					text.append("</p>\n");
+ 				} else {
+ 					if ( "on".equals(maximize) ) {
+@@ -376,7 +376,6 @@
+ 			if ( assignments != null && assignments.size() > 0 ) request.setAttribute("assignments", assignments);
+ 		}
+ 
+-
+ 		clearErrorMessage(request);
+ 	}
+ 
+@@ -659,9 +658,14 @@
+ 			String allowSettings = ServerConfigurationService.getString(SakaiBLTIUtil.BASICLTI_SETTINGS_ENABLED, SakaiBLTIUtil.BASICLTI_SETTINGS_ENABLED_DEFAULT);
+ 			String allowRoster = ServerConfigurationService.getString(SakaiBLTIUtil.BASICLTI_ROSTER_ENABLED, SakaiBLTIUtil.BASICLTI_ROSTER_ENABLED_DEFAULT);
+ 			String allowLori = ServerConfigurationService.getString(SakaiBLTIUtil.BASICLTI_LORI_ENABLED, SakaiBLTIUtil.BASICLTI_LORI_ENABLED_DEFAULT);
++			String useExternalGbAssign = getSakaiProperty(sakaiProperties, "imsti.useExternalGbAssign");
+ 
+ 			if ( "true".equals(allowOutcomes) && newAssignment != null && newAssignment.trim().length() > 1 ) {
+-				if ( addGradeBookItem(request, newAssignment) ) {
++				if ("true".equals(useExternalGbAssign)) {
++					if (addExternalGradebookItem(request, newAssignment)) {
++						assignment = newAssignment;
++					}
++				} else if ( addGradeBookItem(request, newAssignment) ) {
+ 					// System.out.println("Success!");
+ 					assignment = newAssignment;
+ 				}
+@@ -686,15 +690,21 @@
+ 				} 
+ 			}
+ 
++			GradebookExternalAssessmentService gex = (GradebookExternalAssessmentService)  ComponentManager.get("org.sakaiproject.service.gradebook.GradebookExternalAssessmentService");
++
+ 			if ( "true".equals(allowOutcomes) && assignment != null && assignment.trim().length() > 1 ) {
++				boolean found = false;
++				if ("true".equals(useExternalGbAssign)) {
++					found = gex.isAssignmentDefined(getContext(), assignment);
++				} else {
+ 				List<String> assignments = getGradeBookAssignments();
+-				boolean found = false;
+ 				if ( assignments != null ) for ( String assn : assignments ) {
+ 					if ( assn.equals(assignment) ) {
+ 						found = true;
+ 						break;
+ 					}
+ 				}
++				}
+ 				if ( ! found ) {
+ 					setErrorMessage(request, rb.getString("error.gradable.badassign") + 
+ 							" " + FormattedText.escapeHtml(assignment,false));
+@@ -779,6 +789,14 @@
+ 				}
+ 			}
+ 
++			// Check if external gb assignment should be removed
++			if ("true".equals(useExternalGbAssign) && assignment != null && newAssignment == null) {
++				if (!"on".equals(request.getParameter("imsti.keepassign"))) {
++					gex.removeExternalAssessment(getContext(), getExternalIdForAssignment(assignment));
++					prefs.setValue("sakai:imsti.assignment", null);
++				}
++			}
++
+ 			// Clear out the other setting
+ 			if ( imsType != null ) {
+ 				if ( imsType.equalsIgnoreCase("XML") ) {
+@@ -911,6 +929,42 @@
+ 		return false;
+ 	}
+ 
++	protected boolean addExternalGradebookItem(ActionRequest request, String assignmentName)
++	{
++		try
++		{
++			GradebookService g = (GradebookService)  ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService");
++			GradebookExternalAssessmentService gex = (GradebookExternalAssessmentService)  ComponentManager.get("org.sakaiproject.service.gradebook.GradebookExternalAssessmentService");
++
++			String gradebookUid = getContext();
++			if ( ! (g.isGradebookDefined(gradebookUid) && (g.currentUserHasEditPerm(gradebookUid) || g.currentUserHasGradingPerm(gradebookUid)) && g.currentUserHasGradeAllPerm(gradebookUid) ) ) return false;
++
++			// add assignment to gradebook
++			gex.addExternalAssessment(gradebookUid,
++																ToolManager.getCurrentPlacement().getId(),
++																null,
++																assignmentName,
++																100.0,
++																null,
++																"Attendance",
++																false);
++			
++			return true;
++		}
++		catch (ConflictingAssignmentNameException e)
++		{
++			dPrint("Assignment already exists in gradebook: " + e.getMessage());
++			setErrorMessage(request, rb.getString("error.gradable.badcreate") + ":" + e.getMessage());
++		}
++		catch (Exception e)
++		{
++			dPrint("GradebookNotFoundException (may be because GradeBook has not yet been added to the Site) " + e.getMessage());
++			setErrorMessage(request, rb.getString("error.gradable.badcreate") + ":" + e.getMessage() );
++			M_log.warn(this + ":addGradeItem " + e.getMessage());
++		}
++		return false;
++	}
++
+ 	// get all assignments from the Gradebook
+ 	protected List<String> getGradeBookAssignments()
+ 	{
+@@ -940,4 +994,21 @@
+ 		}
+ 	}
+ 
++	protected String getExternalIdForAssignment(String assignmentName) {
++		try
++		{
++			GradebookService g = (GradebookService)  ComponentManager
++				.get("org.sakaiproject.service.gradebook.GradebookService");
++
++			Assignment assignment = g.getAssignment(getContext(), assignmentName);
++
++			if (assignment == null) return null;
++			return assignment.getExternalId();
+ }
++		catch (GradebookNotFoundException e)
++		{
++			dPrint("GradebookNotFoundException (may be because GradeBook has not yet been added to the Site) " + e.getMessage());
++			return null;
++		}
++	}
++}
+diff -r 87b68247025e src/basiclti/basiclti-portlet/src/webapp/edit.jsp
+--- a/src/basiclti/basiclti-portlet/src/webapp/edit.jsp	Mon Mar 16 14:17:32 2015 -0500
++++ b/src/basiclti/basiclti-portlet/src/webapp/edit.jsp	Mon Apr 27 13:39:02 2015 -0500
+@@ -60,6 +60,10 @@
+ 
+ Boolean allowContentLink = (Boolean) rReq.getAttribute("allowContentLink");
+ 
++Boolean useExternalGbAssign = new Boolean("true".equals(sp.getProperty("imsti.useExternalGbAssign")));
++
++Boolean hideClearPreferences = new Boolean("true".equals(sp.getProperty("imsti.hideClearPreferences")));
++
+ %>
+ <portlet:defineObjects/>
+ <div class="portletBody">
+@@ -85,11 +89,13 @@
+ 			<a href="<%=viewURL.toString()%>"><%=rb.getString("edit.exit")%></a>
+ 		</span>
+ 	</li>	
++  <% if (!hideClearPreferences) {%>
+ 	<li>
+ 		<span>
+ 			<a href="<%=resetURL.toString()%>"><%=rb.getString("edit.clear.prefs")%></a>
+ 		</span>
+ 	</li>
++  <% } %>
+ </ul>	
+ 
+ <form method="post" action="<%=launchURL.toString()%>">
+@@ -174,7 +180,14 @@
+ 
+ <% } %>
+ 
+-<% if ( allowOutcomes && allow(sp,"allowoutcomes") ) { %>
++<% if (useExternalGbAssign && ov.getProperty("imsti.assignment") != null) { %>
++  <h3><%=rb.getString("gradable.information") %></h3>
++  <p>
++    <input type="checkbox" name="imsti.keepassign" value="on" checked />
++    <label for="imsti.keepassign">Keep using assignment '<%=ov.getProperty("imsti.assignment")%>'</label>
++  </p>
++  <input type="hidden" name="imsti.assignment" value="<%= ov.getProperty("imsti.assignment")%>" />
++<% } else if ( allowOutcomes && allow(sp,"allowoutcomes") ) { %>
+ <h3><%=rb.getString("gradable.information") %></h3>
+ <p  class="shorttext" style="clear:none;">
+ <label for="imsti.newassignment"><%=rb.getString("gradable.newassignment") %></label>
+@@ -184,7 +197,7 @@
+ 
+ <% } %>
+ 
+-<% if ( allowOutcomes && allow(sp,"allowoutcomes") && assignments != null ) { %>
++<% if ( allowOutcomes && allow(sp,"allowoutcomes") && assignments != null && !useExternalGbAssign ) { %>
+ <p  class="shorttext" style="clear:none;">
+ <%=rb.getString("gradable.title") %>
+ <select name="imsti.assignment">
+diff -r 87b68247025e src/basiclti/basiclti-util/src/java/org/imsglobal/basiclti/BasicLTIUtil.java
+--- a/src/basiclti/basiclti-util/src/java/org/imsglobal/basiclti/BasicLTIUtil.java	Mon Mar 16 14:17:32 2015 -0500
++++ b/src/basiclti/basiclti-util/src/java/org/imsglobal/basiclti/BasicLTIUtil.java	Mon Apr 27 13:39:02 2015 -0500
+@@ -595,6 +595,57 @@
+ 		text.append("}\n");
+ 		text.append("</script>\n");
+ 
++    // iframe resize logic for attendance tool
++    if (newMap.get(BasicLTIConstants.RESOURCE_LINK_TITLE) != null && newMap.get(BasicLTIConstants.RESOURCE_LINK_TITLE).toLowerCase().equals("attendance")) {
++      
++      // We add a script tag to the head section of the top document which contains
++      // the resize function and logic for hooking them up to the resize and scroll
++      // events of the top window. This was the only way to get resizing to work in
++      // all browsers. If the code is in the iframe window, it gets thrown out when
++      // the iframe is redirected to the lti launch and the resize functions gets
++      // garbage collected in IE since it was on a window that no longer exists.
++      String scriptTag = "var iframe = document.getElementById('basic-lti-iframe');\\n"
++        + " var doResize = function() {\\n"
++        + "   var viewportHeight = document.documentElement.clientHeight;\\n"
++        + "   var offset = iframe.offsetTop;\\n"
++        + "   var currObj = iframe.offsetParent;\\n"
++        + "   while (currObj) {\\n"
++        + "     offset += currObj.offsetTop;\\n"
++        + "     currObj = currObj.offsetParent\\n"
++        + "   }\\n"
++        + "   var frameHeight = viewportHeight - offset;\\n"
++        + "   var scrollAmount = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;\\n"
++        + "   if (scrollAmount > offset) scrollAmount = offset;\\n"
++        + "   var newHeight = frameHeight + scrollAmount;\\n"
++        + "   if (newHeight < 100) newHeight = 100;\\n"
++        + "   var objToResize = (iframe.style) ? iframe.style : iframe;\\n"
++        + "   objToResize.height = newHeight + 'px';\\n"
++        + " }\\n"
++        + " if (window.addEventListener) {\\n"
++        + "   window.addEventListener('resize', doResize, false);\\n"
++        + "   window.addEventListener('scroll', doResize, false);\\n"
++        + " }\\n"
++        + " else if (window.attachEvent) {\\n"
++        + "   window.attachEvent('onresize', doResize);\\n"
++        + "   window.attachEvent('onscroll', doResize);\\n"
++        + " }\\n"
++        + " else {\\n"
++        + "   window['onResize'] = doResize;\\n"
++        + "   window['onScroll'] = doResize;\\n"
++        + " }\\n"
++        + " doResize();";
++
++      text.append(" <script language=\"javascript\"> \n"
++        + " var topWindow = window.parent.parent;\n"
++        + " topWindow.document.getElementsByTagName('iframe')[0].id = 'basic-lti-iframe';\n"
++        + " var script = topWindow.document.createElement('script');\n"
++        + " script.type = \"text\\/javascript\";\n"
++        + " script.text = \"" + scriptTag + "\"\n"
++        + " topWindow.document.getElementsByTagName(\"head\")[0].appendChild(script);\n"
++        + " </script> \n");
++    }
++
++
+ 		// paint debug output
+ 		if (debug) {
+ 			text.append("<pre>\n");
