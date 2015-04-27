@@ -69,11 +69,16 @@ rails s --debugger
 
 ## Configuring Sakai
 
-### Apply provided patch (TODO: add patch to repo)
-Apply the appropriate patch for your sakai version, found in sakai/. This patch contains updates to the basiclti tool to support sending of provider ids in the roster service and mapping sakai roles to LTI roles. It also adds a custom lti service for setting the max points on a gradebook item associated with the tool.
+### [Optional] Apply provided patch
+Apply the appropriate patch for your sakai version, found in sakai/. This patch contains the following updates to the basiclti tool:
+
+* send provider ids in the roster service so that attendance can be taken separately for different sections
+* ability to map sakai roles to LTI roles (will be part of Sakai 11)
+* custom lti service for setting the max points of the gradebook item to the number of attendances
+* use an external gradebook item if imsti.useExternalGbAssign is set to true
 
 ### Add IMSBLTIPortlet.xml
-Tool registration for attendance tool, found at sakai.home/portlets/imsblti/IMSBLTIPortlet.xml
+Tool registration for attendance tool should be configured in a IMSBLTIPortlet.xml file at sakai.home/portlets/imsblti/IMSBLTIPortlet.xml
 ```
 <tool id="sakai.attendance" title="Attendance" description="For tracking attendance.">
     <category name="course" />
@@ -135,6 +140,7 @@ basiclti.outcomes.enabled=true
 basiclti.roster.enabled=true
 
 sakai.attendance.launch=http://localhost:3000/lti_tool
-sakai.attendance.key=canbeanything
+# The key must be set to notused. Any other value will cause a validation error.
+sakai.attendance.key=notused
 sakai.attendance.secret=yoursecret
 ```
