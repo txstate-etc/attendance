@@ -1,13 +1,13 @@
 <% content_for(:head) do %>
   <meta name="viewport" content="width=device-width, user-scalable=no">
 <% end %>
-<h2 class="page_header">New Session</h2>
-<div class="navigation_link_back"><%= link_to '< Back', @section %></div>
+<h2 class="page_header"><%=t 'meeting.new_title' %></h2>
+<div class="navigation_link_back"><%= link_to "< #{t('general.back')}", @section %></div>
 <%= form_for [@section, @meeting] do |f| %>
   <%= render 'errors' %>
   <%= render 'starttime' %>
   <div class="initialtype">
-    <span>Mark all active students as:</span>
+    <span><%=t 'meeting.mark_as' %>:</span>
     <% @attendancetypes.each do |atype| %>
       <span class="type-radio">
         <input type="radio" id="initial-<%= atype.id %>" name="initial_atype" value="<%= atype.id %>" data-atype-name="<%= atype.name %>" <%= atype.default_type ? 'checked="checked"' : '' %>/>

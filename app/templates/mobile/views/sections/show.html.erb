@@ -3,24 +3,24 @@
   <%= stylesheet_link_tag    "mobile", :media => "all" %>
 <% end %>
 
-<h3 class="mobile-section-head">Actions</h3>
+<h3 class="mobile-section-head"><%=t 'mobile.actions' %></h3>
 <ul class="mobile-section-body">
   <% if @section.site.sections.count > 1 %>
-    <li class="mobile-linkrow"><%= link_to "< Change Section", site_path(@section.site), :class => 'mobile-link back' %></li>
+    <li class="mobile-linkrow"><%= link_to "< #{t('buttons.change_section')}", site_path(@section.site), :class => 'mobile-link back' %></li>
   <% end %>
   <% if @section.site.outcomes_url && @auth_user.edit_gradesettings?(@section.site) %>
-    <li class="mobile-linkrow"><%= link_to "Grade Settings", edit_settings_site_path(@section.site), :class => 'mobile-link' %></li>
+    <li class="mobile-linkrow"><%= link_to t('buttons.grade_settings'), edit_settings_site_path(@section.site), :class => 'mobile-link' %></li>
   <% end %>
   <% if @auth_user.set_permissions?(@section.site) %>
-    <li class="mobile-linkrow"><%= link_to "Configure Roles", edit_perms_site_path(@section.site), :class => 'mobile-link' %></li>
+    <li class="mobile-linkrow"><%= link_to t('buttons.configure_roles'), edit_perms_site_path(@section.site), :class => 'mobile-link' %></li>
   <% end %>
-  <li class="mobile-linkrow"><%= link_to "View Totals", {:action => :totals}, :class => 'mobile-link' %></li>
-  <li class="mobile-linkrow"><%= link_to "Add Session", new_section_meeting_path(@section), :class => 'mobile-link' %></li>
+  <li class="mobile-linkrow"><%= link_to t('buttons.view_totals'), {:action => :totals}, :class => 'mobile-link' %></li>
+  <li class="mobile-linkrow"><%= link_to t('buttons.add_session'), new_section_meeting_path(@section), :class => 'mobile-link' %></li>
 </ul>
 
-<h3 class="mobile-section-head">Sessions</h3>
+<h3 class="mobile-section-head"><%=t 'mobile.sessions' %></h3>
 <% if @meetings.empty? %>
-  <p>There are no sessions yet. Please click 'Add Session' above to create one.</p>
+  <p><%=t 'section.no_sessions', add_session: t('buttons.add_session') %></p>
 <% else %>
 <ul class="mobile-section-body">
   <% @meetings.each do |meeting| %>

@@ -2,9 +2,9 @@
   <meta name="viewport" content="width=device-width, user-scalable=no">
 <% end %>
 <h2 class="page_header">
-  Configuration for <%= @site.context_name %>
+  <%=t 'permissions.title', site_title: @site.context_name %>
 </h2>
-<div class="navigation_link_back"><%= link_to '< Back', session[:return_to] %></div>
+<div class="navigation_link_back"><%= link_to "< #{t('general.back')}", session[:return_to] %></div>
 <% if notice %>
   <p id="notice"><%= notice %></p>
 <% end %>
@@ -13,7 +13,7 @@
   <table>
     <thead>
       <tr>
-        <th>Role</th>
+        <th><%=t 'permissions.role' %></th>
         <th title="Allow certain roles to record attendance for the whole class.">Takes<br/>Attendance</th>
         <th title="Set certain roles to have their attendance recorded.">Track<br/>Attendance</th>
         <th title="Allow certain roles to edit grade settings.">Edit<br/>Grade Settings</th>

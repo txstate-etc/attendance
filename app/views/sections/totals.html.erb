@@ -2,15 +2,15 @@
   <meta name="viewport" content="width=device-width, user-scalable=no">
 <% end %>
 <h2 class="page_header">Attendance Totals for <%= @section.useful_name %></h2>
-<div class="navigation_link_back"><%= link_to '< Back', @section %></div>
+<div class="navigation_link_back"><%= link_to "< #{t('general.back')}", @section %></div>
 <div id="page-actions">
-  <a href="#" class="linkbutton" onclick="window.print(); return false;">Print Page</a>
-  <%= link_to "Download CSV", {:action => :totals, :format => :csv}, :class => 'linkbutton' %>
+  <a href="#" class="linkbutton" onclick="window.print(); return false;"><%=t 'buttons.print_page' %></a>
+  <%= link_to t('buttons.download_csv'), {:action => :totals, :format => :csv}, :class => 'linkbutton' %>
 </div>
 <table id="site_attendance_totals" class="attendancetypes">
 <thead>
 <tr class="header">
-  <th class="name">Student Name</th>
+  <th class="name"><%=t 'general.name' %></th>
   <% Attendancetype.getall.each do |atype| %>
     <th><%= atype.name %></th>
   <% end %>
@@ -23,7 +23,7 @@
 
 <% if !@inactive_totals.empty? %>
   <tr class="header separator inactive-separator">
-    <th class="name">Inactive <span id="expand-inactives">+</span></th>
+    <th class="name"><%=t 'general.inactive' %> <span id="expand-inactives">+</span></th>
     <% Attendancetype.getall.each do |atype| %>
       <th><%= atype.name %></th>
     <% end %>
@@ -36,7 +36,7 @@
 
 <% if !@moved_totals.empty? %>
   <tr class="header separator moved-separator">
-    <th class="name">Moved <span id="expand-moved">+</span></th>
+    <th class="name"><%=t 'general.moved' %> <span id="expand-moved">+</span></th>
     <% Attendancetype.getall.each do |atype| %>
       <th><%= atype.name %></th>
     <% end %>

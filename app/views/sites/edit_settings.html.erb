@@ -2,9 +2,9 @@
   <meta name="viewport" content="width=device-width, user-scalable=no">
 <% end %>
 <h2 class="page_header">
-  Grade settings for <%= @site.context_name %>
+  <%=t 'grade_settings.title', site_title: @site.context_name %>
 </h2>
-<div class="navigation_link_back"><%= link_to '< Back', session[:return_to] %></div>
+<div class="navigation_link_back"><%= link_to "< #{t('general.back')}", session[:return_to] %></div>
 <% if notice %>
   <p id="notice"><%= notice %></p>
 <% end %>
@@ -15,7 +15,7 @@
     <div>
       <div class="indent">
         <input type="radio" id="gradesettings_score_proportionally" name="gradesettings_score_type" value="x" <%= @settings.deduction <= 0 ? 'checked' : '' %>/>
-        <label for="gradesettings_score_proportionally">score proportionally</label>
+        <label for="gradesettings_score_proportionally"><%=t 'grade_settings.score_prop' %></label>
       </div>
       <div class="indent">
         <input type="radio" id="gradesettings_score_deduct" name="gradesettings_score_type" value="y" <%= @settings.deduction > 0 ? 'checked' : '' %>/>
@@ -24,7 +24,7 @@
     </div>
   </div>
   <div class="settings-group">
-    Late:
+    <%=t 'grade_settings.late' %>:
     <div>
       <div class="indent">
         <input type="radio" id="gradesettings_late_partial" name="gradesettings_late" value="x" <%= @settings.tardy_per_absence == 0 ? 'checked' : '' %>/>
@@ -41,23 +41,23 @@
     </div>
   </div>
   <div class="settings-group">
-    Maximum Points:
+    <%=t 'grade_settings.max_points' %>:
     <div>
       <% if !@multiple_sections %>
       <div class="indent">
         <input type="radio" id="gradesettings_points_count" name="gradesettings_points_type" value="count" <%= @settings.auto_max_points ? 'checked' : '' %>/>
-        <label for="gradesettings_points_count">Set maximum points to number of graded sessions</label>
-        <p class="indent2">(total uncancelled past sessions - # of forgiven absences)</p>
+        <label for="gradesettings_points_count"><%=t 'grade_settings.auto_max_points' %></label>
+        <p class="indent2"><%=t 'grade_settings.auto_max_expl' %></p>
       </div>
       <% end %>
       <div class="indent">
         <input type="radio" id="gradesettings_points_free" name="gradesettings_points_type" value="free" <%= @settings.auto_max_points ? '' : 'checked' %>/>
         <label for="gradesettings_points_free">
-          Set maximum points to <input id="gradesettings_max_points" name="gradesettings_max_points" size="3" value="<%= @settings.max_points %>"/>
+          <%=t 'grade_settings.set_max_points' %> <input id="gradesettings_max_points" name="gradesettings_max_points" size="3" value="<%= @settings.max_points %>"/>
         </label>
       </div>
     </div>
   </div>
-  <p>Score will automatically update to Gradebook 2 every 5 minutes on the hour.</p>
+  <p><%=t 'grade_settings.update_expl' %></p>
   <%= f.submit %>
 <% end %>

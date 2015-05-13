@@ -10,7 +10,7 @@
 <h2 class="page_header">
   <%= @meeting.starttime.strftime('%B %-d, %Y - %l:%M%P') %> : <%= @meeting.section.useful_name %>
 </h2>
-<div class="navigation_link_back"><%= link_to '< Back', @meeting.section %></div>
+<div class="navigation_link_back"><%= link_to "< #{t('general.back')}", @meeting.section %></div>
 <% if notice %>
   <p id="notice"><%= notice %></p>
 <% end %>
@@ -70,6 +70,6 @@
       <% end %>
     </tbody>
     </table>
-    <input type="submit" name="submit" value="Save"/>
+    <input type="submit" name="submit" value="<%=t 'buttons.save' %>"/>
   <% end %>
 <% end %>

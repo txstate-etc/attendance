@@ -2,32 +2,84 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
- static:
-   error_401:
-     title: "You do not have access to the requested page (401)"
-     header: "You do not have access to the requested page."
-     message: "It appears you do not have permission to view the requested page or take the requested action.  Please contact <a href=\"mailto:tracs@txstate.edu\">TRACS Support</a> for more information."
-   error_404:
-     title: "The page you were looking for doesn't exist (404)"
-     header: "The page you were looking for doesn't exist."
-     message: "You may have mistyped the address or the page may have moved."
-   error_413:
-     title: "The change you wanted was rejected (413)"
-     header: "The change you wanted was rejected."
-     message: "You attempted to upload a file that was too large."
-   error_422:
-     title: "The change you wanted was rejected (422)"
-     header: "The change you wanted was rejected."
-     message: "Maybe you tried to change something you didn't have access to."
-   error_500:
-     title: "We're sorry, but something went wrong (500)"
-     header: "We're sorry, but something went wrong."
-     message: "We've been notified about this issue and we'll take a look at it shortly."
-   error_notready:
-     title: "Tool has not been initialized."
-     header: "Tool has not been initialized."
-     message: "This site does not have any data associated with it yet.  Your instructor must visit the tool at least once to initialize it."
-   error_nostudents:
-     title: "Site has no students"
-     header: "Site has no students"
-     message: "This site does not have any students in its roster. There must be at least one student in the site before attendance can be loaded."
+  buttons:
+    add_session: "Add Session"
+    change_section: "Change Section"
+    configure_roles: "Configure Roles"
+    download_csv: "Download CSV"
+    grade_settings: "Grade Settings"
+    print_page: "Print Page"
+    save: "Save"
+    show_cancelled: "Show Cancelled"
+    update_site: "Update Site"
+    view_totals: "View Totals"
+
+  general:
+    back: "Back"
+    inactive: "Inactive"
+    moved: "Moved"
+    name: "Name"
+    roster_load: "Roster is loading..."
+
+  grade_settings:
+    auto_max_expl: "(total uncancelled past sessions - # of forgiven absences)"
+    auto_max_points: "Set maximum points to number of graded sessions"
+    give_partial: "Give partial credit for a late"
+    max_points: "Maximum Points"
+    score_prop: "score proportionally"
+    set_max_points: "Set maximum points to"
+    title: "Grade settings for %{site_title}"
+    update_expl: "Score will automatically update to Gradebook 2 every 5 minutes on the hour."
+
+  meeting:
+    at: "at"
+    cancel_session: "Cancel session"
+    delete_session: "Delete session"
+    edit_title: "Editing Session"
+    mark_as: "Mark all active students as"
+    new_title: "New Session"
+    reactivate_session: "Re-activate session"
+    start_datetime: "Start date/time"
+
+  mobile:
+    actions: "Actions"
+    choose_section: "Choose a Section"
+    sessions: "Sessions"
+
+  permissions:
+    title: "Configuration for %{site_title}"
+
+  section:
+    no_sessions: "There are no sessions yet. Please click '%{add_session}' above to create one."
+    remove_user: "Remove User"
+    role: "Role"
+
+  static:
+    error_401:
+      title: "You do not have access to the requested page (401)"
+      header: "You do not have access to the requested page."
+      message: "It appears you do not have permission to view the requested page or take the requested action.  Please contact <a href=\"mailto:tracs@txstate.edu\">TRACS Support</a> for more information."
+    error_404:
+      title: "The page you were looking for doesn't exist (404)"
+      header: "The page you were looking for doesn't exist."
+      message: "You may have mistyped the address or the page may have moved."
+    error_413:
+      title: "The change you wanted was rejected (413)"
+      header: "The change you wanted was rejected."
+      message: "You attempted to upload a file that was too large."
+    error_422:
+      title: "The change you wanted was rejected (422)"
+      header: "The change you wanted was rejected."
+      message: "Maybe you tried to change something you didn't have access to."
+    error_500:
+      title: "We're sorry, but something went wrong (500)"
+      header: "We're sorry, but something went wrong."
+      message: "We've been notified about this issue and we'll take a look at it shortly."
+    error_notready:
+      title: "Tool has not been initialized."
+      header: "Tool has not been initialized."
+      message: "This site does not have any data associated with it yet.  Your instructor must visit the tool at least once to initialize it."
+    error_nostudents:
+      title: "Site has no students"
+      header: "Site has no students"
+      message: "This site does not have any students in its roster. There must be at least one student in the site before attendance can be loaded."
