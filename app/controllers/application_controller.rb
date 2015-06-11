@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   before_filter :load_user
   before_filter :authorize
   before_filter :check_for_mobile
+  before_filter :set_locale
   
   ##### CAS AUTHENTICATION #####
   # for admin screens
@@ -88,4 +89,11 @@ class ApplicationController < ActionController::Base
   end
   helper_method :mobile_device?
 
+  def set_locale
+    I18n.locale = params[:locale] || params[:launch_presentation_locale] || I18n.default_locale
+  end
+
+  def default_url_options(options = {})
+    { locale: I18n.locale }.merge options
+  end
 end
