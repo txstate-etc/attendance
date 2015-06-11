@@ -4,6 +4,10 @@ class Gradeupdate < ActiveRecord::Base
   belongs_to :membership
   attr_accessible :tries, :last_error
 
+  # At some point, we should stop retrying failed updates so they don't clutter the db.
+  # Allowing up to 11 retries is about 3 days since we try less frequently each time.
+  @max_retries = 11
+
   def self.process_all
     ids = Gradeupdate.pluck(:id)
     ids.each do |id|
@@ -15,7 +19,7 @@ class Gradeupdate < ActiveRecord::Base
       next unless update.membership.site.outcomes_url
       response = update.process_update
       error = get_error_msg(response)
-      next if error.nil?
+      next if error.nil? || update.tries > @max_retries
       # Add update back to database if it failed
       Gradeupdate.find_or_create_by_membership_id(update.membership.id, tries: update.tries + 1, last_error: error)
     end
