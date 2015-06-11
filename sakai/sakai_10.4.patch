@@ -1,6 +1,6 @@
 diff -r 87b68247025e src/basiclti/basiclti-api/pom.xml
 --- a/src/basiclti/basiclti-api/pom.xml	Mon Mar 16 14:17:32 2015 -0500
-+++ b/src/basiclti/basiclti-api/pom.xml	Mon Apr 27 13:39:02 2015 -0500
++++ b/src/basiclti/basiclti-api/pom.xml	Thu Jun 11 13:15:58 2015 -0500
 @@ -36,4 +36,4 @@
              <artifactId>sakai-component-manager</artifactId>
          </dependency>
@@ -10,7 +10,7 @@ diff -r 87b68247025e src/basiclti/basiclti-api/pom.xml
 +</project>
 diff -r 87b68247025e src/basiclti/basiclti-blis/pom.xml
 --- a/src/basiclti/basiclti-blis/pom.xml	Mon Mar 16 14:17:32 2015 -0500
-+++ b/src/basiclti/basiclti-blis/pom.xml	Mon Apr 27 13:39:02 2015 -0500
++++ b/src/basiclti/basiclti-blis/pom.xml	Thu Jun 11 13:15:58 2015 -0500
 @@ -54,12 +54,32 @@
          <dependency>
              <groupId>org.sakaiproject.edu-services.gradebook</groupId>
@@ -46,7 +46,7 @@ diff -r 87b68247025e src/basiclti/basiclti-blis/pom.xml
          </dependency>
 diff -r 87b68247025e src/basiclti/basiclti-blis/src/java/org/sakaiproject/blti/ServiceServlet.java
 --- a/src/basiclti/basiclti-blis/src/java/org/sakaiproject/blti/ServiceServlet.java	Mon Mar 16 14:17:32 2015 -0500
-+++ b/src/basiclti/basiclti-blis/src/java/org/sakaiproject/blti/ServiceServlet.java	Mon Apr 27 13:39:02 2015 -0500
++++ b/src/basiclti/basiclti-blis/src/java/org/sakaiproject/blti/ServiceServlet.java	Thu Jun 11 13:15:58 2015 -0500
 @@ -27,6 +27,7 @@
  import java.util.List;
  import java.util.ArrayList;
@@ -168,7 +168,7 @@ diff -r 87b68247025e src/basiclti/basiclti-blis/src/java/org/sakaiproject/blti/S
  				for (Member member : members ) {
  					Map<String,String> mm = new TreeMap<String,String>();
  					Role role = member.getRole();
-@@ -660,6 +709,11 @@
+@@ -660,15 +709,32 @@
  					mm.put("/user_id",ims_user_id);
  					String ims_role = "Learner";
  					if ( maintainRole != null && maintainRole.equals(role.getId())) ims_role = "Instructor";
@@ -179,8 +179,11 @@ diff -r 87b68247025e src/basiclti/basiclti-blis/src/java/org/sakaiproject/blti/S
 +
  					mm.put("/role",ims_role);
  					User user = null;
- 					if ( "true".equals(allowOutcomes) && assignment != null ) {
-@@ -669,6 +723,17 @@
+-					if ( "true".equals(allowOutcomes) && assignment != null ) {
++					if ( "true".equals(allowOutcomes)) {
+ 						user = UserDirectoryService.getUser(ims_user_id);
+ 						String placement_secret  = pitch.getProperty(LTIService.LTI_PLACEMENTSECRET);
+ 						String result_sourcedid = SakaiBLTIUtil.getSourceDID(user, placement_id, placement_secret);
  						if ( result_sourcedid != null ) mm.put("/lis_result_sourcedid",result_sourcedid);
  					}
  
@@ -192,13 +195,14 @@ diff -r 87b68247025e src/basiclti/basiclti-blis/src/java/org/sakaiproject/blti/S
 +				}
 +
 +				if ( "on".equals(releaseproviders) ) {
++					if ( user == null ) user = UserDirectoryService.getUser(ims_user_id);
 +	        mm.put("/provider_ids", StringUtils.defaultString(userProviderIdMap.get(user.getEid())));
 +			  }
 +
  					if ( "on".equals(releaseName) || "on".equals(releaseEmail) ) {
  						if ( user == null ) user = UserDirectoryService.getUser(ims_user_id);
  						if ( "on".equals(releaseName) ) {
-@@ -702,6 +767,51 @@
+@@ -702,6 +768,51 @@
  			M_log.debug(theXml);
  		}
  
@@ -252,7 +256,7 @@ diff -r 87b68247025e src/basiclti/basiclti-blis/src/java/org/sakaiproject/blti/S
  			IMSPOXRequest pox, String s, String message, Exception e) 
 diff -r 87b68247025e src/basiclti/basiclti-common/pom.xml
 --- a/src/basiclti/basiclti-common/pom.xml	Mon Mar 16 14:17:32 2015 -0500
-+++ b/src/basiclti/basiclti-common/pom.xml	Mon Apr 27 13:39:02 2015 -0500
++++ b/src/basiclti/basiclti-common/pom.xml	Thu Jun 11 13:15:58 2015 -0500
 @@ -53,6 +53,11 @@
              <artifactId>sakai-privacy-api</artifactId>
          </dependency>
@@ -284,7 +288,7 @@ diff -r 87b68247025e src/basiclti/basiclti-common/pom.xml
          </dependency>
 diff -r 87b68247025e src/basiclti/basiclti-common/src/java/org/sakaiproject/basiclti/util/SakaiBLTIUtil.java
 --- a/src/basiclti/basiclti-common/src/java/org/sakaiproject/basiclti/util/SakaiBLTIUtil.java	Mon Mar 16 14:17:32 2015 -0500
-+++ b/src/basiclti/basiclti-common/src/java/org/sakaiproject/basiclti/util/SakaiBLTIUtil.java	Mon Apr 27 13:39:02 2015 -0500
++++ b/src/basiclti/basiclti-common/src/java/org/sakaiproject/basiclti/util/SakaiBLTIUtil.java	Thu Jun 11 13:15:58 2015 -0500
 @@ -85,6 +85,15 @@
  import net.oauth.SimpleOAuthValidator;
  import net.oauth.signature.OAuthSignatureMethod;
@@ -463,6 +467,15 @@ diff -r 87b68247025e src/basiclti/basiclti-common/src/java/org/sakaiproject/basi
  
  				M_log.info("Stored Score=" + siteId + " assignment="+ assignment + " user_id=" + user_id + " score="+ theGrade);
  				message = "Result replaced";
+@@ -1300,7 +1388,7 @@
+ 		String [] fieldList = { "key", LTIService.LTI_SECRET, LTIService.LTI_PLACEMENTSECRET, 
+ 				LTIService.LTI_OLDPLACEMENTSECRET, LTIService.LTI_ALLOWSETTINGS, 
+ 				"assignment", LTIService.LTI_ALLOWROSTER, "releasename", "releaseemail", 
+-				"toolsetting", "allowlori"};
++				"releasestatus", "releaseproviders", "toolsetting", "allowlori"};
+ 
+ 		Properties retval = new Properties();
+ 
 @@ -1517,5 +1605,22 @@
          SecurityService.popAdvisor();
      }
@@ -488,7 +501,7 @@ diff -r 87b68247025e src/basiclti/basiclti-common/src/java/org/sakaiproject/basi
 +}
 diff -r 87b68247025e src/basiclti/basiclti-portlet/src/bundle/basiclti.properties
 --- a/src/basiclti/basiclti-portlet/src/bundle/basiclti.properties	Mon Mar 16 14:17:32 2015 -0500
-+++ b/src/basiclti/basiclti-portlet/src/bundle/basiclti.properties	Mon Apr 27 13:39:02 2015 -0500
++++ b/src/basiclti/basiclti-portlet/src/bundle/basiclti.properties	Thu Jun 11 13:15:58 2015 -0500
 @@ -1,9 +1,9 @@
  lti.forward = Press to start external tool
  noiframes = Your browser does not support iframes.
@@ -503,7 +516,7 @@ diff -r 87b68247025e src/basiclti/basiclti-portlet/src/bundle/basiclti.propertie
  edit.clear.prefs = Clear Stored Preferences
 diff -r 87b68247025e src/basiclti/basiclti-portlet/src/java/org/sakaiproject/portlets/IMSBLTIPortlet.java
 --- a/src/basiclti/basiclti-portlet/src/java/org/sakaiproject/portlets/IMSBLTIPortlet.java	Mon Mar 16 14:17:32 2015 -0500
-+++ b/src/basiclti/basiclti-portlet/src/java/org/sakaiproject/portlets/IMSBLTIPortlet.java	Mon Apr 27 13:39:02 2015 -0500
++++ b/src/basiclti/basiclti-portlet/src/java/org/sakaiproject/portlets/IMSBLTIPortlet.java	Thu Jun 11 13:15:58 2015 -0500
 @@ -239,7 +239,7 @@
  						text.append("</script>\n");
  					}
@@ -642,7 +655,7 @@ diff -r 87b68247025e src/basiclti/basiclti-portlet/src/java/org/sakaiproject/por
 +}
 diff -r 87b68247025e src/basiclti/basiclti-portlet/src/webapp/edit.jsp
 --- a/src/basiclti/basiclti-portlet/src/webapp/edit.jsp	Mon Mar 16 14:17:32 2015 -0500
-+++ b/src/basiclti/basiclti-portlet/src/webapp/edit.jsp	Mon Apr 27 13:39:02 2015 -0500
++++ b/src/basiclti/basiclti-portlet/src/webapp/edit.jsp	Thu Jun 11 13:15:58 2015 -0500
 @@ -60,6 +60,10 @@
  
  Boolean allowContentLink = (Boolean) rReq.getAttribute("allowContentLink");
@@ -695,7 +708,7 @@ diff -r 87b68247025e src/basiclti/basiclti-portlet/src/webapp/edit.jsp
  <select name="imsti.assignment">
 diff -r 87b68247025e src/basiclti/basiclti-util/src/java/org/imsglobal/basiclti/BasicLTIUtil.java
 --- a/src/basiclti/basiclti-util/src/java/org/imsglobal/basiclti/BasicLTIUtil.java	Mon Mar 16 14:17:32 2015 -0500
-+++ b/src/basiclti/basiclti-util/src/java/org/imsglobal/basiclti/BasicLTIUtil.java	Mon Apr 27 13:39:02 2015 -0500
++++ b/src/basiclti/basiclti-util/src/java/org/imsglobal/basiclti/BasicLTIUtil.java	Thu Jun 11 13:15:58 2015 -0500
 @@ -595,6 +595,57 @@
  		text.append("}\n");
  		text.append("</script>\n");
