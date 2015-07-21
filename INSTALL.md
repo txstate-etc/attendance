@@ -12,15 +12,14 @@ Attendance Install
 * rvm
 * ruby 1.9.3 in rvm
 * passenger
-* mercurial (for pulling down our source code)
-* our source code: https://projects.its.txstate.edu/hg/attendance
+* git (for pulling down our source code)
+* our source code: https://github.com/txstate-etc/attendance.git
 
 # configuration
 * set apache and mysql to run at boot
 * add user 'rubyapps'. All ruby apps will run from his home dir, with his instance of rvm. apache user needs access to his home dir.
 * put ssh public key for builder in /home/rubyapps/.ssh/authorized_keys so that builder can run the deploy script
    (put any other keys here for others to run the deploy script as well)
-* put user/password for mercurial access in /home/rubyapps/.hgrc
 * after checking out the attendance source, create tmp directory
 * mysql root pw: (in /home/rubyapps/mysqlpw)
 * mysql: create database 'attendance_staging', user 'attendance' with full privileges on that db, pw: (in /home/rubyapps/mysqlpw)
@@ -70,7 +69,6 @@ Attendance Install
   rvm --default use 1.9.3-p392
   rvm gemset create attendance
 
-  nano .hgrc # set up auth params. see below
   mkdir -p /home/rubyapps/attendance/shared/tmp/sessions
   mkdir -p /home/rubyapps/attendance/shared/config/initializers
   nano /home/rubyapps/attendance/shared/config/initializers/auth.rb (see below)
@@ -193,12 +191,6 @@ Attendance Install
     SSLCertificateKeyFile /home/rubyapps/ssl/private.key
     SSLCertificateChainFile /home/rubyapps/ssl/DigiCertCA.crt       
   </VirtualHost>
-
-# /home/rubyapps/.hgrc
-  [auth]
-  txst.prefix = https://projects.its.txstate.edu/hg/
-  txst.username = its-cms-autotest
-  txst.password = <password>    
 
 # /home/rubyapps/attendance/shared/config/initializers/auth.rb
   MYSQL_USER = 'attendance' unless defined? MYSQL_USER
