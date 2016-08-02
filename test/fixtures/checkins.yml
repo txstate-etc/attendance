@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  userattendance: 
+  time: 2016-08-01 19:00:15
+  source: MyString
+
+two:
+  userattendance: 
+  time: 2016-08-01 19:00:15
+  source: MyString

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150211214345) do
+ActiveRecord::Schema.define(:version => 20160802174317) do
 
   create_table "attendancetypes", :force => true do |t|
     t.string  "name"
@@ -38,6 +38,14 @@ ActiveRecord::Schema.define(:version => 20150211214345) do
   end
 
   add_index "binaries", ["sha1"], :name => "index_binaries_on_sha1"
+
+  create_table "checkins", :force => true do |t|
+    t.integer  "userattendance_id"
+    t.datetime "time"
+    t.string   "source"
+  end
+
+  add_index "checkins", ["userattendance_id"], :name => "index_checkins_on_userattendance_id"
 
   create_table "gradesettings", :force => true do |t|
     t.integer "site_id"
@@ -138,6 +146,7 @@ ActiveRecord::Schema.define(:version => 20150211214345) do
     t.string  "users_hash"
   end
 
+  add_index "sections", ["name"], :name => "index_sections_on_name"
   add_index "sections", ["site_id"], :name => "index_sections_on_site_id"
 
   create_table "sessions", :force => true do |t|

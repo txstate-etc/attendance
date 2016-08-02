@@ -37,6 +37,8 @@ Attendance::Application.routes.draw do
 
   resources :roles
 
+  resources :checkin, only: [:create]
+
   resources :static, :controller => 'pages', :only => [:show]
 
   match '/lti_tool' => 'launch#index', :via => :post

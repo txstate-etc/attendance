@@ -3,6 +3,8 @@ class Userattendance < ActiveRecord::Base
   belongs_to :meeting, :inverse_of => :userattendances
   belongs_to :attendancetype, :inverse_of => :userattendances
 
+  has_many :checkins, dependent: :destroy, inverse_of: :userattendance, after_add: :update_checkin
+
   after_save {|ua| Gradeupdate.register_change(ua.membership.id) if ua.membership.site.outcomes_url}
     
   self.primary_keys = [:meeting_id, :membership_id]
@@ -26,5 +28,10 @@ class Userattendance < ActiveRecord::Base
   
   def membership
     @cached_membership || super
+  end
+
+  def update_checkin(checkin)
+    self.attendancetype = Attendancetype.find_by_name('present')
+    self.save
   end
 end
