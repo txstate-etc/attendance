@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  site: 
+  auto_enabled: false
+  tardy_after: 1
+  absent_after: 1
+
+two:
+  site: 
+  auto_enabled: false
+  tardy_after: 1
+  absent_after: 1

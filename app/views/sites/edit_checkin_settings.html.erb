@@ -1,0 +1,32 @@
+<% content_for(:head) do %>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+<% end %>
+<h2 class="page_header">
+  <%=t 'checkin_settings.title', site_title: @site.context_name %>
+</h2>
+<div class="navigation_link_back"><%= link_to "< #{t('general.back')}", session[:return_to] %></div>
+<% if notice %>
+    <p id="notice"><%= notice %></p>
+<% end %>
+
+<%= form_for(@site, :url => {:action => :update_checkin_settings}, :method => :post, :html => {:id => 'update_checkin_settings', :class => 'update_checkin_settings'}) do |f| %>
+    <div class="settings-group">
+      <%= f.fields_for :checkinsettings, @settings do |settings| %>
+        <div>
+          <%= settings.check_box :auto_enabled %>
+          <label for="site_checkinsettings_attributes_auto_enabled"><%= t('checkin_settings.auto_enabled') %></label>
+        </div>
+        <div>
+          <label for="site_checkinsettings_attributes_tardy_after">
+            Mark as tardy after <%= settings.text_field :tardy_after, title: 'Tardy threshold', size: 2 %> minutes.
+          </label>
+        </div>
+        <div>
+          <label for="site_checkinsettings_attributes_absent_after">
+            Mark as absent after <%= settings.text_field :absent_after, title: 'Absent threshold', size: 2 %> minutes.
+          </label>
+        </div>
+      <% end %>
+    </div>
+    <%= f.submit %>
+<% end %>

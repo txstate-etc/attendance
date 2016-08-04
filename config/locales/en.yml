@@ -5,6 +5,7 @@ en:
   buttons:
     add_session: "Add Session"
     change_section: "Change Section"
+    checkin_settings: "Checkin Settings"
     configure_roles: "Configure Roles"
     download_csv: "Download CSV"
     grade_settings: "Grade Settings"
@@ -13,6 +14,10 @@ en:
     show_cancelled: "Show Cancelled"
     update_site: "Update Site"
     view_totals: "View Totals"
+
+  checkin_settings:
+    auto_enabled: "Enable automated attendance tracking using card readers"
+    title: "Checkin settings for %{site_title}"
 
   general:
     back: "Back"
@@ -25,6 +30,7 @@ en:
     auto_max_expl: "(total uncancelled past sessions - # of forgiven absences)"
     auto_max_points: "Set maximum points to number of graded sessions"
     give_partial: "Give partial credit for a late"
+    late: "Late"
     max_points: "Maximum Points"
     score_prop: "score proportionally"
     set_max_points: "Set maximum points to"

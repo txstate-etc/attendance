@@ -14,6 +14,9 @@
   <% if @section.site.outcomes_url && @auth_user.edit_gradesettings?(@section.site) %>
     <%= link_to t('buttons.grade_settings'), edit_settings_site_path(@section.site), :class => 'linkbutton lessimportant' %>
   <% end %>
+  <% if @auth_user.edit_gradesettings?(@section.site) %>
+    <%= link_to t('buttons.checkin_settings'), edit_checkin_settings_site_path(@section.site), class: 'linkbutton lessimportant' %>
+  <% end %>
   <% if @auth_user.set_permissions?(@section.site) %>
     <%= link_to t('buttons.configure_roles'), edit_perms_site_path(@section.site), :class => 'linkbutton lessimportant' %>
   <% end %>

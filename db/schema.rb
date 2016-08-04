@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160802174317) do
+ActiveRecord::Schema.define(:version => 20160804064517) do
 
   create_table "attendancetypes", :force => true do |t|
     t.string  "name"
@@ -46,6 +46,17 @@ ActiveRecord::Schema.define(:version => 20160802174317) do
   end
 
   add_index "checkins", ["userattendance_id"], :name => "index_checkins_on_userattendance_id"
+
+  create_table "checkinsettings", :force => true do |t|
+    t.integer  "site_id"
+    t.boolean  "auto_enabled", :default => true, :null => false
+    t.integer  "tardy_after",  :default => 15,   :null => false
+    t.integer  "absent_after", :default => 30,   :null => false
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+  end
+
+  add_index "checkinsettings", ["site_id"], :name => "index_checkinsettings_on_site_id"
 
   create_table "gradesettings", :force => true do |t|
     t.integer "site_id"
@@ -183,7 +194,7 @@ ActiveRecord::Schema.define(:version => 20160802174317) do
 
   add_index "sites", ["context_id"], :name => "index_sites_on_context_id"
 
-  create_table "userattendances", :id => false, :force => true do |t|
+  create_table "userattendances", :force => true do |t|
     t.integer  "meeting_id",        :default => 0, :null => false
     t.integer  "membership_id",                    :null => false
     t.integer  "attendancetype_id", :default => 0, :null => false
@@ -191,6 +202,7 @@ ActiveRecord::Schema.define(:version => 20160802174317) do
   end
 
   add_index "userattendances", ["attendancetype_id"], :name => "index_meetings_users_on_attendancetype_id"
+  add_index "userattendances", ["meeting_id", "membership_id"], :name => "index_userattendances_on_meeting_id_and_membership_id", :unique => true
   add_index "userattendances", ["meeting_id"], :name => "index_meetings_users_on_meeting_id"
   add_index "userattendances", ["membership_id"], :name => "index_userattendances_on_membership_id"
 

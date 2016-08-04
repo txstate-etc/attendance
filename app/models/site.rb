@@ -1,5 +1,5 @@
 class Site < ActiveRecord::Base
-  attr_accessible :context_id, :context_label, :context_name, :siteroles_attributes, :outcomes_url, :points_url
+  attr_accessible :context_id, :context_label, :context_name, :siteroles_attributes, :outcomes_url, :points_url, :checkinsettings_attributes
   
   has_many :memberships, :inverse_of => :site, :dependent => :destroy
   has_many :sections, :inverse_of => :site, :dependent => :destroy
@@ -7,8 +7,9 @@ class Site < ActiveRecord::Base
   has_many :roles, :through => :siteroles
   has_many :users, :through => :memberships
   has_one :gradesettings, :inverse_of => :site, :dependent => :destroy
+  has_one :checkinsettings, inverse_of: :site, dependent: :destroy
   
-  accepts_nested_attributes_for :siteroles
+  accepts_nested_attributes_for :siteroles, :checkinsettings
   
   before_create :roster_fetched_at_init
   

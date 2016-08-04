@@ -30,6 +30,16 @@ class SitesController < ApplicationController
     end
   end
 
+  # TODO: merge with grade settings
+  def edit_checkin_settings
+    @site ||= Site.find(params[:id])
+    @settings = Checkinsettings.find_or_create_by_site_id(params[:id])
+    set_return_to
+    respond_to do |format|
+      format.html # edit_checkin_settings.html.erb
+    end
+  end
+
   def update_settings
     @site ||= Site.find(params[:id])
     @settings = Gradesettings.find_by_site_id(params[:id])
@@ -72,6 +82,17 @@ class SitesController < ApplicationController
       redirect_to edit_settings_site_path(@site), notice: 'There was a problem updating settings.'
     end
   end
+
+  def update_checkin_settings
+    @site ||= Site.find(params[:id])
+    @settings = Checkinsettings.find_by_site_id(params[:id])
+    session[:return_to] ||= request.referer
+    if @site.update_attributes(params[:site])
+      redirect_to edit_checkin_settings_site_path(@site), notice: 'Settings were successfully updated.'
+    else
+      redirect_to edit_checkin_settings_site_path(@site), notice: 'There was a problem updating settings.'
+    end
+  end
   
   def edit_perms
     @site ||= Site.find(params[:id])
@@ -97,7 +118,7 @@ class SitesController < ApplicationController
     referer_path = URI(request.referer).path
     route = Rails.application.routes.recognize_path(referer_path) rescue nil
     return if route.nil?
-    session[:return_to] = request.referer if !['edit_perms', 'update_perms', 'edit_settings', 'update_settings'].include?(route[:action])
+    session[:return_to] = request.referer if !['edit_perms', 'update_perms', 'edit_settings', 'update_settings', 'edit_checkin_settings', 'update_checkin_settings'].include?(route[:action])
     session[:return_to] ||= :back
   end
 private
@@ -110,7 +131,7 @@ private
     end if ['edit_perms', 'update_perms'].include?(action_name)
     return super do
       params[:id].to_i == session[:site_id].to_i && @auth_user.edit_gradesettings?(params[:id])
-    end if ['edit_settings', 'update_settings'].include?(action_name)
+    end if ['edit_settings', 'update_settings', 'edit_checkin_settings', 'update_checkin_settings'].include?(action_name)
     return super
   end
 end
