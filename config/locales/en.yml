@@ -11,6 +11,7 @@ en:
     grade_settings: "Grade Settings"
     print_page: "Print Page"
     save: "Save"
+    site_settings: "Settings"
     show_cancelled: "Show Cancelled"
     update_site: "Update Site"
     view_totals: "View Totals"
@@ -59,6 +60,9 @@ en:
     no_sessions: "There are no sessions yet. Please click '%{add_session}' above to create one."
     remove_user: "Remove User"
     role: "Role"
+
+  settings:
+    title: "Settings for %{site_title}"
 
   static:
     error_401:

@@ -22,7 +22,6 @@ class SitesController < ApplicationController
 
   def edit_settings
     @site ||= Site.find(params[:id])
-    @settings = Gradesettings.find_or_create_by_site_id(params[:id])
     @multiple_sections = @site.sections.reject { |s| s.name == "Unassigned" }.count > 1
     set_return_to
     respond_to do |format|
@@ -30,67 +29,18 @@ class SitesController < ApplicationController
     end
   end
 
-  # TODO: merge with grade settings
-  def edit_checkin_settings
-    @site ||= Site.find(params[:id])
-    @settings = Checkinsettings.find_or_create_by_site_id(params[:id])
-    set_return_to
-    respond_to do |format|
-      format.html # edit_checkin_settings.html.erb
-    end
-  end
-
   def update_settings
     @site ||= Site.find(params[:id])
-    @settings = Gradesettings.find_by_site_id(params[:id])
-    session[:return_to] ||= request.referer
-    tardy_value = Integer(params[:gradesettings_tardy_value]) rescue -1
-    tardy_per_absence = Integer(params[:gradesettings_tardy_per_absence]) rescue -1
-    forgiven_absences = Integer(params[:gradesettings_forgiven_absences]) rescue -1
-    deduction = Integer(params[:gradesettings_deduction] || 0) rescue -1
-    max_points = Integer(params[:gradesettings_max_points]) rescue -1
-    points_type = params[:gradesettings_points_type]
-
-    redirect_to edit_settings_site_path(@site), notice: 'Deduction per absence must be a non-negative integer between 0 and 100' and return if deduction < 0 || deduction > 100
-    redirect_to edit_settings_site_path(@site), notice: 'Tardy value must be an integer between 0 and 100' and return if params[:gradesettings_tardy_per_absence].nil? && tardy_value < 0 || tardy_value > 100
-    redirect_to edit_settings_site_path(@site), notice: 'Number of forgiven absences must be a non-negative integer' and return if forgiven_absences < 0
-    redirect_to edit_settings_site_path(@site), notice: 'Tardy per absence must be a non-negative integer' and return if params[:gradesettings_tardy_value].nil? && tardy_per_absence < 0
-    redirect_to edit_settings_site_path(@site), notice: 'Max points must be a positive integer' and return if points_type == 'free' && max_points <= 0
-
-    auto_max_points = points_type == 'count'
-    old_auto_max_points = @settings.auto_max_points
-    old_max_points = @settings.max_points
-    @settings.auto_max_points = auto_max_points
-    @settings.max_points = max_points if !auto_max_points
-
-    tardy_value = 100 if tardy_value == -1
-    tardy_per_absence = 0 if tardy_per_absence == -1
-
-    @settings.tardy_value = tardy_value / 100.0
-    @settings.forgiven_absences = forgiven_absences
-    @settings.deduction = deduction / 100.0
-    @settings.tardy_per_absence = tardy_per_absence
-
-    if old_max_points != max_points || auto_max_points != old_auto_max_points || auto_max_points
-      success = Gradeupdate.update_max_points(@settings)
-      redirect_to edit_settings_site_path(@site), notice: 'Failed to update max points, please try again later' and return if !success
-    end
-
-    if @settings.save
-      redirect_to edit_settings_site_path(@site), notice: 'Settings were successfully updated.'
-    else
-      redirect_to edit_settings_site_path(@site), notice: 'There was a problem updating settings.'
-    end
-  end
-
-  def update_checkin_settings
-    @site ||= Site.find(params[:id])
-    @settings = Checkinsettings.find_by_site_id(params[:id])
+    params['site']['gradesettings_attributes']['deduction'] ||= 0
+    params['site']['gradesettings_attributes']['tardy_per_absence'] ||= 0
+    params['site']['gradesettings_attributes']['tardy_value'] ||= 100
     session[:return_to] ||= request.referer
     if @site.update_attributes(params[:site])
-      redirect_to edit_checkin_settings_site_path(@site), notice: 'Settings were successfully updated.'
+      redirect_to session[:return_to], notice: 'Settings were successfully updated.'
     else
-      redirect_to edit_checkin_settings_site_path(@site), notice: 'There was a problem updating settings.'
+      respond_to do |format|
+        format.html { render action: 'edit_settings' }
+      end
     end
   end
   

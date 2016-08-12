@@ -1,5 +1,5 @@
 class Site < ActiveRecord::Base
-  attr_accessible :context_id, :context_label, :context_name, :siteroles_attributes, :outcomes_url, :points_url, :checkinsettings_attributes
+  attr_accessible :context_id, :context_label, :context_name, :siteroles_attributes, :outcomes_url, :points_url, :checkinsettings_attributes, :gradesettings_attributes
   
   has_many :memberships, :inverse_of => :site, :dependent => :destroy
   has_many :sections, :inverse_of => :site, :dependent => :destroy
@@ -9,9 +9,17 @@ class Site < ActiveRecord::Base
   has_one :gradesettings, :inverse_of => :site, :dependent => :destroy
   has_one :checkinsettings, inverse_of: :site, dependent: :destroy
   
-  accepts_nested_attributes_for :siteroles, :checkinsettings
+  accepts_nested_attributes_for :siteroles, :gradesettings, :checkinsettings
   
   before_create :roster_fetched_at_init
+
+  def gradesettings
+    super || Gradesettings.find_or_create_by_site_id(id)
+  end
+
+  def checkinsettings
+    super || Checkinsettings.find_or_create_by_site_id(id)
+  end
   
   def self.from_launch_params(params)
     site = Site.find_or_initialize_by_context_id(params['context_id'])

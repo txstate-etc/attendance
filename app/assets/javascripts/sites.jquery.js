@@ -194,22 +194,30 @@ jQuery(document).ready(function ($) {
 
   $('input[name="gradesettings_score_type"]:radio').change(function(){
     if ($('#gradesettings_score_deduct').is(':checked')) {
-      $('#gradesettings_deduction').prop('disabled', false);
+      $('#site_gradesettings_attributes_deduction').prop('disabled', false);
     } else {
-      $('#gradesettings_deduction').val(0);
-      $('#gradesettings_deduction').prop('disabled', true);
+      $('#site_gradesettings_attributes_deduction').val(0);
+      $('#site_gradesettings_attributes_deduction').prop('disabled', true);
     }
   });
 
   $('input[name="gradesettings_late"]:radio').change(function(){
     if ($('#gradesettings_late_partial').is(':checked')) {
-      $('#gradesettings_tardy_value').prop('disabled', false);
-      $('#gradesettings_tardy_per_absence').val(0);
-      $('#gradesettings_tardy_per_absence').prop('disabled', true);
+      $('#site_gradesettings_attributes_tardy_value').prop('disabled', false);
+      $('#site_gradesettings_attributes_tardy_per_absence').val(0);
+      $('#site_gradesettings_attributes_tardy_per_absence').prop('disabled', true);
     } else {
-      $('#gradesettings_tardy_per_absence').prop('disabled', false);
-      $('#gradesettings_tardy_value').val(100);
-      $('#gradesettings_tardy_value').prop('disabled', true);
+      $('#site_gradesettings_attributes_tardy_per_absence').prop('disabled', false);
+      $('#site_gradesettings_attributes_tardy_value').val(100);
+      $('#site_gradesettings_attributes_tardy_value').prop('disabled', true);
+    }
+  });
+
+  $('input[name="site[gradesettings_attributes][auto_max_points]"]').change(function() {
+    if ($('#site_gradesettings_attributes_auto_max_points_true').is(':checked')) {
+      $('#site_gradesettings_attributes_max_points').prop('disabled', true);
+    } else {
+      $('#site_gradesettings_attributes_max_points').prop('disabled', false);
     }
   });
 });
