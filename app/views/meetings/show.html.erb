@@ -26,6 +26,11 @@
 <% unless @meeting.active %>
   This session has been cancelled.  Re-activate it to record attendance.
 <% else %>
+  <div>
+    Checkin code: <span id="checkin-code"><%= @meeting.checkin_code %></span>
+    <button type="button" data-action="/meetings/<%= @meeting.id %>/code?remove=1" id="remove-code">Remove</button>
+    <button type="button" data-action="/meetings/<%= @meeting.id %>/code" id="new-code">New</button>
+  </div>
   <%= form_for(@meeting, :url => {:action => 'record_attendance'}, :method => :post, :html => {:id => 'meeting_attendance', :class => 'meeting_attendance'}) do |f| %>
     <table class="attendancetypes">
     <thead>

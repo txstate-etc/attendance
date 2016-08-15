@@ -135,12 +135,27 @@ class MeetingsController < ApplicationController
     end
   end
 
+  def code
+    @meeting ||= Meeting.find(params[:id])
+    if params[:remove] == '1'
+      @meeting.checkin_code = nil
+    else
+      @meeting.checkin_code = (0..5).map{[*'a'..'z',*1..9].sample}.join
+    end
+
+    if @meeting.save
+      render json: @meeting, status: 200
+    else
+      render json: @meeting.errors, status: :unprocessable_entity
+    end
+  end
+
 private
   def authorize
     return super do
       site_id = (@meeting = Meeting.find(params[:id])).section.site.id
       site_id == session[:site_id] && @auth_user.take_attendance?(site_id)
-    end if ['record_attendance', 'edit', 'show', 'update', 'destroy'].include?(action_name)
+    end if ['record_attendance', 'edit', 'show', 'update', 'destroy', 'code'].include?(action_name)
     return super do
       site_id = Section.find(params[:section_id]).site.id
       site_id == session[:site_id] && @auth_user.take_attendance?(site_id)

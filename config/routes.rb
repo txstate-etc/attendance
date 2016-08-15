@@ -4,6 +4,7 @@ Attendance::Application.routes.draw do
   resources :meetings, only: [:show, :edit, :update, :destroy] do
     member do
       post 'record_attendance'
+      post 'code'
     end
   end
 
@@ -40,6 +41,7 @@ Attendance::Application.routes.draw do
   resources :roles
 
   resources :checkin, only: [:create]
+  match '/checkin/code' => 'checkin#code'
 
   resources :static, :controller => 'pages', :only => [:show]
 

@@ -69,4 +69,27 @@ jQuery(document).ready( function ($) {
 		$(ipt).closest('td').css('background-color', attendancetype_colors[ipt.value]);
 	});
 
+  $('#new-code').click(function() {
+    var url = $('#new-code').data('action');
+    $.post_that_times_out(url, {}, function(data) {
+      $('#checkin-code').text(data.checkin_code);
+      $('#remove-code').show();
+    }).fail(function() {
+      alert('failed');
+    }, 10000);
+  });
+
+  $('#remove-code').click(function() {
+    var url = $('#remove-code').data('action');
+    $.post_that_times_out(url, {}, function(data) {
+      $('#checkin-code').text('');
+      $('#remove-code').hide();
+    }).fail(function() {
+      alert('failed');
+    });
+  });
+
+  if ($('#checkin-code').text().length < 1) {
+    $('#remove-code').hide();
+  }
 });

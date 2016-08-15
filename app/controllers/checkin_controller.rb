@@ -2,11 +2,11 @@ class CheckinController < ApplicationController
 
   def create
     user = User.find_by_netid(params['netid'])
-    render nothing: true, status: 204 and return unless user
+    head :no_content and return unless user
     section = Membership.find_by_user_id(user).sections.find_by_name(params['providerId'])
-    render nothing: true, status: 204 and return unless section
+    head :no_content and return unless section
     settings = Checkinsettings.find_or_create_by_site_id(section.site)
-    render nothing: true, status: 204 and return unless settings.auto_enabled
+    head :no_content and return unless settings.auto_enabled
 
     membership = section.memberships.find_by_user_id(user)
     meeting = section.meetings
@@ -15,15 +15,29 @@ class CheckinController < ApplicationController
 
     ua = meeting.userattendances.find_by_membership_id(membership)
     if ua.checkins.empty?
-      checkin = ua.checkins.create({source: params['source'], time: Time.at(params['time']/1000)})
+      ua.checkins.create({source: params['source'], time: Time.at(params['time']/1000)})
     end
 
-    render nothing: true, status: 204
+    head :no_content
+  end
+
+  def code
+    @ua ||= Userattendance.find(params[:ua])
+
+    head :no_content unless @ua.checkins.empty?
+    render 'invalid code', status: :bad_request and return unless @ua.meeting.checkin_code == params[:code]
+
+    @ua.checkins.create({source: 'code', time: Time.now})
+    head :no_content
   end
 
   # TODO: add authentication
   private
   def authorize
+    return super do
+      @ua ||= Userattendance.find(params[:id])
+      @auth_user.id  == @ua.membership.user_id
+    end if ['code'].include?(action_name)
     return true
   end
 end

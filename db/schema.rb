@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160804064517) do
+ActiveRecord::Schema.define(:version => 20160812224043) do
 
   create_table "attendancetypes", :force => true do |t|
     t.string  "name"
@@ -87,6 +87,7 @@ ActiveRecord::Schema.define(:version => 20160804064517) do
     t.datetime "updated_at",                        :null => false
     t.integer  "section_id",                        :null => false
     t.boolean  "future_meeting", :default => false, :null => false
+    t.string   "checkin_code"
   end
 
   add_index "meetings", ["deleted", "cancelled"], :name => "index_meetings_on_site_id_and_deleted_and_cancelled"
