@@ -19,4 +19,12 @@ class Checkinsettings < ActiveRecord::Base
   def tardy_after_lte_absent_after
     errors.add(:tardy_after, 'Tardy after must be less than or equal to absent after') if tardy_after > absent_after
   end
+
+  after_update { |settings|
+    if settings.absent_after_changed? || settings.tardy_after_changed?
+      Userattendance.includes(:checkins, membership: {site: :checkinsettings}, meeting: :section)
+        .where(sections: {site_id: settings.site})
+        .each(&:update_checkin)
+    end
+  }
 end

@@ -29,17 +29,18 @@ class Userattendance < ActiveRecord::Base
   end
 
   def update_checkin(mycheckin = nil)
-    mycheckin ||= self.checkin
-    settings = Checkinsettings.find_or_create_by_site_id(self.membership.site)
+    return if self.checkins.empty?
+    checkin = self.checkins.first
+    settings = self.membership.site.checkinsettings
 
-    if (self.meeting.starttime + settings.tardy_after.minutes) > mycheckin.time
-      self.attendancetype = Attendancetype.find_by_name('present')
-    elsif (self.meeting.starttime + settings.absent_after.minutes) > mycheckin.time
-      self.attendancetype = Attendancetype.find_by_name('late')
+    if (self.meeting.starttime + settings.tardy_after.minutes) > checkin.time
+      self.attendancetype = Attendancetype.getall.select{|a| a.name == 'Present'}.first
+    elsif (self.meeting.starttime + settings.absent_after.minutes) > checkin.time
+      self.attendancetype = Attendancetype.getall.select{|a| a.name == 'Late'}.first
     else
-      self.attendancetype = Attendancetype.find_by_name('absent')
+      self.attendancetype = Attendancetype.getall.select{|a| a.name == 'Absent'}.first
     end
 
-    self.save
+    self.save if self.attendancetype_id_changed?
   end
 end
