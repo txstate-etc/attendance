@@ -36,8 +36,9 @@ class CheckinController < ApplicationController
   def authorize
     return super do
       @ua ||= Userattendance.find(params[:id])
-      @auth_user.id  == @ua.membership.user_id
+      @auth_user.id == @ua.membership.user_id
     end if ['code'].include?(action_name)
-    return true
+    return true if request.authorization == Attendance::Application.config.checkin_token
+    return super
   end
 end
