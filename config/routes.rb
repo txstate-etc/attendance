@@ -40,7 +40,7 @@ Attendance::Application.routes.draw do
 
   resources :roles
 
-  resources :checkin, only: [:create]
+  match '/checkin/section' => 'checkin#section'
   match '/checkin/code' => 'checkin#code'
 
   resources :static, :controller => 'pages', :only => [:show]

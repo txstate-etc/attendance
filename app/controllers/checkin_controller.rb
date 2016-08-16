@@ -1,6 +1,6 @@
 class CheckinController < ApplicationController
 
-  def create
+  def section
     user = User.find_by_netid(params['netid'])
     head :no_content and return unless user
     section = Membership.find_by_user_id(user).sections.find_by_name(params['providerId'])
