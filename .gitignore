@@ -8,6 +8,7 @@ tmproj
 auth\.rb
 secret_token\.rb
 oauth_secret\.rb
+checkin_token\.rb
 dump.attendance.sql
 config/environments/production.rb
 config/environments/staging.rb
