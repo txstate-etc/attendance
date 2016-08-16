@@ -31,9 +31,11 @@ class SitesController < ApplicationController
 
   def update_settings
     @site ||= Site.find(params[:id])
-    params['site']['gradesettings_attributes']['deduction'] ||= 0
-    params['site']['gradesettings_attributes']['tardy_per_absence'] ||= 0
-    params['site']['gradesettings_attributes']['tardy_value'] ||= 100
+    unless params['site']['gradesettings_attributes'].nil?
+      params['site']['gradesettings_attributes']['deduction'] ||= 0
+      params['site']['gradesettings_attributes']['tardy_per_absence'] ||= 0
+      params['site']['gradesettings_attributes']['tardy_value'] ||= 100
+    end
     session[:return_to] ||= request.referer
     if @site.update_attributes(params[:site])
       redirect_to session[:return_to], notice: 'Settings were successfully updated.'
