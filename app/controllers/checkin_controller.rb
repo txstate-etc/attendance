@@ -21,23 +21,10 @@ class CheckinController < ApplicationController
     head :no_content
   end
 
-  def code
-    @ua ||= Userattendance.find(params[:ua])
-
-    head :no_content unless @ua.checkins.empty?
-    render 'invalid code', status: :bad_request and return unless @ua.meeting.checkin_code == params[:code]
-
-    @ua.checkins.create({source: 'code', time: Time.now})
-    head :no_content
-  end
 
   # TODO: add authentication
   private
   def authorize
-    return super do
-      @ua ||= Userattendance.find(params[:id])
-      @auth_user.id == @ua.membership.user_id
-    end if ['code'].include?(action_name)
     return true if request.authorization == Attendance::Application.config.checkin_token
     return super
   end

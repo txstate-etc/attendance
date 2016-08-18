@@ -1,5 +1,15 @@
 module UsersHelper
   def intro_page_for_site(site, user)
+    unless user.take_attendance?(site)
+      ua = Userattendance.joins(:membership, meeting: :section)
+        .where(sections: {site_id: site})
+        .where('meetings.checkin_code is not null')
+        .where(memberships: {user_id: user})
+        .first
+
+      return enter_code_userattendance_path(ua) unless ua.nil? || !ua.checkins.empty?
+    end
+
     return site_path(site) if user.sections_to_choose(site).count > 1
     section = user.sections_to_choose(site).first
     return intro_page_for_section(section, user) if !section.nil?
