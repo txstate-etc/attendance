@@ -44,10 +44,11 @@ end
 #
 
 set :application, "attendance"
-set :repository,  "https://projects.its.txstate.edu/hg/#{application}"
+set :repository,  "https://github.com/txstate-etc/#{application}"
+set :branch, ENV['BRANCH'] if ENV['BRANCH']
 set :user, "rubyapps"
 set :deploy_to, "/home/#{user}/#{application}"
-set :scm, :mercurial
+set :scm, :git
 set :use_sudo, false
 
 
