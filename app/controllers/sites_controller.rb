@@ -38,12 +38,11 @@ class SitesController < ApplicationController
     end
     session[:return_to] ||= request.referer
     if @site.update_attributes(params[:site])
-      redirect_to session[:return_to], notice: 'Settings were successfully updated.'
+      flash[:notice] = 'Settings were successfully updated.'
     else
-      respond_to do |format|
-        format.html { render action: 'edit_settings' }
-      end
+      flash[:notice] = nil
     end
+    render 'edit_settings'
   end
   
   def edit_perms
