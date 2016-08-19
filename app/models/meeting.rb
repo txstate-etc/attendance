@@ -58,7 +58,7 @@ class Meeting < ActiveRecord::Base
   def checkin_active?
     !checkin_code.blank? &&
       (Time.now + 15.minutes >= self.starttime) &&
-      (self.starttime + self.section.site.checkinsettings.absent_after.minutes < Time.now)
+      (self.starttime + self.section.site.checkinsettings.absent_after.minutes > Time.now)
   end
 
   def update_max_points

@@ -3,6 +3,7 @@ module UsersHelper
     unless user.take_attendance?(site)
       ua = Userattendance.joins(:membership, meeting: :section)
         .where(sections: {site_id: site})
+        .where(meetings: {deleted: false, cancelled: false})
         .where('meetings.checkin_code is not null')
         .where(memberships: {user_id: user})
         .first
