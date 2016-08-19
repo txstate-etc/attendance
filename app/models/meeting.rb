@@ -9,7 +9,14 @@ class Meeting < ActiveRecord::Base
   
   after_save :update_max_points, :update_grade
   before_save 'attendances_merged!', :set_future_meeting
-  
+  after_update do
+    if self.starttime_changed?
+      self.userattendances.joins(:checkins)
+        .includes(:checkins, membership: {site: :checkinsettings})
+        .each(&:update_checkin)
+    end
+  end
+
   def userattendances_hash
     if @ua_hash.nil?
       @ua_hash = {}
