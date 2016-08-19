@@ -69,7 +69,7 @@ class SitesController < ApplicationController
     referer_path = URI(request.referer).path
     route = Rails.application.routes.recognize_path(referer_path) rescue nil
     return if route.nil?
-    session[:return_to] = request.referer if !['edit_perms', 'update_perms', 'edit_settings', 'update_settings', 'edit_checkin_settings', 'update_checkin_settings'].include?(route[:action])
+    session[:return_to] = request.referer if !['edit_perms', 'update_perms', 'edit_settings', 'update_settings'].include?(route[:action])
     session[:return_to] ||= :back
   end
 private
