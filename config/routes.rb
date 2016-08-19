@@ -33,9 +33,10 @@ Attendance::Application.routes.draw do
       post 'record_attendance'
       get 'totals'
       get 'last_dates', :defaults => {:format => 'json'}
+      post 'checkin', constraints: {id: /[^\/]+/}
     end
   end
-
+  
   resources :rosterupdate, only: [:index, :create]
 
   resources :roles
@@ -46,8 +47,6 @@ Attendance::Application.routes.draw do
       post 'code'
     end
   end
-
-  match '/checkin/section' => 'checkin#section'
 
   resources :static, :controller => 'pages', :only => [:show]
 

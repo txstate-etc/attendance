@@ -237,6 +237,25 @@ class SectionsController < ApplicationController
     end
   end
 
+  def checkin
+    Section.find_all_by_name(params[:id]).each do |section|
+      next unless section.site.checkinsettings.auto_enabled
+      membership = section.memberships.joins(:user).where(users: {netid: params[:netid]}).first
+      next if membership.nil?
+
+      meeting = section.meetings
+                    .create_with(initial_atype: Attendancetype.find_by_name('absent'))
+                    .find_or_create_by_starttime(Time.at(params['sessionStart']/1000))
+
+      ua = meeting.userattendances.find_by_membership_id(membership)
+      if ua.checkins.empty?
+        ua.checkins.create({source: params['source'], time: Time.at(params['time']/1000)})
+      end
+    end
+
+    head :no_content
+  end
+
 private
   def authorize
     if ['record_attendance', 'show', 'totals', 'edit_perms', 'update_perms'].include?(action_name)
@@ -246,6 +265,7 @@ private
     return super do
       site_id == session[:site_id] && @auth_user.take_attendance?(site_id)
     end if ['record_attendance', 'show', 'totals'].include?(action_name)
+    return true if 'checkin' == action_name && request.authorization == Attendance::Application.config.checkin_token
     return super
   end
 
