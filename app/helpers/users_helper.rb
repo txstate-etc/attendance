@@ -1,11 +1,13 @@
 module UsersHelper
   def intro_page_for_site(site, user)
     unless user.take_attendance?(site)
-      ua = Userattendance.joins(:membership, meeting: :section)
+      ua = Userattendance.joins('left join `checkins` on userattendances.id = checkins.userattendance_id')
+        .joins(:membership, meeting: :section)
         .where(sections: {site_id: site})
         .where(meetings: {deleted: false, cancelled: false})
         .where('meetings.checkin_code is not null')
         .where(memberships: {user_id: user})
+        .where('checkins.id is null')
         .first
 
       return enter_code_userattendance_path(ua) unless ua.nil? || !ua.meeting.checkin_active?
