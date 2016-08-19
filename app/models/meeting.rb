@@ -48,6 +48,12 @@ class Meeting < ActiveRecord::Base
     return true
   end
 
+  def checkin_active?
+    !checkin_code.blank? &&
+      (Time.now + 15.minutes >= self.starttime) &&
+      (self.starttime + self.section.site.checkinsettings.absent_after.minutes < Time.now)
+  end
+
   def update_max_points
     return true if self.section.site.points_url.nil? || self.section.site.max_points_section.nil?
     return true if self.section.id != self.section.site.max_points_section.id

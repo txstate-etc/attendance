@@ -7,7 +7,7 @@ module UsersHelper
         .where(memberships: {user_id: user})
         .first
 
-      return enter_code_userattendance_path(ua) unless ua.nil? || !ua.checkins.empty?
+      return enter_code_userattendance_path(ua) unless ua.nil? || !ua.meeting.checkin_active?
     end
 
     return site_path(site) if user.sections_to_choose(site).count > 1
