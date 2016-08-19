@@ -1,36 +1,13 @@
-<% content_for(:head) do %>
-  <meta name="viewport" content="width=device-width, user-scalable=no">
-<% end %>
 <% content_for(:javascript) do %>
   var attendancetype_colors = {
     <%= @attendancetypes.map { |atype| "#{atype.id} : '#{atype.color.downcase}'" }.join(", ").html_safe %>
   };
 <% end %>
 
-<h2 class="page_header">
-  <%= @meeting.starttime.strftime('%B %-d, %Y - %l:%M%P') %> : <%= @meeting.section.useful_name %>
-</h2>
-<div class="navigation_link_back"><%= link_to "< #{t('general.back')}", @meeting.section %></div>
-<% if notice %>
-  <p id="notice"><%= notice %></p>
-<% end %>
-
-<% if use_mobile_template? %>
-  <div id="page-actions">
-    <% if use_mobile_template? %>
-      <%= link_to 'Edit Session', edit_meeting_path(@meeting), class: 'linkbutton' %>
-    <% end %>
-  </div>
-<% end %>
-
+<h3 class="edit-meeting-header">Record attendance for this session</h3>
 <% unless @meeting.active %>
   This session has been cancelled.  Re-activate it to record attendance.
 <% else %>
-  <div>
-    Checkin code: <span id="checkin-code"><%= @meeting.checkin_code %></span>
-    <button type="button" data-action="/meetings/<%= @meeting.id %>/code?remove=1" id="remove-code">Remove</button>
-    <button type="button" data-action="/meetings/<%= @meeting.id %>/code" id="new-code">New</button>
-  </div>
   <%= form_for(@meeting, :url => {:action => 'record_attendance'}, :method => :post, :html => {:id => 'meeting_attendance', :class => 'meeting_attendance'}) do |f| %>
     <table class="attendancetypes">
     <thead>
@@ -75,6 +52,6 @@
       <% end %>
     </tbody>
     </table>
-    <input type="submit" name="submit" value="<%=t 'buttons.save' %>"/>
+    <input type="submit" name="submit" value="Save attendance"/>
   <% end %>
 <% end %>

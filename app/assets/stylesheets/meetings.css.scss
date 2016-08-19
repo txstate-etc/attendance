@@ -15,21 +15,37 @@
 	}
 }
 
-.new_meeting {
-	.starttime {
-		label {
-			@media screen and (max-width: 500px) {
-				display: block;
-			}
-		}
-		margin-bottom: 10px;
-	}
-	.initialtype {
-		.type-radio {
-			@media screen and (max-width: 500px) {
-				display: block;
-				padding: 3px 0px;
-			}
-		}
-	}
+.starttime {
+    label {
+        @media screen and (max-width: 500px) {
+            display: block;
+        }
+    }
+    margin-bottom: 10px;
+}
+.initialtype {
+    .type-radio {
+        @media screen and (max-width: 500px) {
+            display: block;
+            padding: 3px 0px;
+        }
+    }
+}
+
+#new-code {
+  margin-bottom: 10px;
+}
+
+.inline-form {
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.no-margin-top {
+  margin-top: 0;
+}
+
+.edit-meeting-header {
+  border-bottom: 1px solid #aaa;
+  padding-bottom: 5px;
 }

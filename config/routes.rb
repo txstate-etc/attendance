@@ -1,7 +1,7 @@
 Attendance::Application.routes.draw do
   resources :attendancetypes
 
-  resources :meetings, only: [:show, :edit, :update, :destroy] do
+  resources :meetings, only: [:edit, :update, :destroy] do
     member do
       post 'record_attendance'
       post 'code'

@@ -2,7 +2,9 @@
   <meta name="viewport" content="width=480, user-scalable=no">
 <% end %>
 
-<h2 class="page_header"><%=t 'meeting.edit_title' %></h2>
+<h2 class="page_header">
+  <%= @meeting.starttime.strftime('%B %-d, %Y - %l:%M%P') %> : <%= @meeting.section.useful_name %>
+</h2>
 <div class="navigation_link_back">
   <% if use_mobile_template? %>
     <%= link_to "< #{t('general.back')}", @meeting %>
@@ -10,26 +12,36 @@
     <%= link_to "< #{t('general.back')}", @meeting.section %>
   <% end %>
 </div>
-<%= form_for(@meeting) do |f| %>
-  <%= render 'errors' %>
-  <%= render 'starttime' %>
-  <div class="submit float">
-    <%= f.submit 'Save session' %>|
-  </div>
+<% if notice %>
+    <p id="notice" class="no-margin-top"><%= notice %></p>
 <% end %>
 
-<%# Button that will cancel/un-cancel a meeting %>
+<h3 class="no-margin-top edit-meeting-header">Edit session details</h3>
 <%= form_for(@meeting) do |f| %>
-  <%= hidden_field(:meeting, :cancelled, {value: !@meeting.cancelled}) %>
-  <div class="submit float">
-    <%= f.submit (@meeting.cancelled ? t('meeting.reactivate_session') : t('meeting.cancel_session')) %>|
-  </div>
+    <%= render 'errors' %>
+    <%= render 'starttime', edit: true %>
+    <%= f.submit 'Save start' %>
 <% end %>
 
-<%# Button that will soft delete a meeting %>
-<%= form_for(@meeting) do |f| %>
-  <%= hidden_field(:meeting, :deleted, {value: 'true'}) %>
-  <div class="submit float">
+
+<div>
+  Checkin code: <span id="checkin-code"><%= @meeting.checkin_code %></span>
+  <button type="button" data-action="/meetings/<%= @meeting.id %>/code?remove=1" id="remove-code">Remove</button>
+  <button type="button" data-action="/meetings/<%= @meeting.id %>/code" id="new-code">New</button>
+</div>
+
+<div>
+  <%# Button that will cancel/un-cancel a meeting %>
+  <%= form_for(@meeting, html: {class: 'inline-form'}) do |f| %>
+    <%= hidden_field(:meeting, :cancelled, {value: !@meeting.cancelled}) %>
+    <%= f.submit (@meeting.cancelled ? t('meeting.reactivate_session') : t('meeting.cancel_session')) %>
+  <% end %>
+  |
+  <%# Button that will soft delete a meeting %>
+  <%= form_for(@meeting, html: {class: 'inline-form'}) do |f| %>
+    <%= hidden_field(:meeting, :deleted, {value: 'true'}) %>
     <%= f.submit t('meeting.delete_session') %>
-  </div>
-<% end %>
+  <% end %>
+</div>
+
+<div><%= render 'record_attendance' %></div>

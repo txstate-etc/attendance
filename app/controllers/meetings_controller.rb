@@ -9,24 +9,6 @@ class MeetingsController < ApplicationController
       format.json { render json: @meetings }
     end
   end
-
-  # GET /meetings/1
-  # GET /meetings/1.json
-  def show
-    @meeting ||= Meeting.find(params[:id])
-    @userattendances = @meeting.userattendances.includes(:membership => [:user, :siteroles]).order('users.lastname').to_a
-    @attendancetypes = Attendancetype.getall
-
-    @userattendances = @userattendances.sort_by{|ua|
-      m = ua.membership
-      [m.sections.include?(@meeting.section) ? 0 : 1, m.active ? 0 : 1, m.user.lastname.downcase, m.user.firstname.downcase]
-    }
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @meeting }
-    end
-  end
   
   def record_attendance
     errors = []
@@ -40,14 +22,14 @@ class MeetingsController < ApplicationController
         render json: errors
       else
         flash[:notice] = errors.length.to_s+' errors occurred while attempting to record attendance.'
-        redirect_to action: 'show'
+        redirect_to action: 'edit'
       end
     else 
       if params[:json]
         render json: []
       else
         flash[:notice] = 'Attendance for all students successfully recorded.'
-        redirect_to action: 'show'
+        redirect_to action: 'edit'
       end
     end
   end
@@ -69,6 +51,13 @@ class MeetingsController < ApplicationController
   # GET /meetings/1/edit
   def edit
     @meeting ||= Meeting.find(params[:id])
+    @userattendances = @meeting.userattendances.includes(:membership => [:user, :siteroles]).order('users.lastname').to_a
+    @attendancetypes = Attendancetype.getall
+
+    @userattendances = @userattendances.sort_by{|ua|
+      m = ua.membership
+      [m.sections.include?(@meeting.section) ? 0 : 1, m.active ? 0 : 1, m.user.lastname.downcase, m.user.firstname.downcase]
+    }
   end
 
   # POST /sections/:section_id/meetings
@@ -86,6 +75,7 @@ class MeetingsController < ApplicationController
     end
 
     @meeting.initial_atype = Attendancetype.find(params["initial_atype"])
+    @meeting.checkin_code = generate_code if params['generate_code']
 
     respond_to do |format|
       if @meeting.save
@@ -114,7 +104,10 @@ class MeetingsController < ApplicationController
 
     respond_to do |format|
       if @meeting.update_attributes(params[:meeting])
-        format.html { redirect_to (use_mobile_template? ? @meeting : @meeting.section) }
+        format.html {
+          flash[:notice] = 'Start date/time updated successfully'
+          redirect_to action: "edit"
+        }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }
@@ -140,7 +133,7 @@ class MeetingsController < ApplicationController
     if params[:remove] == '1'
       @meeting.checkin_code = nil
     else
-      @meeting.checkin_code = (0..5).map{[*'a'..'z',*1..9].sample}.join
+      @meeting.checkin_code = generate_code
     end
 
     if @meeting.save
@@ -155,11 +148,15 @@ private
     return super do
       site_id = (@meeting = Meeting.find(params[:id])).section.site.id
       site_id == session[:site_id] && @auth_user.take_attendance?(site_id)
-    end if ['record_attendance', 'edit', 'show', 'update', 'destroy', 'code'].include?(action_name)
+    end if ['record_attendance', 'edit', 'update', 'destroy', 'code'].include?(action_name)
     return super do
       site_id = Section.find(params[:section_id]).site.id
       site_id == session[:site_id] && @auth_user.take_attendance?(site_id)
     end if ['new', 'create'].include?(action_name)
     return super
+  end
+
+  def generate_code
+    (0..5).map{[*'a'..'z',*1..9].sample}.join
   end
 end

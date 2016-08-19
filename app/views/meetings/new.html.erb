@@ -14,6 +14,10 @@
         <label for="initial-<%= atype.id %>"><%= atype.name %></label>
       </span>
     <% end %>
+    <div>
+      <input type="checkbox" id="generate_code" name="generate_code" />
+      <label for="generate_code">Create checkin code</label>
+    </div>
   </div>
   <div class="submit"><%= f.submit 'Create Session' %></div>
 <% end %>
