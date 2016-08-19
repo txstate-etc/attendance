@@ -105,8 +105,12 @@ class MeetingsController < ApplicationController
     respond_to do |format|
       if @meeting.update_attributes(params[:meeting])
         format.html {
-          flash[:notice] = 'Start date/time updated successfully'
-          redirect_to action: "edit"
+          if params[:meeting][:cancelled] == "true" || params[:meeting][:deleted] == "true"
+            redirect_to @meeting.section
+          else
+            flash[:notice] = 'Start date/time updated successfully'
+            redirect_to action: "edit"
+          end
         }
         format.json { head :no_content }
       else
