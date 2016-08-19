@@ -19,7 +19,7 @@
 <h3 class="no-margin-top section-header">Edit session details</h3>
 <%= form_for(@meeting) do |f| %>
     <%= render 'errors' %>
-    <%= render 'starttime', edit: true %>
+    <%= render 'starttime' %>
     <%= f.submit 'Save start' %>
 <% end %>
 

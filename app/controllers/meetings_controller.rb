@@ -105,7 +105,7 @@ class MeetingsController < ApplicationController
     respond_to do |format|
       if @meeting.update_attributes(params[:meeting])
         format.html {
-          if params[:meeting][:cancelled] == "true" || params[:meeting][:deleted] == "true"
+          if params[:meeting] && (params[:meeting][:cancelled] == "true" || params[:meeting][:deleted] == "true")
             redirect_to @meeting.section
           else
             flash[:notice] = 'Start date/time updated successfully'
