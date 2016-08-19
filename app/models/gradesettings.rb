@@ -2,40 +2,40 @@ class Gradesettings < ActiveRecord::Base
   belongs_to :site, :inverse_of => :gradesettings
   attr_accessible :forgiven_absences, :tardy_value, :deduction, :tardy_per_absence, :auto_max_points, :max_points
 
-  validates :forgiven_absences,
+  validates :forgiven_absences, on: :update,
             numericality: {
               only_integer: true,
               greater_than: -1,
               message: 'Number of forgiven absences must be a non-negative integer'
             }
-  validates :tardy_value,
+  validates :tardy_value, on: :update,
             numericality: {
               only_integer: true,
               greater_than: -1,
               less_than: 101,
               message: 'Tardy value must be an integer between 0 and 100'
             }
-  validates :deduction,
+  validates :deduction, on: :update,
             numericality: {
               only_integer: true,
               greater_than: -1,
               less_than: 101,
               message: 'Deduction per absence must be a non-negative integer between 0 and 100'
             }
-  validates :tardy_per_absence,
+  validates :tardy_per_absence, on: :update,
             numericality: {
               only_integer: true,
               greater_than: -1,
               message: 'Tardy per absence must be a non-negative integer'
             }
-  validates :max_points,
+  validates :max_points, on: :update,
             numericality: {
               only_integer: true,
               greater_than: 0,
               message: 'Max points must be a positive integer'
             }
 
-  after_validation do
+  after_validation on: :update do
     self.tardy_value = self.tardy_value / 100.0
     self.deduction = self.deduction / 100.0
   end
