@@ -16,7 +16,7 @@
     <p id="notice" class="no-margin-top"><%= notice %></p>
 <% end %>
 
-<h3 class="no-margin-top edit-meeting-header">Edit session details</h3>
+<h3 class="no-margin-top section-header">Edit session details</h3>
 <%= form_for(@meeting) do |f| %>
     <%= render 'errors' %>
     <%= render 'starttime', edit: true %>
@@ -44,4 +44,5 @@
   <% end %>
 </div>
 
+<h3 class="section-header">Record attendance for this session</h3>
 <div><%= render 'record_attendance' %></div>

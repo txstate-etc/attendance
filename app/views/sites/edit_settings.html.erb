@@ -22,29 +22,30 @@
 
 <%= form_for(@site, url: {action: :update_settings}, method: :post, html: {id: 'update_settings', class: 'update_settings'}) do |f| %>
   <div class="settings-section">
-    <h1>Checkin Settings</h1>
+    <h3 class="section-header">Checkin settings</h3>
     <%= f.fields_for :checkinsettings, @site.checkinsettings do |settings| %>
         <div>
-          <%= settings.check_box :auto_enabled %>
-          <label for="site_checkinsettings_attributes_auto_enabled"><%= t('checkin_settings.auto_enabled') %></label>
-        </div>
-        <div>
           <label for="site_checkinsettings_attributes_tardy_after">
-            Mark as tardy after <%= settings.text_field :tardy_after, title: 'Tardy threshold', size: 2, maxlength: 2 %> minutes.
+            Mark as Late after <%= settings.text_field :tardy_after, title: 'Late threshold', size: 2, maxlength: 2 %> minutes.
           </label>
         </div>
         <div>
           <label for="site_checkinsettings_attributes_absent_after">
-            Mark as absent after <%= settings.text_field :absent_after, title: 'Absent threshold', size: 2, maxlength: 2 %> minutes.
+            Mark as Absent after <%= settings.text_field :absent_after, title: 'Absent threshold', size: 2, maxlength: 2 %> minutes.
           </label>
+        </div>
+        <h3 class="section-header">Checkin sources</h3>
+        <div>
+          <%= settings.check_box :auto_enabled %>
+          <label for="site_checkinsettings_attributes_auto_enabled"><%= t('checkin_settings.auto_enabled') %></label>
         </div>
     <% end %>
   </div>
   <% if @site.outcomes_url && @auth_user.edit_gradesettings?(@site) %>
     <div class="settings-section">
-      <h1>Grade Settings</h1>
+      <h3 class="section-header">Grade settings</h3>
       <%= render 'grade_settings', settings: @site.gradesettings, f: f %>
     </div>
   <% end %>
-  <%= f.submit %>
+  <%= f.submit 'Save settings' %>
 <% end %>
