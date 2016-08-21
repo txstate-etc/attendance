@@ -86,7 +86,7 @@ jQuery(document).ready( function ($) {
       $('#remove-code').hide();
     }).fail(function() {
       alert('failed');
-    });
+    }, 10000);
   });
 
   if ($('#checkin-code').text().length < 1) {

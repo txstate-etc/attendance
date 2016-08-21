@@ -33,6 +33,7 @@ Attendance::Application.routes.draw do
       post 'record_attendance'
       get 'totals'
       get 'last_dates', :defaults => {:format => 'json'}
+      get 'userattendances', defaults: {format: 'json'}
       post 'checkin', constraints: {id: /[^\/]+/}
     end
   end

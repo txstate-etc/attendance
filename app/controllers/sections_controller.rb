@@ -237,6 +237,13 @@ class SectionsController < ApplicationController
     end
   end
 
+  # GET /sections/1/userattendances
+  def userattendances
+    @section ||= Section.find(params[:id])
+    updated_since = Time.new(params[:updated_since].to_i / 1000)
+    render json: @section.userattendances.where('userattendances.updated_at > ?', updated_since)
+  end
+
   def checkin
     Section.includes(site: :checkinsettings).find_all_by_name(params[:id]).each do |section|
       next unless section.site.checkinsettings.auto_enabled
@@ -273,7 +280,7 @@ private
     end
     return super do
       site_id == session[:site_id] && @auth_user.take_attendance?(site_id)
-    end if ['record_attendance', 'show', 'totals'].include?(action_name)
+    end if ['record_attendance', 'show', 'totals', 'userattendances'].include?(action_name)
     return true if 'checkin' == action_name && request.authorization == Attendance::Application.config.checkin_token
     return super
   end
