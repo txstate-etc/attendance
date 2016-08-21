@@ -36,6 +36,10 @@ class Attendancetype < ActiveRecord::Base
     RequestStore.store[:atype_sorted] ||= fetchall.values.sort_by! &:display_order
   end
 
+  def self.find_by_name(name)
+    self.getall.select{|a| a.name == name}.first
+  end
+
   def grade_as_present?
     grade_type == 0
   end

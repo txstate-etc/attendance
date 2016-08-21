@@ -238,14 +238,23 @@ class SectionsController < ApplicationController
   end
 
   def checkin
-    Section.find_all_by_name(params[:id]).each do |section|
+    Section.includes(site: :checkinsettings).find_all_by_name(params[:id]).each do |section|
       next unless section.site.checkinsettings.auto_enabled
-      membership = section.memberships.joins(:user).where(users: {netid: params[:netid]}).first
-      next if membership.nil?
-
       meeting = section.meetings
-                    .create_with(initial_atype: Attendancetype.find_by_name('absent'))
+                    .create_with(initial_atype: Attendancetype.find_by_name('Absent'))
                     .find_or_create_by_starttime(Time.at(params['sessionStart']/1000))
+
+      user = User.find_by_netid(params[:netid])
+      head :unprocessable_entity and return if user.nil?
+      membership = section.site.memberships.find_by_user_id(user.id)
+      if membership.nil?
+        roles = Role.getRolesFromString('urn:lti:role:ims/lis/Learner')
+        membership = user.verify_membership(section.site, roles, true, [section], nil)
+      end
+      unless membership.sections.include?(section)
+        membership.sections.push(section)
+        membership.save
+      end
 
       ua = meeting.userattendances.find_by_membership_id(membership)
       if ua.checkins.empty?

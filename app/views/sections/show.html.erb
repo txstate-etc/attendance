@@ -41,7 +41,7 @@
   <tr>
     <% @meetings.each_with_index do |meeting, index| %>
       <th class="<%= meeting.cancelled && !@force_show_cancelled ? 'cancelled' : '' %> <%= index == 0 ? 'first_col' : '' %>" data-meeting-id="<%= meeting.id %>">
-        <%= meeting.starttime.strftime('%b %-d @ %l:%M%P') %>
+        <%= meeting.starttime.strftime('%b %-d at %l:%M%P') %>
         <%= link_to '', edit_meeting_path(meeting), class: 'action edit', title: 'Edit session and record attendance' %>
       </th>
     <% end %>

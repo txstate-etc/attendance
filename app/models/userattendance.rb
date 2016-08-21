@@ -34,11 +34,11 @@ class Userattendance < ActiveRecord::Base
     settings = self.membership.site.checkinsettings
 
     if (self.meeting.starttime + settings.tardy_after.minutes) > checkin.time
-      self.attendancetype = Attendancetype.getall.select{|a| a.name == 'Present'}.first
+      self.attendancetype = Attendancetype.find_by_name('Present')
     elsif (self.meeting.starttime + settings.absent_after.minutes) > checkin.time
-      self.attendancetype = Attendancetype.getall.select{|a| a.name == 'Late'}.first
+      self.attendancetype = Attendancetype.find_by_name('Late')
     else
-      self.attendancetype = Attendancetype.getall.select{|a| a.name == 'Absent'}.first
+      self.attendancetype = Attendancetype.find_by_name('Absent')
     end
 
     self.save if self.attendancetype_id_changed?

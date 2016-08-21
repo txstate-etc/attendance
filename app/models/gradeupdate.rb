@@ -44,7 +44,7 @@ class Gradeupdate < ActiveRecord::Base
   end
 
   def self.register_section_change(section)
-    section.memberships.each {|m| Gradeupdate.register_change(m.id) if m.record_attendance?}
+    section.memberships.each {|m| Gradeupdate.register_change(m.id) if m.record_attendance?} if section.site.outcomes_url
   end
 
   def self.register_site_change(site)
