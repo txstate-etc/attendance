@@ -247,10 +247,13 @@ class SectionsController < ApplicationController
   def checkin
     Section.includes(site: :checkinsettings).find_all_by_name(params[:id]).each do |section|
       next unless section.site.checkinsettings.auto_enabled
-      time = Time.at(params['sessionStart'] / 1000)
+      startTime = Time.at(params['sessionStart'] / 1000)
+      time = Time.at(params['time'] / 1000)
+
+      head :no_content and return if (time + 15.minutes < startTime)
       meeting = section.meetings
-                    .create_with(initial_atype: Attendancetype.find_by_name('Absent'), starttime: time)
-                    .find_or_create_by_source_starttime(time)
+                    .create_with(initial_atype: Attendancetype.find_by_name('Absent'), starttime: startTime)
+                    .find_or_create_by_source_starttime(startTime)
 
       user = User.find_by_netid(params[:netid])
       head :unprocessable_entity and return if user.nil?
@@ -266,7 +269,7 @@ class SectionsController < ApplicationController
 
       ua = meeting.userattendances.find_by_membership_id(membership)
       if ua.checkins.empty?
-        ua.checkins.create({source: params['source'], time: Time.at(params['time']/1000)})
+        ua.checkins.create({source: params['source'], time: time})
       end
     end
 
