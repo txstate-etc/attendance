@@ -43,8 +43,10 @@
       <th class="<%= meeting.cancelled && !@force_show_cancelled ? 'cancelled' : '' %> <%= index == 0 ? 'first_col' : '' %>" data-meeting-id="<%= meeting.id %>">
         <%= meeting.starttime.strftime('%b %-d at %l:%M%P') %>
         <%= link_to '', edit_meeting_path(meeting), class: 'fa fa-pencil-square-o', title: 'Edit session and record attendance' %>
-        <% unless meeting.source_starttime.blank? %>
+        <% if !meeting.source_starttime.blank? %>
           <i class="fa fa-credit-card" title="Created for txstate card readers"></i>
+        <% elsif !meeting.checkin_code.blank? %>
+          <i class="fa fa-qrcode" title="Checkin code: <%= meeting.checkin_code %>"></i>
         <% end %>
       </th>
     <% end %>
