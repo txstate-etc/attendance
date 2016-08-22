@@ -241,12 +241,17 @@ class SectionsController < ApplicationController
   def userattendances
     @section ||= Section.find(params[:id])
     checkins_since = Time.at(params[:checkins_since].to_i / 1000)
-    uas =  @section.userattendances.includes(:checkins).where('userattendances.updated_at > ?', checkins_since)
+    uas =  @section.userattendances
+               .joins(:checkins)
+               .includes(:checkins)
+               .where('userattendances.updated_at > ?', checkins_since)
     render json: uas, include: :checkins
   end
 
   def checkin
-    Section.includes(site: :checkinsettings).find_all_by_name(params[:id]).each do |section|
+    section = Section.find(params[:id])
+    sections = section ? [section] : Section.includes(site: :checkinsettings).find_all_by_name(params[:id])
+    sections.each do |section|
       next unless section.site.checkinsettings.auto_enabled
       startTime = Time.at(params['sessionStart'] / 1000)
       time = Time.at(params['time'] / 1000)
@@ -279,7 +284,7 @@ class SectionsController < ApplicationController
 
 private
   def authorize
-    if ['record_attendance', 'show', 'totals', 'edit_perms', 'update_perms'].include?(action_name)
+    if ['record_attendance', 'show', 'totals', 'edit_perms', 'update_perms', 'userattendances'].include?(action_name)
       @section ||= Section.find(params[:id])
       site_id = @section.site.id
     end

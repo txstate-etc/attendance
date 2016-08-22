@@ -36,8 +36,10 @@
         </div>
         <h3 class="section-header">Checkin sources</h3>
         <div>
-          <%= settings.check_box :auto_enabled %>
-          <label for="site_checkinsettings_attributes_auto_enabled"><%= t('checkin_settings.auto_enabled') %></label>
+          <p>
+            <%= settings.check_box :auto_enabled %>
+            <label for="site_checkinsettings_attributes_auto_enabled"><%= t('checkin_settings.auto_enabled') %></label>
+          </p>
         </div>
     <% end %>
   </div>
