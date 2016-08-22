@@ -88,6 +88,8 @@ namespace :config do
     run "ln -nfs #{shared_path}/config/initializers/oauth_secret.rb #{release_path}/config/initializers/oauth_secret.rb"
     run "ln -nfs #{shared_path}/config/initializers/checkin_token.rb #{release_path}/config/initializers/checkin_token.rb"
     run "ln -nfs #{shared_path}/config/initializers/tracs_user.rb #{release_path}/config/initializers/tracs_user.rb"
+    run "ln -nfs #{shared_path}/config/environments/production.rb #{release_path}/config/environments/production.rb"
+    run "ln -nfs #{shared_path}/config/environments/staging.rb #{release_path}/config/environments/staging.rb"
   end
 end
 
