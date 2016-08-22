@@ -80,7 +80,7 @@ table.attendancetypes {
 	th,td {
 		text-align: center;
 		&.name {
-			width: 40%;
+			width: 35%;
 			text-align: left;
 			overflow: hidden;
 			word-wrap: break-word;
@@ -92,8 +92,11 @@ table.attendancetypes {
 				padding-right: 4px;
 			}
 		}
+        &.checkin {
+          width: 13%;
+        }
 		&.attendancetype {
-			width: 15%;
+			width: 13%;
 			span.attendancetype-absolute, span.attendancetype-percent {
 				@media screen and (max-width: 500px) {
 					display: block;

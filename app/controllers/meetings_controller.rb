@@ -58,6 +58,7 @@ class MeetingsController < ApplicationController
       m = ua.membership
       [m.sections.include?(@meeting.section) ? 0 : 1, m.active ? 0 : 1, m.user.lastname.downcase, m.user.firstname.downcase]
     }
+    @has_checkins = @userattendances.flat_map(&:checkins).any?
   end
 
   # POST /sections/:section_id/meetings

@@ -12,6 +12,7 @@
     <thead>
     <tr class="header">
       <th class="name">Name</th>
+      <% if @has_checkins %><th class="checkin-col">Checkin</th><% end %>
       <% @attendancetypes.each do |atype| %>
         <th class="attendancetype"><%= atype.name %></th>
       <% end %>
@@ -44,6 +45,13 @@
         <% end %>
         <tr class="<%= cycle('even', 'odd') %> <% if started_moved %> <%='moved' %> <% elsif started_inactives %> <%= 'inactive' %> <% end %>">
           <td class="name"><%= link_to ua.membership.user.fullname, section_membership_path(@meeting.section, ua.membership)  %></td>
+          <% if @has_checkins %>
+            <td class="checkin-col">
+              <% if ua.checkins.any? %>
+                <span title="from <%= ua.checkins.first.source %>"> <%= ua.checkins.first.time.strftime('%l:%M%P').strip %></span>
+              <% end %>
+            </td>
+          <% end %>
           <% @attendancetypes.each do |atype| %>
             <td class="attendancetype"><input type="radio" name="member-<%= ua.membership.id %>" value="<%= atype.id %>" title="Mark <%= ua.membership.user.fullname %> as <%= atype.name %>" <%= ua.attendancetype_id == atype.id ? 'checked="checked"'.html_safe : '' %> data-atype-name="<%= atype.name %>"/></td>
           <% end %>

@@ -23,7 +23,6 @@
     <%= f.submit 'Save start' %>
 <% end %>
 
-
 <div>
   Checkin code: <span id="checkin-code"><%= @meeting.checkin_code %></span>
   <button type="button" data-action="/meetings/<%= @meeting.id %>/code?remove=1" id="remove-code">Remove</button>

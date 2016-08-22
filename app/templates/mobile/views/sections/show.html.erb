@@ -25,7 +25,7 @@
 <ul class="mobile-section-body">
   <% @meetings.each do |meeting| %>
     <li class="mobile-linkrow<%= meeting.cancelled ? ' cancelled' : '' %>" data-meeting-id="<%= meeting.id %>">
-      <%= link_to meeting.starttime.strftime('%b %-d @ %l:%M%P'), [:edit, meeting], class: 'mobile-link', title: 'Edit session and record attendance' %>
+      <%= link_to meeting.starttime.strftime('%b %-d at %l:%M%P'), [:edit, meeting], class: 'mobile-link', title: 'Edit session and record attendance' %>
     </li>
   <% end %>
 </ul>

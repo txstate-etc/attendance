@@ -11,7 +11,7 @@
 
   <dl class="student-stats">
     <dt>Last Attended:</dt>
-    <dd><%= @membership.last_attended(@section).strftime('%-m/%d/%y @ %l:%M%P') rescue 'never' %>
+    <dd><%= @membership.last_attended(@section).strftime('%-m/%d/%y at %l:%M%P') rescue 'never' %>
     <dt>Overall Attendance:</dt>
     <dd><%= ((@membership.appearances(@section).count.to_f / @membership.recorded_meetings(@section).count.to_f)*100).to_i rescue 0 %>%</dd>
   </dl>
@@ -24,7 +24,12 @@
           <h4 style="background-color: <%= atype.color %>"><%= atype.name %> (<%= ualist.length %>)</h4>
           <ul>
             <% ualist.each do |ua| %>
-              <li class="date"><%= ua.meeting.starttime.strftime('%-m/%d/%y @ %l:%M%P') %></li>
+              <li class="date">
+                <%= ua.meeting.starttime.strftime('%-m/%d/%y at %l:%M%P') %>
+                <% if ua.checkins.any? %>
+                  <i class="fa fa-clock-o" title="<%= ua.checkins.first.source + ' at ' + ua.checkins.first.time.strftime('%l:%M%P').strip %>"></i>
+                <% end %>
+              </li>
             <% end %>
           </ul> 
         </div>
