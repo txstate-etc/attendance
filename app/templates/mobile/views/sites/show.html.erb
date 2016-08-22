@@ -6,6 +6,6 @@
 <h3 class="mobile-section-head"><%=t 'mobile.choose_section' %></h3>
 <ul class="mobile-section-body">
   <% @sections.each do |s| %>
-    <li class="mobile-linkrow"><%= link_to s.name, intro_page_for_section(s, @auth_user), :class => 'mobile-link' %></li>
+      <li class="mobile-linkrow"><%= link_to s.display_name, intro_page_for_section(s, @auth_user), :class => 'mobile-link' %></li>
   <% end %>
 </ul>

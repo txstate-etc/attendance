@@ -57,3 +57,5 @@ gem "high_voltage"
 
 # sends you an email when an exception occurs
 gem 'exception_notification'
+
+gem 'httpclient'
