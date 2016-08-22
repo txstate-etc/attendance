@@ -10,6 +10,7 @@ class Userattendance < ActiveRecord::Base
   def self.record_attendance(meetingid, membershipid, attendancetypeid)
     ua = Userattendance.unscoped.where(:membership_id => membershipid, :meeting_id => meetingid).first_or_create
     ua.attendancetype_id = attendancetypeid
+    ua.override = true if ua.attendancetype_id_changed? and ua.checkins.any?
     ua.save
     ua.errors.to_a
   end
@@ -29,7 +30,7 @@ class Userattendance < ActiveRecord::Base
   end
 
   def update_checkin(mycheckin = nil)
-    return if self.checkins.empty?
+    return if self.checkins.empty? || self.override
     checkin = self.checkins.first
     settings = self.membership.site.checkinsettings
 

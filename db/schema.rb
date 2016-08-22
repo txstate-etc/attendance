@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160821234540) do
+ActiveRecord::Schema.define(:version => 20160822061920) do
 
   create_table "attendancetypes", :force => true do |t|
     t.string  "name"
@@ -197,10 +197,11 @@ ActiveRecord::Schema.define(:version => 20160821234540) do
   add_index "sites", ["context_id"], :name => "index_sites_on_context_id"
 
   create_table "userattendances", :force => true do |t|
-    t.integer  "meeting_id",        :default => 0, :null => false
-    t.integer  "membership_id",                    :null => false
-    t.integer  "attendancetype_id", :default => 0, :null => false
-    t.datetime "updated_at",                       :null => false
+    t.integer  "meeting_id",        :default => 0,     :null => false
+    t.integer  "membership_id",                        :null => false
+    t.integer  "attendancetype_id", :default => 0,     :null => false
+    t.datetime "updated_at",                           :null => false
+    t.boolean  "override",          :default => false, :null => false
   end
 
   add_index "userattendances", ["attendancetype_id"], :name => "index_meetings_users_on_attendancetype_id"

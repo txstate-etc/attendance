@@ -123,7 +123,8 @@
               <% end %>
               </select>
               <% unless ua.checkins.empty? %>
-                <i class="fa fa-clock-o checkin" title="Checked in with <%= ua.checkins.first.source %> at <%= ua.checkins.first.time.strftime('%l:%M%P').strip %>"></i>
+                <i class="fa <%= ua.override ? 'fa-chain-broken' : 'fa-clock-o' %> checkin"
+                   title="<%= ua.override ? 'Overriding' : '' %> <%= ua.checkins.first.source %> at <%= ua.checkins.first.time.strftime('%l:%M%P').strip %>"></i>
               <% end %>
             <% else %>
               cancelled
