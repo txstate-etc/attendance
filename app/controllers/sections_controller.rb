@@ -249,7 +249,7 @@ class SectionsController < ApplicationController
   end
 
   def checkin
-    section = Section.find(params[:id])
+    section = Section.find(params[:id]) rescue nil
     sections = section ? [section] : Section.includes(site: :checkinsettings).find_all_by_name(params[:id])
     sections.each do |section|
       next unless section.site.checkinsettings.auto_enabled
