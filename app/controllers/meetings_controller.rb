@@ -74,9 +74,13 @@ class MeetingsController < ApplicationController
       render action: "new" and return
     end
 
-    @meeting.initial_atype = Attendancetype.find(params["initial_atype"])
-    @meeting.checkin_code = generate_code if params['generate_code']
-
+    if params['generate_code']
+      @meeting.checkin_code = generate_code
+      @meeting.initial_atype = Attendancetype.find_by_name('Absent')
+    else
+      @meeting.initial_atype = Attendancetype.find(params["initial_atype"])
+    end
+    
     respond_to do |format|
       if @meeting.save
         format.html { redirect_to @section }
