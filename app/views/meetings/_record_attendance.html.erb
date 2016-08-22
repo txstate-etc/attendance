@@ -26,6 +26,7 @@
         <% if !started_inactives && !ua.membership.active %>
           <tr class="header separator inactive-separator">
             <th class="name">Inactive <span id="expand-inactives">+</span></th>
+            <% if @has_checkins %><th class="checkin-col">Checkin</th><% end %>
             <% Attendancetype.getall.each do |atype| %>
               <th><%= atype.name %></th>
             <% end %>
@@ -36,6 +37,7 @@
         <% if !started_moved && !ua.membership.sections.include?(@meeting.section) %>
           <tr class="header separator moved-separator">
             <th class="name">Moved <span id="expand-moved">+</span></th>
+            <% if @has_checkins %><th class="checkin-col">Checkin</th><% end %>
             <% Attendancetype.getall.each do |atype| %>
               <th><%= atype.name %></th>
             <% end %>
