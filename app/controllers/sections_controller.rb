@@ -240,16 +240,17 @@ class SectionsController < ApplicationController
   # GET /sections/1/userattendances
   def userattendances
     @section ||= Section.find(params[:id])
-    updated_since = Time.new(params[:updated_since].to_i / 1000)
+    updated_since = Time.at(params[:updated_since].to_i / 1000)
     render json: @section.userattendances.where('userattendances.updated_at > ?', updated_since)
   end
 
   def checkin
     Section.includes(site: :checkinsettings).find_all_by_name(params[:id]).each do |section|
       next unless section.site.checkinsettings.auto_enabled
+      time = Time.at(params['sessionStart'] / 1000)
       meeting = section.meetings
-                    .create_with(initial_atype: Attendancetype.find_by_name('Absent'))
-                    .find_or_create_by_starttime(Time.at(params['sessionStart']/1000))
+                    .create_with(initial_atype: Attendancetype.find_by_name('Absent'), starttime: time)
+                    .find_or_create_by_source_starttime(time)
 
       user = User.find_by_netid(params[:netid])
       head :unprocessable_entity and return if user.nil?
