@@ -21,6 +21,7 @@ end
 
 gem 'rubycas-client', '~> 2.3.9.rc1'
 gem 'rubycas-client-rails', :git => 'git://github.com/wickning1/rubycas-client-rails.git'
+gem 'font-awesome-sass', '~> 4.6.2'
 
 # Gems used only for assets and not required
 # in production environments by default.

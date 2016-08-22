@@ -26,7 +26,7 @@
     }
     th {
       border: 1px solid #AAAAAA;
-      text-align: left;
+      text-align: center;
     }
     td {
       border: 1px solid #DDDDDD;
@@ -51,20 +51,12 @@
     }
   }
 
-  a.action {
+  th .fa {
     display: inline-block;
-    height: 16px;
-    width: 16px;
-    &:hover {
-      color: #000;
-      background-color: transparent;
-    }
-    &.edit {
-      background-image: url('pencil.png');
-    }
-    &.show {
-      background-image: url('magnifier.png');
-    }
+    text-decoration: none;
+    font-size: 1.25em;
+    margin-left: 5px;
+    vertical-align: middle;
     &.delete {
       background-image: url('delete.png');
     }

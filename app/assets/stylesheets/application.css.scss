@@ -13,6 +13,8 @@
  *= require jquery.ui.datepicker
  *= require jquery.timepicker.css
  */
+@import "font-awesome-sprockets";
+@import "font-awesome";
 
 body {
 	margin: 0px;
@@ -126,4 +128,11 @@ a.linkbutton:visited {
 a.linkbutton:hover {
 	background-color: #DDDDDD;
 	color: #111111;
+}
+
+.checkin {
+  position: absolute;
+  margin-left: 10px;
+  margin-top: 5px;
+  font-size: 1.25em;
 }

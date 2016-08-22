@@ -71,6 +71,8 @@ GEM
       activesupport (>= 3.0.4)
     execjs (1.4.0)
       multi_json (~> 1.0)
+    font-awesome-sass (4.6.2)
+      sass (>= 3.2)
     high_voltage (1.2.4)
     highline (1.6.19)
     hike (1.2.3)
@@ -181,6 +183,7 @@ DEPENDENCIES
   composite_primary_keys
   debugger
   exception_notification
+  font-awesome-sass (~> 4.6.2)
   high_voltage
   ims-lti
   jquery-rails (>= 3.0.4)
@@ -199,3 +202,6 @@ DEPENDENCIES
   timecop
   uglifier (>= 1.0.3)
   whenever
+
+BUNDLED WITH
+   1.12.5

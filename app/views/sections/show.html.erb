@@ -42,7 +42,10 @@
     <% @meetings.each_with_index do |meeting, index| %>
       <th class="<%= meeting.cancelled && !@force_show_cancelled ? 'cancelled' : '' %> <%= index == 0 ? 'first_col' : '' %>" data-meeting-id="<%= meeting.id %>">
         <%= meeting.starttime.strftime('%b %-d at %l:%M%P') %>
-        <%= link_to '', edit_meeting_path(meeting), class: 'action edit', title: 'Edit session and record attendance' %>
+        <%= link_to '', edit_meeting_path(meeting), class: 'fa fa-pencil-square-o', title: 'Edit session and record attendance' %>
+        <% unless meeting.source_starttime.blank? %>
+          <i class="fa fa-credit-card" title="Created for txstate card readers"></i>
+        <% end %>
       </th>
     <% end %>
   </tr>
@@ -119,6 +122,9 @@
                 <option class="atype" value="<%= atype.id %>" <%= atype.id == ua.attendancetype_id ? 'selected' : '' %>><%= atype.name %></option>
               <% end %>
               </select>
+              <% unless ua.checkins.empty? %>
+                <i class="fa fa-clock-o checkin" title="Checked in with <%= ua.checkins.first.source %> at <%= ua.checkins.first.time.strftime('%l:%M%P').strip %>"></i>
+              <% end %>
             <% else %>
               cancelled
             <% end %>
