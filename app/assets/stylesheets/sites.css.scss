@@ -7,12 +7,15 @@
   table {
     border-collapse: collapse;
     table-layout: fixed;
-    tr.even {
-        background-color: rgb(250, 249, 246);
-    }
+    /*tr.even {
+        background-color: #ddd;
+    }*/
     tr.separator th {
       border-right: none;
       border-left: none;
+    }
+    tr:hover {
+      background-color: #ddd;
     }
     th, td {
       padding: 5px;
@@ -25,11 +28,11 @@
       overflow: hidden;    
     }
     th {
-      border: 1px solid #AAAAAA;
+      border: 1px solid #999;
       text-align: center;
     }
     td {
-      border: 1px solid #DDDDDD;
+      border: 1px solid #999;
       text-align: center;
       &.name {
         .next-to-remove {
@@ -38,6 +41,7 @@
           overflow: hidden;
           text-overflow: ellipsis;
           width: 150px;
+          font-size: 14px;
         }
         .remove-user-link {
           display: block;
@@ -45,6 +49,9 @@
           width: 20px;
         }
         text-align: left;
+      }
+      select {
+        font-size: 12px;
       }
     }
     .cancelled {

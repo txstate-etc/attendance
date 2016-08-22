@@ -240,8 +240,8 @@ class SectionsController < ApplicationController
   # GET /sections/1/userattendances
   def userattendances
     @section ||= Section.find(params[:id])
-    updated_since = Time.at(params[:updated_since].to_i / 1000)
-    render json: @section.userattendances.where('userattendances.updated_at > ?', updated_since)
+    checkins_since = Time.at(params[:checkins_since].to_i / 1000)
+    render json: @section.userattendances.includes(:checkins).where('checkins.time > ?', checkins_since), include: :checkins
   end
 
   def checkin

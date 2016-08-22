@@ -38,7 +38,7 @@
 
 .inline-form {
   display: inline-block;
-  margin-bottom: 10px;
+  margin: 10px 0;
 }
 
 .no-margin-top {
@@ -48,4 +48,11 @@
 .section-header {
   border-bottom: 1px solid #aaa;
   padding-bottom: 5px;
+}
+
+#checkin-code {
+  font-size: 2em;
+  font-weight: bold;
+  letter-spacing: 2px;
+  vertical-align: middle;
 }

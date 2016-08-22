@@ -1,4 +1,7 @@
 jQuery(document).ready(function ($) {
+  var sectionId = location.pathname.slice(location.pathname.lastIndexOf('/') + 1);
+  var $tablediv = $('#table-main');
+
   $('#site_attendance td.attendancetype select').each(function (i, select) {
     $(select).data('current', $(select).val());
   });
@@ -18,8 +21,7 @@ jQuery(document).ready(function ($) {
 
     var studentName = $row_td.html();
     var attendanceName = $changed.find(':selected').html().toLowerCase();
-    var $tablediv = $('#table-main');
-    
+
     var params = {};
     params[name] = $changed.val();
     params['authenticity_token'] = $('#site_attendance > div > input[name="authenticity_token"]').val();
@@ -165,6 +167,22 @@ jQuery(document).ready(function ($) {
   	$(window).resize(resize_tables);
     $('#table-main').css('padding-right', SCROLLBAR_WIDTH);
 		resize_tables();
+    get_recent_checkins(sectionId, function(data) {
+      data.forEach(function(ua) {
+        var $select = $('select[name="meeting-'+ua.meeting_id+'_member-'+ua.membership_id+'"]');
+        $select.val(ua.attendancetype_id);
+        $select.css('background-color', attendancetype_colors[ua.attendancetype_id]);
+        if (ua.checkins.length) {
+          var checkin = ua.checkins[0];
+          var time = moment(checkin.time);
+          $select.after('<i class="fa fa-clock-o checkin" title="Checked in with ' + checkin.source + ' at ' + time.format('h:mma') + '"/>');
+        }
+      });
+      if (data.length) {
+        var pluralize = data.length > 1 ? 'checkins' : 'checkin';
+        show_alert(data.length + ' new ' + pluralize, 3, false, $tablediv)
+      }
+    });
 	}
 	
 	// fix the page title on sections#show to not overlap buttons
