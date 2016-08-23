@@ -2,6 +2,7 @@
   var attendancetype_colors = {
     <%= @attendancetypes.map { |atype| "#{atype.id} : '#{atype.color.downcase}'" }.join(", ").html_safe %>
   };
+  var updated_at = <%= Time.now.to_i * 1000 %>;
 <% end %>
 
 <h2 class="collapsed-page-header"><%= @section.useful_name %></h2>

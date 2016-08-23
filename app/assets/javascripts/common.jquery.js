@@ -13,12 +13,13 @@ jQuery(document).ready(function ($) {
   $('tr.moved').hide();
 });
 
-var updated_at = Date.now() - 5000;
 function get_recent_checkins(sectionId, cb) {
-  var updated_since = updated_at;
-  updated_at = Date.now();
-  $.ajax('/sections/' + sectionId + '/userattendances?checkins_since=' + updated_since)
+  $.ajax('/sections/' + sectionId + '/userattendances?checkins_since=' + updated_at)
     .done(function(data) {
+      data.forEach(function(ua) {
+        var ua_updated = moment(ua.updated_at).valueOf();
+        if (ua_updated > updated_at) updated_at = ua_updated;
+      });
       cb(data);
     })
     .always(function() {
