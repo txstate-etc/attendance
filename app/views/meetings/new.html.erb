@@ -5,19 +5,23 @@
 <div class="navigation_link_back"><%= link_to "< #{t('general.back')}", @section %></div>
 <%= form_for [@section, @meeting] do |f| %>
   <%= render 'errors' %>
-  <%= render 'starttime' %>
-  <div class="initialtype">
-    <span><%=t 'meeting.mark_as' %>:</span>
-    <% @attendancetypes.each do |atype| %>
-      <span class="type-radio">
-        <input type="radio" id="initial-<%= atype.id %>" name="initial_atype" value="<%= atype.id %>" data-atype-name="<%= atype.name %>" <%= atype.default_type ? 'checked="checked"' : '' %>/>
-        <label for="initial-<%= atype.id %>"><%= atype.name %></label>
-      </span>
-    <% end %>
-    <div>
+  <div class="flex">
+    <div class="flex-item">
+      <%= render 'starttime' %>
+    </div>
+    <div class="flex-item">
       <input type="checkbox" id="generate_code" name="generate_code" />
       <label for="generate_code">Create checkin code</label>
     </div>
+    <div class="flex-item">
+      <span id="initialtype-label"><%=t 'meeting.mark_as' %>:</span>
+      <% @attendancetypes.each do |atype| %>
+        <span class="type-radio">
+          <input type="radio" id="initial-<%= atype.id %>" name="initial_atype" value="<%= atype.id %>" data-atype-name="<%= atype.name %>" <%= atype.default_type ? 'checked="checked"' : '' %>/>
+          <label for="initial-<%= atype.id %>"><%= atype.name %></label>
+        </span>
+      <% end %>
+    </div>
+    <div class="flex-item"><%= f.submit 'Create Session' %></div>
   </div>
-  <div class="submit"><%= f.submit 'Create Session' %></div>
 <% end %>

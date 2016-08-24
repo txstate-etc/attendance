@@ -18,9 +18,8 @@
 
 body {
 	margin: 0px;
-    -webkit-font-smoothing: antialiased;
+    -webkit-font-smoothing: subpixel-antialiased;
     text-rendering: optimizeLegibility;
-    -moz-osx-font-smoothing: grayscale;
 }
 
 h2.page_header {
@@ -142,4 +141,21 @@ a.linkbutton:hover {
   margin-left: 10px;
   margin-top: 5px;
   font-size: 1.25em;
+}
+
+.flex {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-item {
+  margin: 5px 0;
+}
+
+.flex-item:first-child {
+  margin-top: 0;
+}
+
+.flex-item:last-child {
+  margin-bottom: 0;
 }

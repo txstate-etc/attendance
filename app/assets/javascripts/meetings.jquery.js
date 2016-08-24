@@ -92,4 +92,14 @@ jQuery(document).ready( function ($) {
   if ($('#checkin-code').text().length < 1) {
     $('#remove-code').hide();
   }
+
+  $('#generate_code').change(function() {
+    if (this.checked) {
+      $('.type-radio').hide();
+      $('#initialtype-label').text('Mark all active students as: Absent');
+    } else {
+      $('.type-radio').show();
+      $('#initialtype-label').text('Mark all active students as:');
+    }
+  })
 });
