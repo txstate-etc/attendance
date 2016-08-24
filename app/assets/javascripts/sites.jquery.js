@@ -238,4 +238,8 @@ jQuery(document).ready(function ($) {
       $('#site_gradesettings_attributes_max_points').prop('disabled', false);
     }
   });
+
+  $('button.fa-qrcode').click(function() {
+    open_code_window($(this).data('code'));
+  });
 });

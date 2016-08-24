@@ -166,6 +166,6 @@ private
   end
 
   def generate_code
-    (0..5).map{[*'a'..'z',*1..9].sample}.join
+    (0..5).map{[*0..9].sample}.join
   end
 end

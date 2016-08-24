@@ -47,7 +47,7 @@
         <% if !meeting.source_starttime.blank? %>
           <i class="fa fa-credit-card" title="Created for txstate card readers"></i>
         <% elsif !meeting.checkin_code.blank? %>
-          <i class="fa fa-qrcode" title="Checkin code: <%= meeting.checkin_code %>"></i>
+          <button type="button" class="fa fa-qrcode" data-code="<%= meeting.checkin_code %>" title="Show checkin code"></button>
         <% end %>
       </th>
     <% end %>

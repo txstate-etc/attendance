@@ -26,3 +26,25 @@ function get_recent_checkins(sectionId, cb) {
       setTimeout(function() {get_recent_checkins(sectionId, cb)}, 10000);
     });
 }
+
+function open_code_window(code) {
+  var w = window.open('', '_blank', 'width=' + screen.width + ',height=' + screen.height + ',toolbar=no,menubar=no,location=no,status=no,');
+
+  var size = (screen.width * 1.6 ) / 6;
+  var css = {
+    height: '100%',
+    width: '100%',
+    display: 'flex',
+    'align-items': 'center',
+    'justify-content': 'center',
+    'font-family': 'monospace',
+    'font-size': size + 'px'
+  };
+
+  var $div = $('<div>');
+  $div.css(css);
+  $div.text(code);
+  $(w.document.body).css('background-color', '#363534');
+  $(w.document.body).css('color', 'white');
+  $(w.document.body).append($div);
+}
