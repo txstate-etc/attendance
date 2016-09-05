@@ -13,6 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery.color-2.1.2.min.js
-//= require jquery.ui.datepicker
+//= require jquery-ui/datepicker
+//= require jquery-ui/selectmenu
 //= require jquery.timepicker.min.js
 //= require_tree .

@@ -6,8 +6,9 @@ jQuery(document).ready(function ($) {
     $(select).data('current', $(select).val());
   });
 
-  $('#site_attendance td.attendancetype select').change(function (e) {
+  $('#site_attendance td.attendancetype select').on('selectmenuchange', function (e) {
     var $changed = $(e.target);
+    var $widget = $(e.target).siblings('span');
     var $td = $changed.closest('td');
     var $tr = $changed.closest('tr');
 
@@ -33,8 +34,9 @@ jQuery(document).ready(function ($) {
       dataType: "json",
       data: params,
       timeout: 10000,
-      beforeSend: function(jqXHR, setting) {
+      beforeSend: function (jqXHR, setting) {
         $changed.prop('disabled', true);
+        $changed.selectmenu('refresh');
         loopBackgroundColor($td, '#aaaaaa', "#dddddd");
       },
       success: function (data, textStatus, jqXHR) {
@@ -46,23 +48,31 @@ jQuery(document).ready(function ($) {
           show_alert('Successfully saved ' + studentName + ' as ' + attendanceName + '.', 3, false, $tablediv);
         }
       },
-      error: function(jqXHR, textStatus, errorThrown) {
+      error: function (jqXHR, textStatus, errorThrown) {
         $changed.val($changed.data('current'));
         show_alert('Failed to mark ' + studentName + ' as ' + attendanceName + '.', 0, true, $tablediv);
       },
       complete: function (data, textState, jqXHR) {
         $td.stop(true);
         $td.css('background-color', 'transparent')
-        $changed.css('background-color', attendancetype_colors[$changed.val()]);
+        $widget.css('color', attendancetype_colors[$changed.val()]);
         $changed.prop('disabled', false);
+        $changed.selectmenu('refresh');
       }
     });
   });
 
   $('#site_attendance input[type="submit"]').hide();
 
+  $('.attendancetype select').each(function() {
+    var $select = $(this);
+    $select.selectmenu({
+      width: '100%'
+    });
+  });
+
   $('#site_attendance td.attendancetype select').each(function (i, select) {
-    $(select).css('background-color', attendancetype_colors[$(select).find(':selected').val()]);
+    $(select).siblings('span').css('color', attendancetype_colors[$(select).find(':selected').val()]);
   });
 
   $('#site_attendance .cancelled').hide();

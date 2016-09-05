@@ -10,7 +10,8 @@
  *
  *= require_self
  *= require_tree .
- *= require jquery.ui.datepicker
+ *= require jquery-ui/datepicker
+ *= require jquery-ui/selectmenu
  *= require jquery.timepicker.css
  */
 @import "font-awesome-sprockets";

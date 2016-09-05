@@ -53,6 +53,15 @@
       }
       &.attendancetype {
         position: relative;
+        padding: 0;
+        .ui-selectmenu-button {
+          width: 100%;
+          border: none;
+          border-radius: 0;
+          background: none;
+          vertical-align: middle;
+          height: 35px;
+        }
       }
       select {
         font-size: 12px;
@@ -71,6 +80,21 @@
     &.delete {
       background-image: url('delete.png');
     }
+  }
+
+  .ui-icon {
+    text-indent: 0;
+    background: none;
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    color: black;
+  }
+
+  .ui-icon:before {
+    content: "\f0d7";
   }
 }
 
