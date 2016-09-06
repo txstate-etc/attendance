@@ -47,8 +47,9 @@
         </div>
         <% if @section.site.enable_code %>
           <div class="code-div">
-            <button type="button" class="show-code" data-code="<%= meeting.checkin_code %>" title="Show checkin code">
-              <i class="fa fa-th-large"></i><%= meeting.checkin_code.blank? ? 'ADD' : 'SHOW' %> CHECKIN CODE
+            <button type="button" class="code-action" data-code="<%= meeting.checkin_code %>" title="Show checkin code">
+              <i class="fa fa-th-large"></i>
+              <span><%= meeting.checkin_code.blank? ? 'ADD' : 'SHOW' %> CHECKIN CODE</span>
             </button>
           </div>
         <% end %>

@@ -252,7 +252,22 @@ jQuery(document).ready(function ($) {
     }
   });
 
-  $('button.show-code').click(function() {
-    open_code_window($(this).data('code'));
+  $('button.code-action').click(function() {
+    var $button = $(this);
+    if ($button.data('code')) {
+      open_code_window($button.data('code'));
+    } else {
+      var meeting_id = $button.closest('th').data('meeting-id');
+      var url = '/meetings/' + meeting_id + '/code';
+      $.ajax({
+        url: url,
+        method: 'POST'
+      }).done(function(data) {
+        $button.find('span').text('SHOW CHECKIN CODE');
+        $button.data('code', data.checkin_code);
+      }).fail(function() {
+        alert('failed to add code');
+      });
+    }
   });
 });

@@ -127,10 +127,13 @@ option.atype {
   position: absolute;
   left: 0;
   top: 0;
+  table th {
+    height: 47px;
+  }
 }
 
 #table-head {
-  margin-left: 181px;
+  margin-left: 188px;
   overflow: hidden;
 
   th.first_col {
@@ -164,7 +167,7 @@ option.atype {
 }
 
 #table-main {
-  margin-left: 181px;
+  margin-left: 188px;
   overflow: auto;
 
   table {
@@ -254,7 +257,7 @@ body .ui-menu {
   padding-top: 3px;
   margin-top: 3px;
 }
-button.show-code {
+button.code-action {
   border: none;
   border-radius: 0;
   text-decoration: underline;
