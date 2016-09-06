@@ -30,7 +30,7 @@
     <%= render 'errors' %>
     <%= render 'starttime' %>
 
-    <% if @code_enabled %>
+    <% if @meeting.section.site.enable_code %>
       <p>
         Checkin code: <span id="checkin-code"><%= @meeting.checkin_code %></span>
         <button type="button" data-action="/meetings/<%= @meeting.id %>/code?remove=1" id="remove-code">Remove</button>

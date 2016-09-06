@@ -11,7 +11,7 @@
     <p>
       <%= render 'starttime' %>
     </p>
-    <% if @code_enabled %>
+    <% if @meeting.section.site.enable_code %>
       <p>
         <input type="checkbox" id="generate_code" name="generate_code" />
         <label for="generate_code">Create checkin code</label>

@@ -45,7 +45,7 @@
           <%= link_to '', edit_meeting_path(meeting), class: 'fa fa-pencil', title: 'Edit session and record attendance' %>
           <% if !meeting.source_starttime.blank? %><i class="fa fa-credit-card" title="Created for txstate card readers"></i><% end %>
         </div>
-        <% if @code_enabled %>
+        <% if @section.site.enable_code %>
           <div class="code-div">
             <button type="button" class="show-code" data-code="<%= meeting.checkin_code %>" title="Show checkin code">
               <i class="fa fa-th-large"></i><%= meeting.checkin_code.blank? ? 'ADD' : 'SHOW' %> CHECKIN CODE

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160822061920) do
+ActiveRecord::Schema.define(:version => 20160906200808) do
 
   create_table "attendancetypes", :force => true do |t|
     t.string  "name"
@@ -187,11 +187,12 @@ ActiveRecord::Schema.define(:version => 20160822061920) do
     t.string   "context_id"
     t.string   "context_label"
     t.string   "context_name"
-    t.datetime "roster_fetched_at",  :null => false
+    t.datetime "roster_fetched_at",                     :null => false
     t.string   "roster_hash"
     t.datetime "update_in_progress"
     t.string   "outcomes_url"
     t.string   "points_url"
+    t.boolean  "enable_code",        :default => false, :null => false
   end
 
   add_index "sites", ["context_id"], :name => "index_sites_on_context_id"
