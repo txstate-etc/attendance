@@ -213,31 +213,6 @@ jQuery(document).ready(function ($) {
       }
     });
 	}
-	
-	// fix the page title on sections#show to not overlap buttons
-	function adjust_title() {
-		var default_margin = 15;
-		var title = $('h2.collapsed-page-header');
-		var actions = $('#site-actions');
-		var usable = actions.width();
-		var leftbuttonwidths = 0;
-		$('#site-actions .linkbutton').each(function(i, b) {
-			var bwidth = $(b).outerWidth(true);
-			if (!$(b).is('.lessimportant')) leftbuttonwidths += bwidth;
-			usable -= bwidth;
-		});
-		var twidth = title.width();
-		if (twidth >= usable) {
-			title.css('margin-top', (actions.height()+default_margin)+'px');
-			actions.css('margin-bottom', (title.height()+default_margin)+'px');
-		} else {
-			title.css('margin-top', default_margin+'px');
-			actions.css('margin-bottom', '0px');
-		}
-		title.css('left', ((usable - twidth)/2+leftbuttonwidths)+'px');
-	}
-	adjust_title();
-	$(window).resize(adjust_title);
 
   $('input[name="gradesettings_score_type"]:radio').change(function(){
     if ($('#gradesettings_score_deduct').is(':checked')) {

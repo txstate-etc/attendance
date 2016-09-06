@@ -20,6 +20,7 @@
 
 body {
 	margin: 0px;
+    padding: 10px;
     -webkit-font-smoothing: subpixel-antialiased;
     text-rendering: optimizeLegibility;
 }
@@ -112,8 +113,7 @@ table.attendancetypes {
 }
 
 .linkbutton {
-	display: block;
-	float: left;
+    display: inline-block;
     font-size: 12px;
     font-weight: bold;
 	text-decoration: none;
@@ -126,6 +126,7 @@ table.attendancetypes {
 	border-left: 1px solid #CCCCCC;
 	margin-right: 5px;
 	margin-bottom: 5px;
+    line-height: inherit;
 }
 
 a.linkbutton:visited {

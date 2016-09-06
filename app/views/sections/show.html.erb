@@ -7,23 +7,23 @@
 
 <%= render 'csv_dialog' %>
 
-<h2 class="collapsed-page-header"><%= @section.useful_name %></h2>
-<div id="site-actions">
+<div id="site-header">
+  <h2><%= @section.useful_name %></h2>
   <%= link_to t('buttons.add_session'), new_section_meeting_path(@section), :class => 'linkbutton' %>
   <%= link_to t('buttons.view_totals'), {:action => :totals}, :class => 'linkbutton' %>
   <% if @num_cancelled_meetings > 0 && !@force_show_cancelled %>
     <a id="toggle_cancelled" href="#" class="linkbutton"><%=t 'buttons.show_cancelled' %></a>
   <% end %>
   <% if @auth_user.edit_gradesettings?(@section.site) %>
-    <%= link_to t('buttons.site_settings'), edit_settings_site_path(@section.site), class: 'linkbutton lessimportant' %>
+    <%= link_to t('buttons.site_settings'), edit_settings_site_path(@section.site), class: 'linkbutton' %>
   <% end %>
   <% if @auth_user.set_permissions?(@section.site) %>
-    <%= link_to t('buttons.configure_roles'), edit_perms_site_path(@section.site), :class => 'linkbutton lessimportant' %>
+    <%= link_to t('buttons.configure_roles'), edit_perms_site_path(@section.site), :class => 'linkbutton' %>
   <% end %>
   <% if @section.site.sections.count > 1 %>
-    <%= link_to t('buttons.change_section'), site_path(@section.site), :class => 'linkbutton lessimportant' %>
+    <%= link_to t('buttons.change_section'), site_path(@section.site), :class => 'linkbutton' %>
   <% end %>
-  <button type="button" class="linkbutton lessimportant" id="download-csv"><%= t('buttons.download_csv') %></button>
+  <button type="button" class="linkbutton" id="download-csv"><%= t('buttons.download_csv') %></button>
 </div>
 <% if @meetings.empty? %>
   <p><%=t 'section.no_sessions', add_session: t('buttons.add_session') %></p>

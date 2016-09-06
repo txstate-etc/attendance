@@ -166,16 +166,13 @@ option.atype {
   }
 }
 
-h2.collapsed-page-header {
-  position: absolute;
-  margin: 15px 0px 0px 0px;
-  left: 0px;
-  top: 0px;
-}
-#site-actions {
-  position: relative;
-  margin-top: 10px;
-  overflow: hidden;
+#site-header {
+  margin-bottom: 10px;
+  h2 {
+    display: inline-block;
+    margin: 0 10px 0 0;
+    vertical-align: middle;
+  }
   .lessimportant {
     float: right;
   }
