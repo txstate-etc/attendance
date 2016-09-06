@@ -11,9 +11,10 @@ jQuery(document).ready(function ($) {
     autoOpen: false,
     modal: true,
     width: 390,
-    height: 120,
+    height: 125,
     resizable: false,
-    draggable: false
+    draggable: false,
+    position: { my: 'left top', at: 'left bottom', of: $('#download-csv')}
   });
   $('#download-csv').click(function() {
     $dialog.dialog('open');
