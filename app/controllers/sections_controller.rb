@@ -44,32 +44,8 @@ class SectionsController < ApplicationController
       format.html # show.html.erb
       format.json { render json: @section }
       format.csv do
-        require 'csv'
-        started_inactives = false
-        started_moved = false
-        csvdump = CSV.generate do |csv|
-          csv << (['Name'] + uncancelled_meetings.map { |meeting| meeting.starttime.strftime('%b %-d @ %l:%M%P') })
-          @attendances.each do |membership_id, ua_hash|
-            if !started_inactives && !ua_hash.values.first.membership.active
-              csv << ([''] + uncancelled_meetings.map {|meeting| ''})
-              csv << (['Inactive'] + uncancelled_meetings.map { |meeting| meeting.starttime.strftime('%b %-d @ %l:%M%P') })
-              started_inactives = true
-            end
-            if !started_moved && !ua_hash.values.first.membership.sections.include?(@section)
-              csv << ([''] + uncancelled_meetings.map {|meeting| ''})
-              csv << (['Moved'] + uncancelled_meetings.map { |meeting| meeting.starttime.strftime('%b %-d @ %l:%M%P') })
-              started_moved = true
-            end
-            attendance_outcomes = uncancelled_meetings.map do |meeting|
-              if ua = ua_hash[meeting.id]
-                ua.attendancetype.name
-              else
-                ''
-              end
-            end
-            csv << ([ua_hash.values.first.membership.user.fullname] + attendance_outcomes)
-          end
-        end
+        opts = {sessions: true, checkins: true, totals: true}
+        csvdump = @section.export_to_csv(opts)
         response.headers['Cache-Control'] = 'no-cache'
         send_data(
           csvdump,
@@ -110,30 +86,6 @@ class SectionsController < ApplicationController
     respond_to do |format|
       format.html # totals.html.erb
       format.json { render json: @totals }
-      format.csv do
-        require 'csv'
-        csvdump = CSV.generate do |csv|
-          csv << (["Student Name"] + Attendancetype.getall.map(&:name))
-          print_totals_hash_to_csv(@totals, csv)
-          if (!@inactive_totals.empty?)
-            csv << ([''] + Attendancetype.getall.map {|atype| ''})
-            csv << (["Inactive"] + Attendancetype.getall.map(&:name))
-            print_totals_hash_to_csv(@inactive_totals, csv)
-          end
-          if (!@moved_totals.empty?)
-            csv << ([''] + Attendancetype.getall.map {|atype| ''})
-            csv << (["Moved"] + Attendancetype.getall.map(&:name))
-            print_totals_hash_to_csv(@moved_totals, csv)
-          end
-        end
-        response.headers["Cache-Control"] = "no-cache"
-        send_data(
-          csvdump,
-          :filename=>@section.site.safe_context_name+"_"+@section.safe_name+"_totals_"+Time.zone.now.strftime("%Y%m%d")+".csv",
-          :type=>'text/csv',
-          :disposition =>"attachment"
-          )
-      end
     end
   end
 

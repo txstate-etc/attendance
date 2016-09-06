@@ -85,4 +85,70 @@ class Section < ActiveRecord::Base
     Rails.cache.write("cmprovider/#{name}", sectionName, expires_in: 1.hours) unless sectionName.nil?
     return sectionName || name
   end
+
+  def member_row(opts, uas, totals)
+    row = []
+    uas.map do |ua|
+      row.push(ua.attendancetype.name)
+      row.push(ua.checkins.first.time) rescue row.push('') if opts[:checkins]
+    end if opts[:sessions]
+    row += Attendancetype.getall.map{|a| totals[a.id-1]} if opts[:totals]
+    row
+  end
+
+  def export_to_csv(opts)
+    require 'csv'
+    meetings = self.meetings.includes(userattendances: [:checkins, {membership: [:user, :sections]}]).where(cancelled: false).order("starttime DESC").to_a
+    uas_by_member = {}
+    totals_by_member = {}
+    memberships = meetings.flat_map(&:userattendances).map do |ua|
+      uas_by_member[ua.membership] ||= []
+      uas_by_member[ua.membership].push(ua)
+      totals_by_member[ua.membership] ||= Array.new(Attendancetype.getall.length, 0)
+      totals_by_member[ua.membership][ua.attendancetype.id-1] += 1
+      ua.membership
+    end.to_set.to_a
+    memberships.sort_by! {|m| [m.user.lastname.downcase, m.user.firstname.downcase] }
+
+    actives, inactives, moved = [],[],[]
+    memberships.each do |m|
+      unless m.sections.include?(self)
+        moved.push(m)
+        # Moved members won't have userattendances for meetings created after they moved
+        uas_by_member[m].unshift(nil) while uas_by_member[m].length < meetings.length
+        next
+      end
+      m.active ? actives.push(m) : inactives.push(m)
+    end
+
+    headers = []
+    meetings.each do |m|
+      headers.push(m.starttime.to_s)
+      headers.push('Checkin Time') if opts[:checkins]
+    end if opts[:sessions]
+    Attendancetype.getall.each do |a|
+      headers.push('Total ' + a.name)
+    end if opts[:totals]
+
+    CSV.generate do |csv|
+      csv << ['Active'] + headers
+      actives.each do |m|
+        csv << [m.user.fullname] + member_row(opts, uas_by_member[m], totals_by_member[m])
+      end
+      if inactives.any?
+        csv << ['']
+        csv << ['Inactive'] + headers
+        inactives.each do |m|
+          csv << [m.user.fullname] + member_row(opts, uas_by_member[m], totals_by_member[m])
+        end
+      end
+      if moved.any?
+        csv << ['']
+        csv << ['Moved'] + headers
+        moved.each do |m|
+          csv << [m.user.fullname] + member_row(opts, uas_by_member[m], totals_by_member[m])
+        end
+      end
+    end
+  end
 end
