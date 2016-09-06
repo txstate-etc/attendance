@@ -85,6 +85,7 @@ jQuery(document).ready(function ($) {
         $changed.selectmenu('refresh');
         var $text = $widget.find('.ui-selectmenu-text');
         $text.prepend('<i class="fa ' + icons[$text.text()] + '"></i>');
+        $changed.closest('div').find('i.fa-bell').removeClass('fa-bell').addClass('fa-bell-slash-o');
       }
     });
   });
@@ -215,6 +216,7 @@ jQuery(document).ready(function ($) {
           var checkin = ua.checkins[0];
           var time = moment(checkin.time);
           $select.siblings('span').after('<i class="fa fa-bell checkin" title="Checked in with ' + checkin.source + ' at ' + time.format('h:mma') + '"/>');
+          $
         }
       });
       if (data.length) {

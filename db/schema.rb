@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160906200808) do
+ActiveRecord::Schema.define(:version => 20160906224303) do
 
   create_table "attendancetypes", :force => true do |t|
     t.string  "name"
@@ -49,11 +49,11 @@ ActiveRecord::Schema.define(:version => 20160906200808) do
 
   create_table "checkinsettings", :force => true do |t|
     t.integer  "site_id"
-    t.boolean  "auto_enabled", :default => false, :null => false
-    t.integer  "tardy_after",  :default => 15,    :null => false
-    t.integer  "absent_after", :default => 30,    :null => false
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
+    t.boolean  "auto_enabled", :default => true, :null => false
+    t.integer  "tardy_after",  :default => 15,   :null => false
+    t.integer  "absent_after", :default => 30,   :null => false
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
   end
 
   add_index "checkinsettings", ["site_id"], :name => "index_checkinsettings_on_site_id"

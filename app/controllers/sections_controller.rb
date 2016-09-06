@@ -202,7 +202,7 @@ class SectionsController < ApplicationController
     uas =  @section.userattendances
                .joins(:checkins)
                .includes(:checkins)
-               .where('userattendances.updated_at > ?', checkins_since)
+               .where('userattendances.updated_at > ? and userattendances.override = false', checkins_since)
     render json: uas, include: :checkins
   end
 
