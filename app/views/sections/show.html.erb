@@ -17,9 +17,6 @@
   <% if @auth_user.edit_gradesettings?(@section.site) %>
     <%= link_to t('buttons.site_settings'), edit_settings_site_path(@section.site), class: 'linkbutton' %>
   <% end %>
-  <% if @auth_user.set_permissions?(@section.site) %>
-    <%= link_to t('buttons.configure_roles'), edit_perms_site_path(@section.site), :class => 'linkbutton' %>
-  <% end %>
   <% if @section.site.sections.count > 1 %>
     <%= link_to t('buttons.change_section'), site_path(@section.site), :class => 'linkbutton' %>
   <% end %>

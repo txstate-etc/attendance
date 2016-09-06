@@ -47,12 +47,11 @@ class SitesController < ApplicationController
   end
 
   def set_return_to
-    # Store referer so the back button still works after saving settings. Otherwise the
-    # back button just returns to edit_settings/edit_perms.
+    # Store referer so the back button still works after saving settings. Otherwise the back button just returns to edit_settings.
     referer_path = URI(request.referer).path
     route = Rails.application.routes.recognize_path(referer_path) rescue nil
     return if route.nil?
-    session[:return_to] = request.referer if !['edit_perms', 'update_perms', 'edit_settings', 'update_settings'].include?(route[:action])
+    session[:return_to] = request.referer if !['edit_settings', 'update_settings'].include?(route[:action])
     session[:return_to] ||= :back
   end
 private

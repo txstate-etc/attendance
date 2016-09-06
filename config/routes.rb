@@ -15,12 +15,8 @@ Attendance::Application.routes.draw do
       end
     end
     member do
-      post 'update_perms'
-      get 'edit_perms'
       post 'update_settings'
       get 'edit_settings'
-      post 'update_checkin_settings'
-      get 'edit_checkin_settings'
     end
   end
 

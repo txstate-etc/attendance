@@ -242,7 +242,7 @@ class SectionsController < ApplicationController
 
 private
   def authorize
-    if ['record_attendance', 'show', 'totals', 'edit_perms', 'update_perms', 'userattendances'].include?(action_name)
+    if ['record_attendance', 'show', 'totals', 'userattendances'].include?(action_name)
       @section ||= Section.find(params[:id])
       site_id = @section.site.id
     end

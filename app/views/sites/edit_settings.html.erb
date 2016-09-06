@@ -31,11 +31,9 @@
       <%= render 'grade_settings', settings: @site.gradesettings, f: f %>
     </div>
   <% end %>
-  <% if @auth_user.set_permissions?(@site.id) %>
-    <div class="settings-section">
-      <h3 class="section-header">Roles</h3>
-      <%= render 'role_settings', f: f %>
-    </div>
-  <% end %>
+  <div class="settings-section">
+    <h3 class="section-header">Roles</h3>
+    <%= render 'role_settings', f: f %>
+  </div>
   <%= f.submit 'Save settings' %>
 <% end %>
