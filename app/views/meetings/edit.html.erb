@@ -30,11 +30,16 @@
     <%= render 'errors' %>
     <%= render 'starttime' %>
 
-    <p>
-      Checkin code: <span id="checkin-code"><%= @meeting.checkin_code %></span>
-      <button type="button" data-action="/meetings/<%= @meeting.id %>/code?remove=1" id="remove-code">Remove</button>
-      <button type="button" data-action="/meetings/<%= @meeting.id %>/code" id="new-code">New</button>
-    </p>
+    <% if @code_enabled %>
+      <p>
+        Checkin code: <span id="checkin-code"><%= @meeting.checkin_code %></span>
+        <button type="button" data-action="/meetings/<%= @meeting.id %>/code?remove=1" id="remove-code">Remove</button>
+        <button type="button" data-action="/meetings/<%= @meeting.id %>/code" id="new-code">New</button>
+      </p>
+    <% end %>
     <%= f.submit 'Save session' %>
   <% end %>
+
+  <h3 class="section-header">Record attendance for this session</h3>
+  <div><%= render 'record_attendance' %></div>
 </div>

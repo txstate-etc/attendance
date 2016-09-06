@@ -93,7 +93,7 @@ jQuery(document).ready(function ($) {
   $('.attendancetype select').each(function() {
     var $select = $(this);
     $select.selectmenu({
-      width: '60%'
+      width: '62%'
     });
     var $text = $select.siblings('span').find('.ui-selectmenu-text');
     $text.prepend('<i class="fa ' + icons[$text.text()] + '"></i>');
@@ -252,7 +252,7 @@ jQuery(document).ready(function ($) {
     }
   });
 
-  $('button.fa-th-large').click(function() {
+  $('button.show-code').click(function() {
     open_code_window($(this).data('code'));
   });
 });

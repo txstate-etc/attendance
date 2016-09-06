@@ -11,10 +11,12 @@
     <p>
       <%= render 'starttime' %>
     </p>
-    <p>
-      <input type="checkbox" id="generate_code" name="generate_code" />
-      <label for="generate_code">Create checkin code</label>
-    </p>
+    <% if @code_enabled %>
+      <p>
+        <input type="checkbox" id="generate_code" name="generate_code" />
+        <label for="generate_code">Create checkin code</label>
+      </p>
+    <% end %>
     <p>
       <span id="initialtype-label"><%=t 'meeting.mark_as' %>:</span>
       <select name="initial_atype">

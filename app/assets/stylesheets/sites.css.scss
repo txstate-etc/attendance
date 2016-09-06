@@ -19,17 +19,17 @@
     }
     th, td {
       padding: 8px;
-      line-height: 25px;
+      line-height: 20px;
       height: 28px;
       width: 170px;
       min-width: 170px;
       max-width: 170px;
       white-space: nowrap;
-      overflow: hidden;    
+      overflow: hidden;
     }
     th {
       border: 1px solid #999;
-      border-bottom: 2px solid #444;
+      border-bottom: 2px solid black;
       text-align: center;
     }
     td {
@@ -243,5 +243,26 @@ body .ui-menu {
   .ui-menu-item {
     font-size: 13px;
     padding: 3px 1em 3px .4em;
+  }
+}
+
+.start-header {
+  padding: 0 3px;
+}
+.code-div {
+  border-top: 1px solid #999;
+  padding-top: 3px;
+  margin-top: 3px;
+}
+button.show-code {
+  border: none;
+  border-radius: 0;
+  text-decoration: underline;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  i {
+    margin-right: 5px;
+    vertical-align: middle;
   }
 }
