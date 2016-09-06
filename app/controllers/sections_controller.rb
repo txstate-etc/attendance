@@ -31,7 +31,7 @@ class SectionsController < ApplicationController
       return
     end
 
-    @meetings = @section.meetings.includes(:userattendances).order("starttime DESC").to_a
+    @meetings = @section.meetings.includes(userattendances: :checkins).order("starttime DESC").to_a
     @memberships = @section.site.memberships.includes(:user, :siteroles).index_by(&:id)
     eager_load(@memberships.values, :sections, :conditions => ["sections.id=?", @section.id])
     @attendancetypes = Attendancetype.getall
