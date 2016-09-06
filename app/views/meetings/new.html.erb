@@ -1,27 +1,28 @@
 <% content_for(:head) do %>
   <meta name="viewport" content="width=device-width, user-scalable=no">
 <% end %>
-<h2 class="page_header"><%=t 'meeting.new_title' %></h2>
-<div class="navigation_link_back"><%= link_to "< #{t('general.back')}", @section %></div>
+<header>
+  <%= link_to "< #{t('general.back')}", @section %>
+  <h2 class="page_header"><%=t 'meeting.new_title' %></h2>
+</header>
 <%= form_for [@section, @meeting] do |f| %>
   <%= render 'errors' %>
-  <div class="flex">
-    <div class="flex-item">
+  <div>
+    <p>
       <%= render 'starttime' %>
-    </div>
-    <div class="flex-item">
+    </p>
+    <p>
       <input type="checkbox" id="generate_code" name="generate_code" />
       <label for="generate_code">Create checkin code</label>
-    </div>
-    <div class="flex-item">
+    </p>
+    <p>
       <span id="initialtype-label"><%=t 'meeting.mark_as' %>:</span>
-      <% @attendancetypes.each do |atype| %>
-        <span class="type-radio">
-          <input type="radio" id="initial-<%= atype.id %>" name="initial_atype" value="<%= atype.id %>" data-atype-name="<%= atype.name %>" <%= atype.default_type ? 'checked="checked"' : '' %>/>
-          <label for="initial-<%= atype.id %>"><%= atype.name %></label>
-        </span>
-      <% end %>
-    </div>
-    <div class="flex-item"><%= f.submit 'Create Session' %></div>
+      <select name="initial_atype">
+        <% @attendancetypes.each do |atype| %>
+          <option value="<%= atype.id %>" <%= atype.default_type ? 'selected' : '' %>><%= atype.name %></option>
+        <% end %>
+      </select>
+    </p>
+    <%= f.submit 'Create Session' %>
   </div>
 <% end %>

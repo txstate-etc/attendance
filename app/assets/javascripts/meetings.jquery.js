@@ -74,6 +74,7 @@ jQuery(document).ready( function ($) {
     $.post_that_times_out(url, {}, function(data) {
       $('#checkin-code').text(data.checkin_code);
       $('#remove-code').show();
+      $('#new-code').hide();
     }).fail(function() {
       alert('failed');
     }, 10000);
@@ -84,6 +85,7 @@ jQuery(document).ready( function ($) {
     $.post_that_times_out(url, {}, function(data) {
       $('#checkin-code').text('');
       $('#remove-code').hide();
+      $('#new-code').show();
     }).fail(function() {
       alert('failed');
     }, 10000);
@@ -91,14 +93,16 @@ jQuery(document).ready( function ($) {
 
   if ($('#checkin-code').text().length < 1) {
     $('#remove-code').hide();
+  } else {
+    $('#new-code').hide();
   }
 
   $('#generate_code').change(function() {
     if (this.checked) {
-      $('.type-radio').hide();
+      $('select[name="initial_atype"]').hide();
       $('#initialtype-label').text('Mark all active students as: Absent');
     } else {
-      $('.type-radio').show();
+      $('select[name="initial_atype"]').show();
       $('#initialtype-label').text('Mark all active students as:');
     }
   })

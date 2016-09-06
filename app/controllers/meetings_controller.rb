@@ -113,7 +113,7 @@ class MeetingsController < ApplicationController
           if params[:meeting] && (params[:meeting][:cancelled] == "true" || params[:meeting][:deleted] == "true")
             redirect_to @meeting.section
           else
-            flash[:notice] = 'Start date/time updated successfully'
+            flash[:notice] = 'Session updated successfully'
             redirect_to action: "edit"
           end
         }

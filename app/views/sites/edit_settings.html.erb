@@ -1,10 +1,13 @@
 <% content_for(:head) do %>
   <meta name="viewport" content="width=device-width, user-scalable=no">
 <% end %>
-<h2 class="page_header">
-  <%=t 'settings.title', site_title: @site.context_name %>
-</h2>
-<div class="navigation_link_back"><%= link_to "< #{t('general.back')}", session[:return_to] %></div>
+
+<header>
+  <%= link_to "< #{t('general.back')}", session[:return_to] %>
+  <h2 class="page_header">
+    <%=t 'settings.title', site_title: @site.context_name %>
+  </h2>
+</header>
 <% if notice %>
   <p id="notice"><%= notice %></p>
 <% end %>
@@ -22,17 +25,17 @@
 
 <%= form_for(@site, url: {action: :update_settings}, method: :post, html: {id: 'update_settings', class: 'update_settings'}) do |f| %>
   <div class="settings-section">
-    <h3 class="section-header">Checkin settings</h3>
+    <h3>Checkin settings</h3>
     <%= render 'checkin_settings', f: f %>
   </div>
   <% if @site.outcomes_url && @auth_user.edit_gradesettings?(@site) %>
     <div class="settings-section">
-      <h3 class="section-header">Grade settings</h3>
+      <h3>Grade settings</h3>
       <%= render 'grade_settings', settings: @site.gradesettings, f: f %>
     </div>
   <% end %>
   <div class="settings-section">
-    <h3 class="section-header">Roles</h3>
+    <h3>Roles</h3>
     <%= render 'role_settings', f: f %>
   </div>
   <%= f.submit 'Save settings' %>

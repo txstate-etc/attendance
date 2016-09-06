@@ -2,49 +2,39 @@
   <meta name="viewport" content="width=480, user-scalable=no">
 <% end %>
 
-<h2 class="page_header">
-  <%= @meeting.starttime.strftime('%B %-d, %Y - %l:%M%P') %> : <%= @meeting.section.useful_name %>
-</h2>
-<div class="navigation_link_back">
+<header>
   <% if use_mobile_template? %>
-    <%= link_to "< #{t('general.back')}", @meeting %>
+      <%= link_to "< #{t('general.back')}", @meeting %>
   <% else %>
-    <%= link_to "< #{t('general.back')}", @meeting.section %>
+      <%= link_to "< #{t('general.back')}", @meeting.section %>
   <% end %>
-</div>
+  <h2 class="page_header"><%= @meeting.starttime.strftime('%B %-d, %Y at %l:%M%P') %></h2>
+  <%# Button that will cancel/un-cancel a meeting %>
+  <%= form_for(@meeting, html: {class: 'inline-form'}) do |f| %>
+      <%= hidden_field(:meeting, :cancelled, {value: !@meeting.cancelled}) %>
+      <%= f.submit (@meeting.cancelled ? t('meeting.reactivate_session') : t('meeting.cancel_session')) %>
+  <% end %>
+  <%# Button that will soft delete a meeting %>
+  <%= form_for(@meeting, html: {class: 'inline-form'}) do |f| %>
+      <%= hidden_field(:meeting, :deleted, {value: 'true'}) %>
+      <%= f.submit t('meeting.delete_session') %>
+  <% end %>
+</header>
+
 <% if notice %>
     <p id="notice" class="no-margin-top"><%= notice %></p>
 <% end %>
 
-<h3 class="no-margin-top section-header">Edit session details</h3>
-
-<div class="flex">
+<div>
   <%= form_for(@meeting, html: {class: 'flex-item'}) do |f| %>
-      <%= render 'errors' %>
-      <%= render 'starttime' %>
-      <%= f.submit 'Save start' %>
+    <%= render 'errors' %>
+    <%= render 'starttime' %>
+
+    <p>
+      Checkin code: <span id="checkin-code"><%= @meeting.checkin_code %></span>
+      <button type="button" data-action="/meetings/<%= @meeting.id %>/code?remove=1" id="remove-code">Remove</button>
+      <button type="button" data-action="/meetings/<%= @meeting.id %>/code" id="new-code">New</button>
+    </p>
+    <%= f.submit 'Save session' %>
   <% end %>
-
-  <div class="flex-item">
-    Checkin code: <span id="checkin-code"><%= @meeting.checkin_code %></span>
-    <button type="button" data-action="/meetings/<%= @meeting.id %>/code?remove=1" id="remove-code">Remove</button>
-    <button type="button" data-action="/meetings/<%= @meeting.id %>/code" id="new-code">New</button>
-  </div>
-
-  <div class="flex-item">
-    <%# Button that will cancel/un-cancel a meeting %>
-    <%= form_for(@meeting, html: {class: 'inline-form'}) do |f| %>
-      <%= hidden_field(:meeting, :cancelled, {value: !@meeting.cancelled}) %>
-      <%= f.submit (@meeting.cancelled ? t('meeting.reactivate_session') : t('meeting.cancel_session')) %>
-    <% end %>
-    |
-    <%# Button that will soft delete a meeting %>
-    <%= form_for(@meeting, html: {class: 'inline-form'}) do |f| %>
-      <%= hidden_field(:meeting, :deleted, {value: 'true'}) %>
-      <%= f.submit t('meeting.delete_session') %>
-    <% end %>
-  </div>
 </div>
-
-<h3 class="section-header">Record attendance for this session</h3>
-<div><%= render 'record_attendance' %></div>

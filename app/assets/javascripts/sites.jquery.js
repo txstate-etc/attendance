@@ -1,4 +1,10 @@
 jQuery(document).ready(function ($) {
+  var icons = {
+    Present: 'fa-check-square-o',
+    Absent: 'fa-times-circle',
+    Late: 'fa-exclamation-triangle',
+    Excused: 'fa-check-circle-o'
+  };
   var sectionId = location.pathname.slice(location.pathname.lastIndexOf('/') + 1);
   var $tablediv = $('#table-main');
   var $dialog = $('#csv-dialog').dialog({
@@ -76,6 +82,8 @@ jQuery(document).ready(function ($) {
         $widget.css('color', attendancetype_colors[$changed.val()]);
         $changed.prop('disabled', false);
         $changed.selectmenu('refresh');
+        var $text = $widget.find('.ui-selectmenu-text');
+        $text.prepend('<i class="fa ' + icons[$text.text()] + '"></i>');
       }
     });
   });
@@ -85,8 +93,10 @@ jQuery(document).ready(function ($) {
   $('.attendancetype select').each(function() {
     var $select = $(this);
     $select.selectmenu({
-      width: '100%'
+      width: '60%'
     });
+    var $text = $select.siblings('span').find('.ui-selectmenu-text');
+    $text.prepend('<i class="fa ' + icons[$text.text()] + '"></i>');
   });
 
   $('#site_attendance td.attendancetype select').each(function (i, select) {
@@ -203,7 +213,7 @@ jQuery(document).ready(function ($) {
         if (ua.checkins.length) {
           var checkin = ua.checkins[0];
           var time = moment(checkin.time);
-          $select.after('<i class="fa fa-clock-o checkin" title="Checked in with ' + checkin.source + ' at ' + time.format('h:mma') + '"/>');
+          $select.siblings('span').after('<i class="fa fa-bell checkin" title="Checked in with ' + checkin.source + ' at ' + time.format('h:mma') + '"/>');
         }
       });
       if (data.length) {
@@ -242,7 +252,7 @@ jQuery(document).ready(function ($) {
     }
   });
 
-  $('button.fa-qrcode').click(function() {
+  $('button.fa-th-large').click(function() {
     open_code_window($(this).data('code'));
   });
 });

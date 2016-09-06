@@ -45,7 +45,7 @@ en:
     edit_title: "Editing Session"
     mark_as: "Mark all active students as"
     new_title: "New Session"
-    reactivate_session: "Re-activate session"
+    reactivate_session: "Activate session"
     start_datetime: "Start date/time"
 
   mobile:

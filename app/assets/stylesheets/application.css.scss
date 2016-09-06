@@ -25,10 +25,29 @@ body {
     text-rendering: optimizeLegibility;
 }
 
-h2.page_header {
-	margin-top: 10px;
-	margin-bottom: 4px;
+header {
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid black;
+  h1, h2, h3, h4 {
+    display: inline-block;
+    margin: 0;
+    vertical-align: middle;
+  }
+  a {
+    font-size: 14px;
+    margin-right: 5px;
+    text-decoration: none;
+    vertical-align: middle;
+    @media print {
+      display: none;
+    }
+  }
+  form {
+    margin-left: 5px;
+  }
 }
+
 .navigation_link_back {
 	padding-bottom: 8px;
 	@media print {
@@ -114,6 +133,7 @@ table.attendancetypes {
 
 .linkbutton {
     display: inline-block;
+    cursor: pointer;
     font-size: 12px;
     font-weight: bold;
 	text-decoration: none;

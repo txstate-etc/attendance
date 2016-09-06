@@ -18,9 +18,9 @@
       font-size: 14px;
     }
     th, td {
-      padding: 5px;
+      padding: 8px;
       line-height: 25px;
-      height: 25px;
+      height: 28px;
       width: 170px;
       min-width: 170px;
       max-width: 170px;
@@ -53,17 +53,27 @@
       }
       &.attendancetype {
         position: relative;
-        padding: 0;
+        padding: 8px 0;
         .ui-selectmenu-button {
-          width: 100%;
+          width: 70%;
           border: none;
           border-radius: 0;
           background: none;
           vertical-align: middle;
-          height: 35px;
+          height: 25px;
+          border: 1px solid #999;
+          border-radius: 10px;
+          margin-left: -5px;
         }
         .ui-selectmenu-text {
-          text-align: center;
+          padding: 0.4em 0em 0.4em 0.7em;
+          font-size: 13px;
+          i {
+            vertical-align: top;
+            margin-top: 1px;
+            margin-right: 7px;
+            font-size: 1.2em;
+          }
         }
       }
       select {
@@ -79,7 +89,6 @@
     text-decoration: none;
     font-size: 1.25em;
     margin-left: 5px;
-    vertical-align: middle;
     &.delete {
       background-image: url('delete.png');
     }
@@ -227,5 +236,12 @@ button.fa {
   }
   input {
     margin-left: 10px
+  }
+}
+
+body .ui-menu {
+  .ui-menu-item {
+    font-size: 13px;
+    padding: 3px 1em 3px .4em;
   }
 }

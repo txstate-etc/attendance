@@ -42,11 +42,11 @@
     <% @meetings.each_with_index do |meeting, index| %>
       <th class="<%= meeting.cancelled && !@force_show_cancelled ? 'cancelled' : '' %> <%= index == 0 ? 'first_col' : '' %>" data-meeting-id="<%= meeting.id %>">
         <%= meeting.starttime.strftime('%b %-d at %l:%M%P') %>
-        <%= link_to '', edit_meeting_path(meeting), class: 'fa fa-pencil-square-o', title: 'Edit session and record attendance' %>
+        <%= link_to '', edit_meeting_path(meeting), class: 'fa fa-pencil', title: 'Edit session and record attendance' %>
         <% if !meeting.source_starttime.blank? %>
           <i class="fa fa-credit-card" title="Created for txstate card readers"></i>
         <% elsif !meeting.checkin_code.blank? %>
-          <button type="button" class="fa fa-qrcode" data-code="<%= meeting.checkin_code %>" title="Show checkin code"></button>
+          <button type="button" class="fa fa-th-large" data-code="<%= meeting.checkin_code %>" title="Show checkin code"></button>
         <% end %>
       </th>
     <% end %>
@@ -117,6 +117,7 @@
       <tr class="<%= cycle('odd', 'even') %> <% if started_moved %> <%='moved' %> <% elsif started_inactives %> <%= 'inactive' %> <% end %>">
       <% @meetings.each_with_index do |meeting, index| %>
         <td class="attendancetype <%= meeting.cancelled && !@force_show_cancelled ? 'cancelled' : '' %> <%= index == 0 ? 'first_col' : '' %>">
+          <div>
           <% if ua = ua_hash[meeting.id] %>
             <% if meeting.active %>
               <select name="meeting-<%= meeting.id %>_member-<%= membership_id %>">
@@ -125,7 +126,7 @@
               <% end %>
               </select>
               <% unless ua.checkins.empty? %>
-                <i class="fa <%= ua.override ? 'fa-chain-broken' : 'fa-clock-o' %> checkin"
+                <i class="fa <%= ua.override ? 'fa-bell-slash-o' : 'fa-bell' %> checkin"
                    title="<%= ua.override ? 'Overriding' : '' %> <%= ua.checkins.first.source %> at <%= ua.checkins.first.time.strftime('%l:%M%P').strip %>"></i>
               <% end %>
             <% else %>
@@ -134,6 +135,7 @@
           <% else %>
             &nbsp;
           <% end %>
+          </div>
         </td>
       <% end %>
     </tr>

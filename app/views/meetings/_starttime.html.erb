@@ -1,4 +1,4 @@
 <label for="meeting_startdate"><%=t 'meeting.start_datetime' %>:</label>
-<input id="meeting_startdate" name="meeting_startdate" size="10" value="<%= @meeting.starttime.strftime('%Y-%m-%d') %>" />
+<input id="meeting_startdate" type="text" name="meeting_startdate" size="10" value="<%= @meeting.starttime.strftime('%Y-%m-%d') %>" />
 <span><%=t 'meeting.at' %></span>
-<input id="meeting_starttime" name="meeting_starttime" size="8" value="<%= @meeting.starttime.strftime('%l:%M%P') %>" />
+<input id="meeting_starttime" type="text" name="meeting_starttime" size="8" value="<%= @meeting.starttime.strftime('%l:%M%P') %>" />

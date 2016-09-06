@@ -1,11 +1,11 @@
 <% content_for(:head) do %>
   <meta name="viewport" content="width=device-width, user-scalable=no">
 <% end %>
-<h2 class="page_header">Attendance Totals for <%= @section.useful_name %></h2>
-<div class="navigation_link_back"><%= link_to "< #{t('general.back')}", @section %></div>
-<div id="page-actions">
+<header>
+  <%= link_to "< #{t('general.back')}", @section %>
+  <h2 class="page_header">Attendance Totals for <%= @section.useful_name %></h2>
   <a href="#" class="linkbutton" onclick="window.print(); return false;"><%=t 'buttons.print_page' %></a>
-</div>
+</header>
 <table id="site_attendance_totals" class="attendancetypes">
 <thead>
 <tr class="header">
