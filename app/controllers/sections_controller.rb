@@ -14,6 +14,23 @@ class SectionsController < ApplicationController
   # GET /sections/1.json
   def show
     @section ||= Section.find(params[:id])
+    if request.format.csv?
+      opts = {
+        sessions: params[:sessions] == 'true',
+        checkins: params[:checkins] == 'true',
+        totals: params[:totals] == 'true'
+      }
+      csvdump = @section.export_to_csv(opts)
+      response.headers['Cache-Control'] = 'no-cache'
+      send_data(
+          csvdump,
+          :filename => @section.site.safe_context_name + '_' + @section.safe_name + '_attendance_' + Time.zone.now.strftime("%Y%m%d") + '.csv',
+          :type => 'text/csv',
+          :disposition => 'attachment'
+      )
+      return
+    end
+
     @meetings = @section.meetings.includes(:userattendances).order("starttime DESC").to_a
     @memberships = @section.site.memberships.includes(:user, :siteroles).index_by(&:id)
     eager_load(@memberships.values, :sections, :conditions => ["sections.id=?", @section.id])
@@ -43,17 +60,6 @@ class SectionsController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @section }
-      format.csv do
-        opts = {sessions: true, checkins: true, totals: true}
-        csvdump = @section.export_to_csv(opts)
-        response.headers['Cache-Control'] = 'no-cache'
-        send_data(
-          csvdump,
-          :filename => @section.site.safe_context_name + '_' + @section.safe_name + '_attendance_' + Time.zone.now.strftime("%Y%m%d") + '.csv',
-          :type => 'text/csv',
-          :disposition => 'attachment'
-        )
-      end
     end
   end
 

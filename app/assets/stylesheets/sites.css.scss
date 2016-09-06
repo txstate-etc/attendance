@@ -62,6 +62,9 @@
           vertical-align: middle;
           height: 35px;
         }
+        .ui-selectmenu-text {
+          text-align: center;
+        }
       }
       select {
         font-size: 12px;
@@ -207,4 +210,15 @@ button.fa {
   background: none;
   padding: 0;
   cursor: pointer;
+}
+
+#csv-dialog {
+  a {
+    float: none;
+    display: inline-block;
+    margin-left: 15px;
+  }
+  input {
+    margin-left: 10px
+  }
 }

@@ -5,6 +5,8 @@
   var updated_at = <%= Time.now.to_i * 1000 %>;
 <% end %>
 
+<%= render 'csv_dialog' %>
+
 <h2 class="collapsed-page-header"><%= @section.useful_name %></h2>
 <div id="site-actions">
   <%= link_to t('buttons.add_session'), new_section_meeting_path(@section), :class => 'linkbutton' %>
@@ -21,7 +23,7 @@
   <% if @section.site.sections.count > 1 %>
     <%= link_to t('buttons.change_section'), site_path(@section.site), :class => 'linkbutton lessimportant' %>
   <% end %>
-  <%= link_to t('buttons.download_csv'), {:action => :show, :format => :csv}, :class => 'linkbutton lessimportant' %>
+  <button type="button" class="linkbutton lessimportant" id="download-csv"><%= t('buttons.download_csv') %></button>
 </div>
 <% if @meetings.empty? %>
   <p><%=t 'section.no_sessions', add_session: t('buttons.add_session') %></p>

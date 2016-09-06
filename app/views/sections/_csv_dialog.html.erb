@@ -1,0 +1,11 @@
+<div id="csv-dialog" title="Data to include in CSV file" style="display: none;">
+  <p>
+    <input type="checkbox" name="include-sessions" id="include-sessions" checked />
+    <label for="include-sessions">sessions</label>
+    <input type="checkbox" name="include-checkins" id="include-checkins" />
+    <label for="include-checkins">checkins</label>
+    <input type="checkbox" name="include-totals" id="include-totals" />
+    <label for="include-totals">totals</label>
+    <%= link_to t('buttons.download_csv'), {action: :show, format: :csv}, class: 'linkbutton lessimportant' %>
+  </p>
+</div>

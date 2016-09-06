@@ -15,5 +15,6 @@
 //= require jquery.color-2.1.2.min.js
 //= require jquery-ui/datepicker
 //= require jquery-ui/selectmenu
+//= require jquery-ui/dialog
 //= require jquery.timepicker.min.js
 //= require_tree .

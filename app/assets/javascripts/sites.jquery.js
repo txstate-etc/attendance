@@ -1,6 +1,25 @@
 jQuery(document).ready(function ($) {
   var sectionId = location.pathname.slice(location.pathname.lastIndexOf('/') + 1);
   var $tablediv = $('#table-main');
+  var $dialog = $('#csv-dialog').dialog({
+    autoOpen: false,
+    modal: true,
+    width: 390,
+    height: 120,
+    resizable: false,
+    draggable: false
+  });
+  $('#csv-dialog a')[0].search = '?sessions=1&checkins=0&totals=0';
+  $('#download-csv').click(function() {
+    $dialog.dialog('open');
+  });
+
+  $('#csv-dialog a').click(function() {
+    this.search = '?sessions='+ $('#include-sessions').is(':checked')
+      + '&checkins=' + $('#include-checkins').is(':checked')
+      + '&totals=' + $('#include-totals').is(':checked');
+    $dialog.dialog('close');
+  });
 
   $('#site_attendance td.attendancetype select').each(function (i, select) {
     $(select).data('current', $(select).val());
