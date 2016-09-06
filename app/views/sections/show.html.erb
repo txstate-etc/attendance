@@ -31,7 +31,7 @@
 <div id="table-name-head">
 <table>
   <thead>
-    <tr><th><%=t 'general.name' %></th></tr>
+    <tr><th <% if @section.site.enable_code %>style="height: 47px;"<% end %>><%=t 'general.name' %></th></tr>
   </thead>
 </table>
 </div>
