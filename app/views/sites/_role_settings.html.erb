@@ -1,0 +1,22 @@
+<table>
+  <thead>
+  <tr>
+    <th><%=t 'permissions.role' %></th>
+    <th title="Allow certain roles to record attendance for the whole class.">Takes<br/>Attendance</th>
+    <th title="Set certain roles to have their attendance recorded.">Track<br/>Attendance</th>
+    <th title="Allow certain roles to edit grade settings.">Edit<br/>Grade Settings</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @siteroles.each do |siterole| %>
+      <%= f.fields_for :siteroles, siterole do |sr| %>
+          <tr class="<%= cycle('even', 'odd') %>">
+            <td><%= siterole.role.displayname %></td>
+            <td><%= sr.check_box :take_attendance, :title => "Allow #{siterole.role.displayname} to record attendance.", :disabled => siterole.set_permissions? %></td>
+            <td><%= sr.check_box :record_attendance, :title => "Track attendance for #{siterole.role.displayname}." %></td>
+            <td><%= sr.check_box :edit_gradesettings, :title => "Allow #{siterole.role.displayname} to edit grade settings.", :disabled => siterole.set_permissions? %></td>
+          </tr>
+      <% end %>
+  <% end %>
+  </tbody>
+</table>

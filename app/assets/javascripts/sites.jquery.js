@@ -9,7 +9,6 @@ jQuery(document).ready(function ($) {
     resizable: false,
     draggable: false
   });
-  $('#csv-dialog a')[0].search = '?sessions=1&checkins=0&totals=0';
   $('#download-csv').click(function() {
     $dialog.dialog('open');
   });

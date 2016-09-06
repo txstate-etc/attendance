@@ -23,6 +23,7 @@ class SitesController < ApplicationController
   def edit_settings
     @site ||= Site.find(params[:id])
     @multiple_sections = @site.sections.reject { |s| s.name == "Unassigned" }.count > 1
+    @siteroles = @site.siteroles.includes(:role).order('roles.displayorder').to_a
     set_return_to
     respond_to do |format|
       format.html # edit_settings.html.erb
@@ -42,25 +43,7 @@ class SitesController < ApplicationController
     else
       flash[:notice] = nil
     end
-    render 'edit_settings'
-  end
-  
-  def edit_perms
-    @site ||= Site.find(params[:id])
-    @siteroles = @site.siteroles.includes(:role).order('roles.displayorder').to_a
-    set_return_to
-    respond_to do |format|
-      format.html # edit_perms.html.erb
-    end
-  end
-  
-  def update_perms
-    @site ||= Site.find(params[:id])
-    if @site.update_attributes(params[:site])
-      redirect_to edit_perms_site_path(@site), notice: 'Permissions were successfully updated.'
-    else
-      redirect_to edit_perms_site_path(@site), notice: 'There was a problem updating permissions.'
-    end
+    redirect_to edit_settings_site_path(@site)
   end
 
   def set_return_to
@@ -78,11 +61,8 @@ private
       params[:id].to_i == session[:site_id].to_i
     end if ['show'].include?(action_name)
     return super do
-      params[:id].to_i == session[:site_id].to_i && @auth_user.set_permissions?(params[:id])
-    end if ['edit_perms', 'update_perms'].include?(action_name)
-    return super do
       params[:id].to_i == session[:site_id].to_i && @auth_user.edit_gradesettings?(params[:id])
-    end if ['edit_settings', 'update_settings', 'edit_checkin_settings', 'update_checkin_settings'].include?(action_name)
+    end if ['edit_settings', 'update_settings'].include?(action_name)
     return super
   end
 end
