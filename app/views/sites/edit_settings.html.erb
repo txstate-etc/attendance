@@ -24,10 +24,12 @@
 <% end %>
 
 <%= form_for(@site, url: {action: :update_settings}, method: :post, html: {id: 'update_settings', class: 'update_settings'}) do |f| %>
-  <div class="settings-section">
-    <h3>Checkin settings</h3>
-    <%= render 'checkin_settings', f: f %>
-  </div>
+  <% if @has_card_reader || @site.enable_code %>
+    <div class="settings-section">
+      <h3>Checkin settings</h3>
+      <%= render 'checkin_settings', f: f %>
+    </div>
+  <% end %>
   <% if @site.outcomes_url && @auth_user.edit_gradesettings?(@site) %>
     <div class="settings-section">
       <h3>Grade settings</h3>

@@ -9,8 +9,10 @@
         Mark as Absent after <%= settings.text_field :absent_after, title: 'Absent threshold', size: 2, maxlength: 2 %> minutes.
       </label>
     </div>
-    <p>
-      <%= settings.check_box :auto_enabled %>
-      <label for="site_checkinsettings_attributes_auto_enabled"><%= t('checkin_settings.auto_enabled') %></label>
-    </p>
+    <% if @has_card_reader %>
+      <p>
+        <%= settings.check_box :auto_enabled %>
+        <label for="site_checkinsettings_attributes_auto_enabled"><%= t('checkin_settings.auto_enabled') %></label>
+      </p>
+    <% end %>
 <% end %>

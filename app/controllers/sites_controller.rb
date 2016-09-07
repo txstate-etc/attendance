@@ -24,6 +24,7 @@ class SitesController < ApplicationController
     @site ||= Site.find(params[:id])
     @multiple_sections = @site.sections.reject { |s| s.name == "Unassigned" }.count > 1
     @siteroles = @site.siteroles.includes(:role).order('roles.displayorder').to_a
+    @has_card_reader = Meeting.unscoped.joins(:section).where('sections.site_id = ? and meetings.source_starttime is not null', @site.id).any?
     set_return_to
     respond_to do |format|
       format.html # edit_settings.html.erb
