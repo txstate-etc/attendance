@@ -4,7 +4,6 @@
 
 #site_attendance {
   clear: both;
-  margin-top: 10px;
   table {
     border-collapse: collapse;
     table-layout: fixed;
@@ -177,13 +176,19 @@ option.atype {
 
 #site-header {
   margin-bottom: 10px;
-  h2 {
+  padding: 0;
+  border: none;
+  h1 {
     display: inline-block;
-    margin: 0 10px 0 0;
-    vertical-align: middle;
+    margin: 0;
   }
-  .lessimportant {
-    float: right;
+  .change-section {
+    vertical-align: super;
+    text-decoration: underline;
+    font-size: 1em
+  }
+  #site-actions {
+    margin-top: 15px;
   }
 }
 

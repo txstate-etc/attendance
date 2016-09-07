@@ -31,17 +31,19 @@ header {
   border-bottom: 1px solid black;
   h1, h2, h3, h4 {
     display: inline-block;
-    margin: 0;
+    margin: 0 15px 0 0;
     vertical-align: middle;
   }
-  a {
+  a, button {
     font-size: 14px;
     margin-right: 5px;
     text-decoration: none;
-    vertical-align: middle;
     @media print {
       display: none;
     }
+  }
+  > a:first-child {
+    vertical-align: middle;
   }
   form {
     margin-left: 5px;
@@ -134,29 +136,29 @@ table.attendancetypes {
 .linkbutton {
     display: inline-block;
     cursor: pointer;
-    font-size: 12px;
-    font-weight: bold;
+    font-size: 14px;
 	text-decoration: none;
 	background-color: #EEEEEE;
 	color: #111111;
-	padding: 6px;
-	border-top: 1px solid #CCCCCC;
-	border-right: 1px solid #333333;
-	border-bottom: 1px solid #333333;
-	border-left: 1px solid #CCCCCC;
+	padding: 6px 10px;
+	border: 1px solid #333333;
+    border-radius: 5px;
 	margin-right: 5px;
 	margin-bottom: 5px;
     line-height: inherit;
-}
 
-a.linkbutton:visited {
-	background-color: #EEEEEE;
-	color: #111111;
-}
-
-a.linkbutton:hover {
-	background-color: #DDDDDD;
-	color: #111111;
+    i {
+      margin-right: 8px;
+      font-size: 1em;
+    }
+    &:visited {
+      background-color: #EEEEEE;
+      color: #111111;
+    }
+    &:hover {
+      background-color: #DDDDDD;
+      color: #111111;
+    }
 }
 
 .checkin {

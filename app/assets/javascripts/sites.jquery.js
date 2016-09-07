@@ -10,7 +10,7 @@ jQuery(document).ready(function ($) {
   var $dialog = $('#csv-dialog').dialog({
     autoOpen: false,
     modal: true,
-    width: 390,
+    width: 400,
     height: 125,
     resizable: false,
     draggable: false,
@@ -30,6 +30,13 @@ jQuery(document).ready(function ($) {
   $('#site_attendance td.attendancetype select').each(function (i, select) {
     $(select).data('current', $(select).val());
   });
+
+  function refreshSelectMenu($select) {
+    var $widget = $select.siblings('span');
+    var $text = $widget.find('.ui-selectmenu-text');
+    $text.prepend('<i class="fa ' + icons[$text.text()] + '"></i>');
+    $widget.css('color', attendancetype_colors[$select.val()]);
+  }
 
   $('#site_attendance td.attendancetype select').on('selectmenuchange', function (e) {
     var $changed = $(e.target);
@@ -80,12 +87,10 @@ jQuery(document).ready(function ($) {
       complete: function (data, textState, jqXHR) {
         $td.stop(true);
         $td.css('background-color', 'transparent')
-        $widget.css('color', attendancetype_colors[$changed.val()]);
         $changed.prop('disabled', false);
         $changed.selectmenu('refresh');
-        var $text = $widget.find('.ui-selectmenu-text');
-        $text.prepend('<i class="fa ' + icons[$text.text()] + '"></i>');
         $changed.closest('div').find('i.fa-bell').removeClass('fa-bell').addClass('fa-bell-slash-o');
+        refreshSelectMenu($changed);
       }
     });
   });
@@ -121,11 +126,11 @@ jQuery(document).ready(function ($) {
 
   $('#toggle_cancelled').click(function (e) {
   	e.preventDefault();
-    if ($(this).html() == 'Show Cancelled') {
-      $(this).html('Hide Cancelled');
+    if ($(this).text() == 'Show Cancelled') {
+      $(this).html('<i class="fa fa-eye-slash"></i>Hide Cancelled');
       $('.cancelled').show();
     } else {
-      $(this).html('Show Cancelled');
+      $(this).html('<i class="fa fa-eye"></i>Show Cancelled');
       $('.cancelled').hide();
     }
   });
@@ -216,7 +221,8 @@ jQuery(document).ready(function ($) {
           var checkin = ua.checkins[0];
           var time = moment(checkin.time);
           $select.siblings('span').after('<i class="fa fa-bell checkin" title="Checked in with ' + checkin.source + ' at ' + time.format('h:mma') + '"/>');
-          $
+          $select.selectmenu('refresh');
+          refreshSelectMenu($select)
         }
       });
       if (data.length) {

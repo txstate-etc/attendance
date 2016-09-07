@@ -7,21 +7,29 @@
 
 <%= render 'csv_dialog' %>
 
-<div id="site-header">
-  <h2><%= @section.useful_name %></h2>
-  <%= link_to t('buttons.add_session'), new_section_meeting_path(@section), :class => 'linkbutton' %>
-  <%= link_to t('buttons.view_totals'), {:action => :totals}, :class => 'linkbutton' %>
-  <% if @num_cancelled_meetings > 0 && !@force_show_cancelled %>
-    <a id="toggle_cancelled" href="#" class="linkbutton"><%=t 'buttons.show_cancelled' %></a>
-  <% end %>
-  <% if @auth_user.edit_gradesettings?(@section.site) %>
-    <%= link_to t('buttons.site_settings'), edit_settings_site_path(@section.site), class: 'linkbutton' %>
-  <% end %>
+<header id="site-header">
+  <h1>Viewing attendance for <%= @section.useful_name %></h1>
   <% if @section.site.sections.count > 1 %>
-    <%= link_to t('buttons.change_section'), site_path(@section.site), :class => 'linkbutton' %>
+      <%= link_to "Change Section", site_path(@section.site), class: 'change-section' %>
   <% end %>
-  <button type="button" class="linkbutton" id="download-csv"><%= t('buttons.download_csv') %></button>
-</div>
+  <div id="site-actions">
+    <%= link_to new_section_meeting_path(@section), :class => 'linkbutton' do %>
+      <i class="fa fa-plus"></i><%= t('buttons.add_session') %>
+    <% end %>
+    <%= link_to totals_section_path(@section), :class => 'linkbutton' do %>
+      <i class="fa fa-table"></i><%= t('buttons.view_totals') %>
+    <% end %>
+    <% if @num_cancelled_meetings > 0 && !@force_show_cancelled %>
+      <a id="toggle_cancelled" href="#" class="linkbutton"><i class="fa fa-eye"></i><%=t 'buttons.show_cancelled' %></a>
+    <% end %>
+    <a class="linkbutton" id="download-csv" href="javascript:void(0)"><i class="fa fa-download"></i><%= t('buttons.download_csv') %></a>
+    <% if @auth_user.edit_gradesettings?(@section.site) %>
+      <%= link_to edit_settings_site_path(@section.site), class: 'linkbutton' do %>
+        <i class="fa fa-cog"></i><%= t('buttons.site_settings') %>
+      <% end %>
+    <% end %>
+  </div>
+</header>
 <% if @meetings.empty? %>
   <p><%=t 'section.no_sessions', add_session: t('buttons.add_session') %></p>
 <% else %>
