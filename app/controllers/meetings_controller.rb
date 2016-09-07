@@ -51,7 +51,7 @@ class MeetingsController < ApplicationController
   # GET /meetings/1/edit
   def edit
     @meeting ||= Meeting.find(params[:id])
-    @userattendances = @meeting.userattendances.includes(:checkins, :membership => [:user, :siteroles]).order('users.lastname').to_a
+    @userattendances = @meeting.userattendances.includes(:checkins, :membership => [:user, :siteroles, :sections]).order('users.lastname').to_a
     @attendancetypes = Attendancetype.getall
 
     @userattendances = @userattendances.sort_by{|ua|
