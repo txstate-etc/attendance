@@ -34,9 +34,9 @@ class Userattendance < ActiveRecord::Base
     checkin = self.checkins.first
     settings = self.membership.site.checkinsettings
 
-    if (self.meeting.starttime + settings.tardy_after.minutes) > checkin.time
+    if (self.meeting.starttime + settings.tardy_after.minutes) > (checkin.time - 30.seconds)
       self.attendancetype = Attendancetype.find_by_name('Present')
-    elsif (self.meeting.starttime + settings.absent_after.minutes) > checkin.time
+    elsif (self.meeting.starttime + settings.absent_after.minutes) > (checkin.time - 30.seconds)
       self.attendancetype = Attendancetype.find_by_name('Late')
     else
       self.attendancetype = Attendancetype.find_by_name('Absent')

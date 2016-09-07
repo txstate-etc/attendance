@@ -10,8 +10,8 @@ jQuery(document).ready(function ($) {
   var $dialog = $('#csv-dialog').dialog({
     autoOpen: false,
     modal: true,
-    width: 400,
-    height: 125,
+    width: 410,
+    height: 120,
     resizable: false,
     draggable: false,
     position: { my: 'left top', at: 'left bottom', of: $('#download-csv')}
@@ -89,7 +89,7 @@ jQuery(document).ready(function ($) {
         $td.css('background-color', 'transparent')
         $changed.prop('disabled', false);
         $changed.selectmenu('refresh');
-        $changed.closest('div').find('i.fa-bell').removeClass('fa-bell').addClass('fa-bell-slash-o');
+        $td.next().find('span').addClass('override').attr('title', 'Record changed after checkin');
         refreshSelectMenu($changed);
       }
     });
@@ -100,7 +100,7 @@ jQuery(document).ready(function ($) {
   $('.attendancetype select').each(function() {
     var $select = $(this);
     $select.selectmenu({
-      width: '62%'
+      width: '96%'
     });
     var $text = $select.siblings('span').find('.ui-selectmenu-text');
     $text.prepend('<i class="fa ' + icons[$text.text()] + '"></i>');
@@ -220,7 +220,7 @@ jQuery(document).ready(function ($) {
         if (ua.checkins.length) {
           var checkin = ua.checkins[0];
           var time = moment(checkin.time);
-          $select.siblings('span').after('<i class="fa fa-bell checkin" title="Checked in with ' + checkin.source + ' at ' + time.format('h:mma') + '"/>');
+          $select.closest('td').next().append('<span>' + time.format('h:mma') + '</span>');
           $select.selectmenu('refresh');
           refreshSelectMenu($select)
         }

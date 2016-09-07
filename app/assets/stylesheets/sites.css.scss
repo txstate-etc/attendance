@@ -25,11 +25,21 @@
       max-width: 170px;
       white-space: nowrap;
       overflow: hidden;
+      &.checkin-col {
+        width: 50px;
+        min-width: 50px;
+        max-width: 50px;
+        .override {
+          text-decoration: line-through;
+          color: #777;
+        }
+      }
     }
     th {
       border: 1px solid #999;
       border-bottom: 2px solid black;
       text-align: center;
+      padding: 4px 8px;
     }
     td {
       border: 1px solid #999;
@@ -52,21 +62,20 @@
       }
       &.attendancetype {
         position: relative;
-        padding: 8px;
+        padding: 0;
+        width: 186px;
+        min-width: 186px;
+        max-width: 186px;
         .ui-selectmenu-button {
-          width: 70%;
+          width: 94%;
           border: none;
           border-radius: 0;
           background: none;
           vertical-align: middle;
-          height: 25px;
-          border: 1px solid #999;
-          border-radius: 10px;
-          margin-left: -5px;
+          height: 35px;
         }
         .ui-selectmenu-text {
-          padding: 0.4em 0em 0.4em 0.7em;
-          font-size: 13px;
+          font-size: 15px;
           i {
             vertical-align: top;
             margin-top: 1px;
@@ -87,9 +96,13 @@
     display: inline-block;
     text-decoration: none;
     font-size: 1.25em;
-    margin-left: 5px;
+    margin-left: 10px;
     &.delete {
       background-image: url('delete.png');
+    }
+    &.fa-credit-card {
+      margin: 0;
+      font-size: 1.5em;
     }
   }
 
@@ -175,9 +188,6 @@ option.atype {
 }
 
 #site-header {
-  margin-bottom: 10px;
-  padding: 0;
-  border: none;
   h1 {
     display: inline-block;
     margin: 0;
@@ -187,9 +197,10 @@ option.atype {
     text-decoration: underline;
     font-size: 1em
   }
-  #site-actions {
-    margin-top: 15px;
-  }
+}
+
+#site-actions {
+  margin-bottom: 10px;
 }
 
 tr.separator {
@@ -246,8 +257,8 @@ button.fa {
 
 body .ui-menu {
   .ui-menu-item {
-    font-size: 13px;
-    padding: 3px 1em 3px .4em;
+    font-size: 15px;
+    padding: 5px 1em 5px .4em;
   }
 }
 
