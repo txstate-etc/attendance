@@ -9,15 +9,19 @@ jQuery(document).ready(function ($) {
   var $tablediv = $('#table-main');
   var $dialog = $('#csv-dialog').dialog({
     autoOpen: false,
-    modal: true,
-    width: 410,
+    modal: false,
+    width: 400,
     height: 120,
     resizable: false,
     draggable: false,
     position: { my: 'left top', at: 'left bottom', of: $('#download-csv')}
   });
   $('#download-csv').click(function() {
-    $dialog.dialog('open');
+    if ($dialog.dialog('isOpen')) {
+      $dialog.dialog('close');
+    } else {
+      $dialog.dialog('open');
+    }
   });
 
   $('#csv-dialog a').click(function() {
@@ -26,6 +30,11 @@ jQuery(document).ready(function ($) {
       + '&totals=' + $('#include-totals').is(':checked');
     $dialog.dialog('close');
   });
+
+  if ($('.checkin-col').length < 1) {
+    $('#include-checkins').hide();
+    $('label[for="include-checkins"]').hide();
+  }
 
   $('#site_attendance td.attendancetype select').each(function (i, select) {
     $(select).data('current', $(select).val());
