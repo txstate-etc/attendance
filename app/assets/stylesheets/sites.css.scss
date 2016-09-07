@@ -7,8 +7,8 @@
   table {
     border-collapse: collapse;
     table-layout: fixed;
-    tr.even {
-        background-color: #efefef;
+    tr.highlight {
+        background-color: #eee;
     }
     tr.separator th {
       border-right: none;
@@ -37,9 +37,13 @@
     }
     th {
       border: 1px solid #999;
-      border-bottom: 2px solid black;
+      background: #444;
+      color: white;
       text-align: center;
       padding: 4px 8px;
+      .fa, button {
+        color: white;
+      }
     }
     td {
       border: 1px solid #999;
@@ -62,7 +66,7 @@
       }
       &.attendancetype {
         position: relative;
-        padding: 0;
+        padding: 2px 0;
         width: 186px;
         min-width: 186px;
         max-width: 186px;
@@ -72,14 +76,16 @@
           border-radius: 0;
           background: none;
           vertical-align: middle;
-          height: 35px;
+          height: 40px;
         }
         .ui-selectmenu-text {
           font-size: 15px;
+          padding: 0.6em 2.1em 0.6em 1em;
+          line-height: inherit;
           i {
             vertical-align: top;
             margin-top: 1px;
-            margin-right: 7px;
+            margin-right: 10px;
             font-size: 1.2em;
           }
         }
@@ -205,7 +211,7 @@ option.atype {
 
 tr.separator {
   color: #FFFFFF;
-  background-color: #51504C;
+  background-color: #555;
   cursor: pointer;
 }
 

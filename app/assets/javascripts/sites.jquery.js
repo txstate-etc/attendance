@@ -272,11 +272,21 @@ jQuery(document).ready(function ($) {
         url: url,
         method: 'POST'
       }).done(function(data) {
-        $button.find('span').text('SHOW CHECKIN CODE');
+        $button.find('span').text('Show Checkin Code');
         $button.data('code', data.checkin_code);
       }).fail(function() {
         alert('failed to add code');
       });
     }
+  });
+
+  $('#table-main tr').mouseover(function() {
+    $(this).addClass('highlight');
+    var index = $(this).index() + 1;
+    $('#table-names tr:nth-child(' + index + ')').addClass('highlight');
+  }).mouseout(function() {
+    $(this).removeClass('highlight');
+    var index = $(this).index() + 1;
+    $('#table-names tr:nth-child(' + index + ')').removeClass('highlight');
   });
 });
