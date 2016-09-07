@@ -36,7 +36,7 @@ en:
     score_prop: "score proportionally"
     set_max_points: "Set maximum points to"
     title: "Grade settings for %{site_title}"
-    update_expl: "Score will automatically update to Gradebook 2 every 5 minutes on the hour."
+    update_expl: "Score will automatically update to Gradebook every 5 minutes on the hour."
 
   meeting:
     at: "at"
