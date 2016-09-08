@@ -86,6 +86,10 @@
             margin-right: 10px;
             vertical-align: middle;
           }
+          &.outlined {
+            outline: 3px solid #5B9DD9;
+            outline-offset: -3px;
+          }
         }
         .select-span-text {
           font-size: 15px;

@@ -105,6 +105,12 @@ jQuery(document).ready(function ($) {
 
   $('#site_attendance input[type="submit"]').hide();
   $('#site_attendance .cancelled').hide();
+
+  $('td.attendancetype select').focus(function() {
+    $(this).siblings('span').addClass('outlined');
+  }).blur(function() {
+    $(this).siblings('span').removeClass('outlined');
+  });
   
   // "Remove User" link on section#show
   $('#site_attendance .remove-user-link').click(function(e) {
