@@ -10,7 +10,7 @@ jQuery(document).ready(function ($) {
   var $dialog = $('#csv-dialog').dialog({
     autoOpen: false,
     modal: false,
-    width: 400,
+    width: 440,
     height: 120,
     resizable: false,
     draggable: false,
@@ -42,12 +42,13 @@ jQuery(document).ready(function ($) {
 
   function refreshSelectMenu($select) {
     var $widget = $select.siblings('span');
-    var $text = $widget.find('.ui-selectmenu-text');
+    var $text = $widget.find('.select-span-text');
+    $text.text($select.find('option:selected').text());
     $text.prepend('<i class="fa ' + icons[$text.text()] + '"></i>');
     $widget.css('color', attendancetype_colors[$select.val()]);
   }
 
-  $('#site_attendance td.attendancetype select').on('selectmenuchange', function (e) {
+  $('#site_attendance td.attendancetype select').change(function (e) {
     var $changed = $(e.target);
     var $widget = $(e.target).siblings('span');
     var $td = $changed.closest('td');
@@ -77,7 +78,6 @@ jQuery(document).ready(function ($) {
       timeout: 10000,
       beforeSend: function (jqXHR, setting) {
         $changed.prop('disabled', true);
-        $changed.selectmenu('refresh');
         loopBackgroundColor($td, '#aaaaaa', "#dddddd");
       },
       success: function (data, textStatus, jqXHR) {
@@ -97,7 +97,6 @@ jQuery(document).ready(function ($) {
         $td.stop(true);
         $td.css('background-color', 'transparent')
         $changed.prop('disabled', false);
-        $changed.selectmenu('refresh');
         $td.next().find('span').addClass('override').attr('title', 'Record changed after checkin');
         refreshSelectMenu($changed);
       }
@@ -106,13 +105,8 @@ jQuery(document).ready(function ($) {
 
   $('#site_attendance input[type="submit"]').hide();
 
-  $('.attendancetype select').each(function() {
-    var $select = $(this);
-    $select.selectmenu({
-      width: '96%'
-    });
-    var $text = $select.siblings('span').find('.ui-selectmenu-text');
-    $text.prepend('<i class="fa ' + icons[$text.text()] + '"></i>');
+  $('.select-span-text').each(function() {
+    $(this).prepend('<i class="fa ' + icons[$(this).text()] + '"></i>');
   });
 
   $('#site_attendance td.attendancetype select').each(function (i, select) {

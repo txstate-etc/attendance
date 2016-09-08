@@ -133,21 +133,23 @@
       <% @meetings.each_with_index do |meeting, index| %>
         <% ua = ua_hash[meeting.id] %>
         <td class="attendancetype <%= meeting.cancelled && !@force_show_cancelled ? 'cancelled' : '' %> <%= index == 0 ? 'first_col' : '' %>">
-          <div>
           <% if ua %>
             <% if meeting.active %>
-              <select name="meeting-<%= meeting.id %>_member-<%= membership_id %>">
+              <select class="hidden-select" name="meeting-<%= meeting.id %>_member-<%= membership_id %>">
               <% @attendancetypes.each do |atype| %>
                 <option class="atype" value="<%= atype.id %>" <%= atype.id == ua.attendancetype_id ? 'selected' : '' %>><%= atype.name %></option>
               <% end %>
               </select>
+              <span class="select-span">
+                <i class="fa fa-caret-down select-arrow"></i>
+                <span class="select-span-text"><%= ua.attendancetype.name %></span>
+              </span>
             <% else %>
               cancelled
             <% end %>
           <% else %>
             &nbsp;
           <% end %>
-          </div>
         </td>
         <% unless meeting.cancelled || meeting.source_starttime.blank? %>
           <td class="checkin-col">

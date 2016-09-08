@@ -66,32 +66,50 @@
       }
       &.attendancetype {
         position: relative;
-        padding: 2px 0;
+        padding: 0;
         width: 186px;
         min-width: 186px;
         max-width: 186px;
-        .ui-selectmenu-button {
-          width: 94%;
+        text-align: left;
+        .select-span {
+          width: 100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: 1;
           border: none;
           border-radius: 0;
           background: none;
-          vertical-align: middle;
-          height: 40px;
-        }
-        .ui-selectmenu-text {
-          font-size: 15px;
-          padding: 0.6em 2.1em 0.6em 1em;
-          line-height: inherit;
+          height: 45px;
           i {
-            vertical-align: top;
-            margin-top: 1px;
-            margin-right: 10px;
             font-size: 1.2em;
+            margin-right: 10px;
+            vertical-align: middle;
           }
         }
+        .select-span-text {
+          font-size: 15px;
+          margin-left: 15px;
+          position: relative;
+          top: 10px;
+        }
+        .select-arrow {
+          position: absolute;
+          top: 13px;
+          right: 15px;
+          color: black;
+        }
       }
-      select {
+      .hidden-select {
         font-size: 12px;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        border: none;
+        height: 44px;
+        position: relative;
+        z-index: 10;
+        opacity: 0;
       }
     }
     .cancelled {
