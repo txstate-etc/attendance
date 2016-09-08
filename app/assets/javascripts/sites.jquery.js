@@ -104,11 +104,6 @@ jQuery(document).ready(function ($) {
   });
 
   $('#site_attendance input[type="submit"]').hide();
-
-  $('#site_attendance td.attendancetype select').each(function (i, select) {
-    $(select).siblings('span').css('color', attendancetype_colors[$(select).find(':selected').val()]);
-  });
-
   $('#site_attendance .cancelled').hide();
   
   // "Remove User" link on section#show
