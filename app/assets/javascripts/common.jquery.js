@@ -46,5 +46,5 @@ function open_code_window(code) {
   $div.text(code);
   $(w.document.body).css('background-color', '#363534');
   $(w.document.body).css('color', 'white');
-  $(w.document.body).append($div);
+  w.document.body.innerHTML = $div[0].outerHTML;
 }
