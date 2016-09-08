@@ -92,6 +92,7 @@
           margin-left: 15px;
           position: relative;
           top: 10px;
+          vertical-align: middle;
         }
         .select-arrow {
           position: absolute;
@@ -152,6 +153,8 @@ select {
 
 option.atype {
   background-color: white;
+  font-size: 15px;
+  padding: 3px;
 }
 
 #site-table-container {
