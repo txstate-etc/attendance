@@ -45,7 +45,7 @@ jQuery(document).ready(function ($) {
     var $text = $widget.find('.select-span-text');
     $text.text($select.find('option:selected').text());
     $text.prepend('<i class="fa ' + icons[$text.text()] + '"></i>');
-    $widget.css('color', attendancetype_colors[$select.val()]);
+    $text.css('color', attendancetype_colors[$select.val()]);
   }
 
   $('#site_attendance td.attendancetype select').change(function (e) {
