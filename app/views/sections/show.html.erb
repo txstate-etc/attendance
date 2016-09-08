@@ -142,7 +142,7 @@
               </select>
               <span class="select-span">
                 <i class="fa fa-caret-down select-arrow"></i>
-                <span class="select-span-text"><%= ua.attendancetype.name %></span>
+                <span class="select-span-text"><i class="fa <%= @icons[ua.attendancetype_id-1] %>"></i><%= ua.attendancetype.name %></span>
               </span>
             <% else %>
               cancelled

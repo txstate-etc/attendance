@@ -57,6 +57,7 @@ class SectionsController < ApplicationController
     @force_show_cancelled = uncancelled_meetings.empty?
     @show_remove_user_link = @auth_user.admin
 
+    @icons = ['fa-check-square-o', 'fa-times-circle', 'fa-exclamation-triangle', 'fa-check-circle-o']
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @section }

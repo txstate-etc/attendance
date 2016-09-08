@@ -105,10 +105,6 @@ jQuery(document).ready(function ($) {
 
   $('#site_attendance input[type="submit"]').hide();
 
-  $('.select-span-text').each(function() {
-    $(this).prepend('<i class="fa ' + icons[$(this).text()] + '"></i>');
-  });
-
   $('#site_attendance td.attendancetype select').each(function (i, select) {
     $(select).siblings('span').css('color', attendancetype_colors[$(select).find(':selected').val()]);
   });
