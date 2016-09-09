@@ -70,18 +70,16 @@ table.attendancetypes {
 	@media print {
 		width: 100%;
 	}
-	tr.even {
-			background-color: rgb(224, 220, 205);
-			@media print {
-				background-color: white;
-			}
+	tr:hover {
+      background: #eee;
 	}
 	th {
-		border: 1px solid rgb(179,179,179);
-		padding: 4px 0px;
+		border: 1px solid #999;
+		padding: 4px 8px;
 		color: white;
-		background-color: rgb(81,80,76);
-		font-size: 14px;
+		background-color: #444;
+        text-align: center;
+        height: 28px;
 		@media screen and (max-width: 500px) {
 			font-size: 12px;
 			font-weight: normal;
@@ -102,7 +100,7 @@ table.attendancetypes {
 	th,td {
 		text-align: center;
 		&.name {
-			width: 35%;
+			width: 200px;
 			text-align: left;
 			overflow: hidden;
 			word-wrap: break-word;
@@ -112,13 +110,20 @@ table.attendancetypes {
 				font-size: 11px;
 				padding-left: 6px;
 				padding-right: 4px;
+                width: 130px;
 			}
 		}
         &.checkin-col {
-          width: 13%;
+          width: 60px;
+          @media screen and (max-width: 500px) {
+            width: 45px;
+          }
         }
 		&.attendancetype {
-			width: 13%;
+            width: 60px;
+            @media screen and (max-width: 500px) {
+              width: 45px;
+            }
 			span.attendancetype-absolute, span.attendancetype-percent {
 				@media screen and (max-width: 500px) {
 					display: block;
@@ -146,6 +151,9 @@ table.attendancetypes {
 	margin-right: 5px;
 	margin-bottom: 5px;
     line-height: inherit;
+    @media screen and (max-width: 500px) {
+      margin-top: 10px;
+    }
 
     i {
       margin-right: 8px;

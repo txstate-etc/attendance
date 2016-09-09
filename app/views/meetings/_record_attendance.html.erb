@@ -30,7 +30,6 @@
             <% Attendancetype.getall.each do |atype| %>
               <th><%= atype.name %></th>
             <% end %>
-          <% reset_cycle() %>
           <% started_inactives = true %>
           </tr>
         <% end %>
@@ -42,10 +41,9 @@
               <th><%= atype.name %></th>
             <% end %>
           </tr>
-          <% reset_cycle() %>
           <% started_moved = true %>
         <% end %>
-        <tr class="<%= cycle('even', 'odd') %> <% if started_moved %> <%='moved' %> <% elsif started_inactives %> <%= 'inactive' %> <% end %>">
+        <tr class="<% if started_moved %> <%='moved' %> <% elsif started_inactives %> <%= 'inactive' %> <% end %>">
           <td class="name"><%= link_to ua.membership.user.fullname, section_membership_path(@meeting.section, ua.membership)  %></td>
           <% if @has_checkins %>
             <td class="checkin-col">

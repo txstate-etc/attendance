@@ -11,7 +11,7 @@
 <tr class="header">
   <th class="name"><%=t 'general.name' %></th>
   <% Attendancetype.getall.each do |atype| %>
-    <th><%= atype.name %></th>
+    <th class="attendancetype"><%= atype.name %></th>
   <% end %>
 </tr>
 </thead>
@@ -27,7 +27,6 @@
       <th><%= atype.name %></th>
     <% end %>
   </tr>
-  <% reset_cycle() %>
   <% @inactive_totals.each do |membershipid, record| %>
     <%= render 'totals_row', membershipid: membershipid, record: record, rowclass: 'inactive' %>
   <% end %>
@@ -40,7 +39,6 @@
       <th><%= atype.name %></th>
     <% end %>
   </tr>
-  <% reset_cycle() %>
   <% @moved_totals.each do |membershipid, record| %>
     <%= render 'totals_row', membershipid: membershipid, record: record, rowclass: 'moved' %>
   <% end %>
