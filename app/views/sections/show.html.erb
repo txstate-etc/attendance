@@ -115,6 +115,7 @@
         <tr class="separator inactive-separator">
         <% @meetings.each do |meeting| %>
           <th class="<%= 'cancelled' if meeting.cancelled && !@force_show_cancelled %>">&nbsp;</th>
+          <% if @show_checkin_col[meeting.id] %> <th class="checkin-col"></th><% end %>
         <% end %>
         </tr>
         <% reset_cycle() %>
@@ -124,6 +125,7 @@
         <tr class="separator moved-separator">
           <%@meetings.each do |meeting| %>
             <th class="<%= 'cancelled' if meeting.cancelled && !@force_show_cancelled %>">&nbsp;</th>
+            <% if @show_checkin_col[meeting.id] %> <th class="checkin-col"></th><% end %>
           <% end %>
         </tr>
         <% reset_cycle() %>
