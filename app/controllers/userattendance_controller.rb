@@ -2,7 +2,7 @@ class UserattendanceController < ApplicationController
 
   def code
     @ua ||= Userattendance.find(params[:id])
-    head :no_content unless @ua.checkins.empty?
+    head :no_content and return unless @ua.checkins.empty?
 
     if @ua.meeting.checkin_code == params[:code]
       @ua.checkins.create({source: 'code', time: Time.now})
