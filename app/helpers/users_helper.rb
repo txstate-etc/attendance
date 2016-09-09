@@ -3,14 +3,15 @@ module UsersHelper
     unless user.take_attendance?(site)
       ua = Userattendance.joins('left join `checkins` on userattendances.id = checkins.userattendance_id')
         .joins(:membership, meeting: :section)
+        .includes(meeting: {section: {site: :checkinsettings}})
         .where(sections: {site_id: site})
         .where(meetings: {deleted: false, cancelled: false})
         .where('meetings.checkin_code is not null')
         .where(memberships: {user_id: user})
         .where('checkins.id is null')
-        .first
+        .find{|ua| ua.meeting.checkin_active?}
 
-      return enter_code_userattendance_path(ua) unless ua.nil? || !ua.meeting.checkin_active?
+      return enter_code_userattendance_path(ua) unless ua.nil?
     end
 
     return site_path(site) if user.sections_to_choose(site).count > 1
