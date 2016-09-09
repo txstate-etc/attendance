@@ -2,13 +2,14 @@
     <meta name="viewport" content="width=device-width, user-scalable=no">
 <% end %>
 <header>
-  <h1 class="page_header">Enter code to check into <%= @ua.meeting.section.useful_name %></h1>
+  <h1 class="page_header">Check into <%= @ua.meeting.section.useful_name %></h1>
 </header>
 
 <%= form_for(@ua, :url => {:action => :code}, :method => :post) do |f| %>
+  <h3><%= @ua.meeting.starttime.strftime('%b %-d at %l:%M%P')%></h3>
   <input type="tel" name="code" id="code" size="8" class="control" />
   <%= f.submit 'Check in', class: 'linkbutton' %>
-  <%= link_to 'Skip', section_membership_path(@ua.meeting.section, @ua.membership), class: 'linkbutton' %>
+  <%= link_to 'Skip', section_membership_path(@ua.meeting.section, @ua.membership, {skip_code: '1'}), class: 'linkbutton', skip_code: '1' %>
   <% if notice %>
     <span><%= notice %></span>
   <% end %>
