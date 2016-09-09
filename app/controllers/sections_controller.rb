@@ -37,12 +37,14 @@ class SectionsController < ApplicationController
     @attendancetypes = Attendancetype.getall
 
     @attendances = {}
+    @show_checkin_col = {}
     @meetings.each do |meeting|
       meeting.userattendances.each do |ua|
         ua.cache_membership(@memberships)
         next if !ua.membership.record_attendance?
         @attendances[ua.membership.id] ||= {}
         @attendances[ua.membership.id][meeting.id] = ua
+        @show_checkin_col[meeting.id] ||= ua.checkins.any?
       end
     end
 

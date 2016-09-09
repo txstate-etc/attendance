@@ -61,7 +61,7 @@
           </div>
         <% end %>
       </th>
-      <% unless meeting.cancelled || meeting.source_starttime.blank? %>
+      <% if @show_checkin_col[meeting.id] %>
         <th class="checkin-col"><i class="fa fa-credit-card" title="Checkin time"></i></th>
       <% end %>
     <% end %>
@@ -151,7 +151,7 @@
             &nbsp;
           <% end %>
         </td>
-        <% unless meeting.cancelled || meeting.source_starttime.blank? %>
+        <% if @show_checkin_col[meeting.id] %>
           <td class="checkin-col">
             <% if ua.checkins.any? %>
               <span <% if ua.override %>class="override" title="Recorded changed after checkin"<% end %>>
