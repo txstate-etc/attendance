@@ -4,9 +4,9 @@
 
 <header>
   <%= link_to "< #{t('general.back')}", session[:return_to] %>
-  <h2 class="page_header">
+  <h1 class="page_header">
     <%=t 'settings.title', site_title: @site.context_name %>
-  </h2>
+  </h1>
 </header>
 <% if notice %>
   <p id="notice"><%= notice %></p>
@@ -27,18 +27,24 @@
   <% if @has_card_reader || @site.enable_code %>
     <div class="settings-section">
       <h3>Checkin settings</h3>
-      <%= render 'checkin_settings', f: f %>
+      <div class="control-group">
+        <%= render 'checkin_settings', f: f %>
+      </div>
     </div>
   <% end %>
   <% if @site.outcomes_url && @auth_user.edit_gradesettings?(@site) %>
     <div class="settings-section">
       <h3>Grade settings</h3>
-      <%= render 'grade_settings', settings: @site.gradesettings, f: f %>
+      <div class="control-group">
+        <%= render 'grade_settings', settings: @site.gradesettings, f: f %>
+      </div>
     </div>
   <% end %>
   <div class="settings-section">
     <h3>Roles</h3>
-    <%= render 'role_settings', f: f %>
+    <div class="control-group">
+      <%= render 'role_settings', f: f %>
+    </div>
   </div>
-  <%= f.submit 'Save settings' %>
+  <%= f.submit 'Save settings', class: 'linkbutton' %>
 <% end %>

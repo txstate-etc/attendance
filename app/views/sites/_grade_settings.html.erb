@@ -9,7 +9,7 @@
     <div class="indent">
       <input type="radio" id="gradesettings_score_deduct" name="gradesettings_score_type" value="y" <%= settings.deduction > 0 ? 'checked' : '' %>/>
       <label for="gradesettings_score_deduct">
-        deduct <%= s.text_field :deduction, size: 2, value: (settings.deduction * 100).to_i, disabled: settings.deduction <= 0 %> percentage points per absence
+        deduct <%= s.text_field :deduction, size: 2, value: (settings.deduction * 100).to_i, class: 'control', disabled: settings.deduction <= 0 %> percentage points per absence
       </label>
     </div>
   </div>
@@ -20,13 +20,13 @@
     <div class="indent">
       <input type="radio" id="gradesettings_late_partial" name="gradesettings_late" value="x" <%= settings.tardy_per_absence == 0 ? 'checked' : '' %>/>
       <label for="gradesettings_late_partial">
-          Give partial credit for a late: <%= s.text_field :tardy_value, size: 3, value: (settings.tardy_value * 100).to_i, disabled: settings.tardy_per_absence > 0 %>%
+          Give partial credit for a late: <%= s.text_field :tardy_value, class: 'control', size: 3, value: (settings.tardy_value * 100).to_i, disabled: settings.tardy_per_absence > 0 %>%
       </label>
     </div>
     <div class="indent">
       <input type="radio" id="gradesettings_late_lol" name="gradesettings_late" value="y" <%= settings.tardy_per_absence > 0 ? 'checked' : '' %>/>
       <label for="gradesettings_late_lol">
-        Count <%= s.text_field :tardy_per_absence, size: 2, disabled: settings.tardy_per_absence == 0 %> late(s) as 1 absence
+        Count <%= s.text_field :tardy_per_absence, size: 2, class: 'control', disabled: settings.tardy_per_absence == 0 %> late(s) as 1 absence
       </label>
     </div>
   </div>
@@ -44,10 +44,10 @@
     <div class="indent">
       <%= s.radio_button :auto_max_points, false %>
       <%= s.label :auto_max_points, capture { %>
-        <%=t 'grade_settings.set_max_points' %> <%= s.text_field :max_points, size: 3, disabled: settings.auto_max_points %>
+        <%=t 'grade_settings.set_max_points' %> <%= s.text_field :max_points, size: 3, class: 'control', disabled: settings.auto_max_points %>
       <% }, value: false %>
     </div>
   </div>
 </div>
-<p><%=t 'grade_settings.update_expl' %></p>
+<div class="settings-group"><%=t 'grade_settings.update_expl' %></div>
 <% end %>

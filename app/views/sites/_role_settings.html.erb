@@ -1,4 +1,4 @@
- <% @siteroles.each do |siterole| %>
+<% @siteroles.each do |siterole| %>
   <%= f.fields_for :siteroles, siterole do |sr| %>
     <div class="roles-config">
       <h4><%= siterole.role.displayname %></h4>

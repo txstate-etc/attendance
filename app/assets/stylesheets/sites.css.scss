@@ -247,7 +247,12 @@ tr.separator {
 }
 
 .settings-group {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  &:not(:last-of-type) {
+    border-bottom: 1px solid #ccc;
+  }
 }
 .indent {
   padding-left: 15px;
@@ -282,7 +287,8 @@ button.fa {
 }
 
 .roles-config {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  padding-left: 10px;
   h4 {
     margin: 0 0 5px;
   }
@@ -316,5 +322,15 @@ button.code-action {
   i {
     margin-right: 5px;
     vertical-align: middle;
+  }
+}
+
+.settings-section {
+  margin-bottom: 15px;
+  border: 1px solid #999;
+  h3 {
+    margin: 0 0 10px;
+    padding: 10px;
+    background-color: #ddd;
   }
 }

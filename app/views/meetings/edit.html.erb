@@ -8,16 +8,16 @@
   <% else %>
       <%= link_to "< #{t('general.back')}", @meeting.section %>
   <% end %>
-  <h2 class="page_header"><%= @meeting.starttime.strftime('%B %-d, %Y at %l:%M%P') %></h2>
+  <h1 class="page_header"><%= @meeting.starttime.strftime('%B %-d, %Y at %l:%M%P') %></h1>
   <%# Button that will cancel/un-cancel a meeting %>
   <%= form_for(@meeting, html: {class: 'inline-form'}) do |f| %>
       <%= hidden_field(:meeting, :cancelled, {value: !@meeting.cancelled}) %>
-      <%= f.submit (@meeting.cancelled ? t('meeting.reactivate_session') : t('meeting.cancel_session')) %>
+      <%= f.submit (@meeting.cancelled ? t('meeting.reactivate_session') : t('meeting.cancel_session')), class: 'linkbutton' %>
   <% end %>
   <%# Button that will soft delete a meeting %>
   <%= form_for(@meeting, html: {class: 'inline-form'}) do |f| %>
       <%= hidden_field(:meeting, :deleted, {value: 'true'}) %>
-      <%= f.submit t('meeting.delete_session') %>
+      <%= f.submit t('meeting.delete_session'), class: 'linkbutton' %>
   <% end %>
 </header>
 
@@ -37,7 +37,7 @@
         <button type="button" data-action="/meetings/<%= @meeting.id %>/code" id="new-code">New</button>
       </p>
     <% end %>
-    <%= f.submit 'Save session' %>
+    <%= f.submit 'Save session', class: 'linkbutton' %>
   <% end %>
 
   <h3 class="section-header">Record attendance for this session</h3>

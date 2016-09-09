@@ -1,18 +1,20 @@
 <%= f.fields_for :checkinsettings, @site.checkinsettings do |settings| %>
+    <div class="settings-group">
     <div>
       <label for="site_checkinsettings_attributes_tardy_after">
-        Mark as Late after <%= settings.text_field :tardy_after, title: 'Late threshold', size: 2, maxlength: 2 %> minutes.
+        Mark as Late after <%= settings.text_field :tardy_after, title: 'Late threshold', class: 'control', size: 2, maxlength: 2 %> minutes.
       </label>
     </div>
     <div>
       <label for="site_checkinsettings_attributes_absent_after">
-        Mark as Absent after <%= settings.text_field :absent_after, title: 'Absent threshold', size: 2, maxlength: 2 %> minutes.
+        Mark as Absent after <%= settings.text_field :absent_after, title: 'Absent threshold', class: 'control', size: 2, maxlength: 2 %> minutes.
       </label>
     </div>
+    </div>
     <% if @has_card_reader %>
-      <p>
+      <div class="settings-group">
         <%= settings.check_box :auto_enabled %>
         <label for="site_checkinsettings_attributes_auto_enabled"><%= t('checkin_settings.auto_enabled') %></label>
-      </p>
+      </div>
     <% end %>
 <% end %>

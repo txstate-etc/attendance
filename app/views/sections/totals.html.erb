@@ -3,7 +3,7 @@
 <% end %>
 <header>
   <%= link_to "< #{t('general.back')}", @section %>
-  <h2 class="page_header">Attendance Totals for <%= @section.useful_name %></h2>
+  <h1 class="page_header">Attendance Totals for <%= @section.useful_name %></h1>
   <a href="#" class="linkbutton" onclick="window.print(); return false;"><%=t 'buttons.print_page' %></a>
 </header>
 <table id="site_attendance_totals" class="attendancetypes">

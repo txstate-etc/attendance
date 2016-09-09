@@ -1,13 +1,13 @@
 <% content_for(:head) do %>
     <meta name="viewport" content="width=device-width, user-scalable=no">
 <% end %>
-<h2 class="page_header">
-  Enter code to check into <%= @ua.meeting.section.useful_name %>
-</h2>
+<header>
+  <h1 class="page_header">Enter code to check into <%= @ua.meeting.section.useful_name %></h1>
+</header>
 
 <%= form_for(@ua, :url => {:action => :code}, :method => :post) do |f| %>
-  <input type="number" name="code" id="code" size="15" />
-  <%= f.submit 'Check in' %>
+  <input type="tel" name="code" id="code" size="8" class="control" />
+  <%= f.submit 'Check in', class: 'linkbutton' %>
   <% if notice %>
     <span><%= notice %></span>
   <% end %>

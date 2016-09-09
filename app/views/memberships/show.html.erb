@@ -3,7 +3,7 @@
 <% end %>
 <header>
   <% if @auth_user && @auth_user.take_attendance?(@section.site) %><%= link_to '< Back', :back %><% end %>
-  <h2 class="page_header"><%= @membership.user.fullname %>'s attendance for <%= @section.useful_name %></h2>
+  <h1 class="page_header"><%= @membership.user.fullname %>'s attendance for <%= @section.useful_name %></h1>
 </header>
 <% unless @membership.record_attendance? %>
   Attendance is not recorded for this user.

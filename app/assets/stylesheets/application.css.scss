@@ -137,10 +137,11 @@ table.attendancetypes {
     cursor: pointer;
     font-size: 14px;
 	text-decoration: none;
-	background-color: #EEEEEE;
-	color: #111111;
+	background-color: #ddd;
+    background-image: linear-gradient(#fcfcfc, #eee);
+	color: #333;
 	padding: 6px 10px;
-	border: 1px solid #333333;
+	border: 1px solid #ccc;
     border-radius: 5px;
 	margin-right: 5px;
 	margin-bottom: 5px;
@@ -151,12 +152,13 @@ table.attendancetypes {
       font-size: 1em;
     }
     &:visited {
-      background-color: #EEEEEE;
-      color: #111111;
+      background-color: #ddd;
+      color: #333;
     }
     &:hover {
-      background-color: #DDDDDD;
-      color: #111111;
+      background-color: #ccc;
+      background-image: linear-gradient(#eee, #ddd);
+      color: #333;
     }
 }
 
@@ -182,4 +184,18 @@ table.attendancetypes {
 
 .flex-item:last-child {
   margin-bottom: 0;
+}
+
+.control {
+  margin: 0 0 5px;
+  font-size: 15px;
+  padding: 4px 6px;
+  border-radius: 3px;
+  border: 1px solid #999;
+}
+
+.control-group {
+  p {
+    padding-left: 10px;
+  }
 }
