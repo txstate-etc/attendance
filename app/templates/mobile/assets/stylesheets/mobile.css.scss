@@ -40,6 +40,10 @@ ul.mobile-section-body {
 			padding-left: 10px;
 			background: url(arrow-right.png) no-repeat right center;
 			margin-right: 15px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			padding-left: 20px;
+			height: 100%;
 			&:hover, &:visited {
 				color: black;
 			}
