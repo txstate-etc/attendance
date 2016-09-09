@@ -10,6 +10,8 @@
 <% else %>
 
   <dl class="student-stats">
+    <dt>NetID:</dt>
+    <dd><%= @membership.user.netid %></dd>
     <dt>Last Attended:</dt>
     <dd><%= @membership.last_attended(@section).strftime('%-m/%d/%y at %l:%M%P') rescue 'never' %>
     <dt>Overall Attendance:</dt>
