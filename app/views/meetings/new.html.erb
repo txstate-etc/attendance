@@ -19,7 +19,7 @@
     <% end %>
     <p>
       <span id="initialtype-label"><%=t 'meeting.mark_as' %>:</span>
-      <select name="initial_atype">
+      <select name="initial_atype" class="control">
         <% @attendancetypes.each do |atype| %>
           <option value="<%= atype.id %>" <%= atype.default_type ? 'selected' : '' %>><%= atype.name %></option>
         <% end %>

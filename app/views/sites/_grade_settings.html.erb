@@ -1,6 +1,6 @@
 <%= f.fields_for :gradesettings, settings do |s| %>
 <div class="settings-group">
-  Forgive <%= s.text_field :forgiven_absences, size: 2 %> absences, then:
+  Forgive <%= s.text_field :forgiven_absences, size: 2, class: 'control' %> absences, then:
   <div>
     <div class="indent">
       <input type="radio" id="gradesettings_score_proportionally" name="gradesettings_score_type" value="x" <%= settings.deduction <= 0 ? 'checked' : '' %>/>
