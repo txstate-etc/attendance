@@ -16,7 +16,7 @@ class MembershipsController < ApplicationController
     @membership ||= Membership.find(params[:id])
     @section = Section.find(params[:section_id])
     @attendancetypes = Attendancetype.getall
-
+    @show_back = (@auth_user && @auth_user.take_attendance?(@section.site)) || request.referrer.include?('enter_code')
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @membership }

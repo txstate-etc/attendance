@@ -8,6 +8,7 @@
 <%= form_for(@ua, :url => {:action => :code}, :method => :post) do |f| %>
   <input type="tel" name="code" id="code" size="8" class="control" />
   <%= f.submit 'Check in', class: 'linkbutton' %>
+  <%= link_to 'Skip', section_membership_path(@ua.meeting.section, @ua.membership), class: 'linkbutton' %>
   <% if notice %>
     <span><%= notice %></span>
   <% end %>
