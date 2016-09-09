@@ -3,11 +3,7 @@
 <% end %>
 
 <header>
-  <% if use_mobile_template? %>
-      <%= link_to "< #{t('general.back')}", @meeting %>
-  <% else %>
-      <%= link_to "< #{t('general.back')}", @meeting.section %>
-  <% end %>
+  <%= link_to "< #{t('general.back')}", @meeting.section %>
   <h1 class="page_header"><%= @meeting.starttime.strftime('%B %-d, %Y at %l:%M%P') %></h1>
   <%# Button that will cancel/un-cancel a meeting %>
   <%= form_for(@meeting, html: {class: 'inline-form'}) do |f| %>
