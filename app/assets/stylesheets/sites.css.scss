@@ -70,7 +70,7 @@
         width: 186px;
         min-width: 186px;
         max-width: 186px;
-        text-align: left;
+        height: 44px;
         .select-span {
           width: 100%;
           position: absolute;
@@ -81,6 +81,7 @@
           border-radius: 0;
           background: none;
           height: 45px;
+          text-align: left;
           i {
             font-size: 1.2em;
             margin-right: 10px;
