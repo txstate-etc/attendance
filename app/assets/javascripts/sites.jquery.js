@@ -95,7 +95,7 @@ jQuery(document).ready(function ($) {
       },
       complete: function (data, textState, jqXHR) {
         $td.stop(true);
-        $td.css('background-color', 'transparent')
+        $td.css('background-color', 'transparent');
         $changed.prop('disabled', false);
         $td.next().find('span').addClass('override').attr('title', 'Record changed after checkin');
         refreshSelectMenu($changed);
@@ -216,12 +216,10 @@ jQuery(document).ready(function ($) {
       data.forEach(function(ua) {
         var $select = $('select[name="meeting-'+ua.meeting_id+'_member-'+ua.membership_id+'"]');
         $select.val(ua.attendancetype_id);
-        $select.css('background-color', attendancetype_colors[ua.attendancetype_id]);
         if (ua.checkins.length) {
           var checkin = ua.checkins[0];
           var time = moment(checkin.time);
           $select.closest('td').next().append('<span>' + time.format('h:mma') + '</span>');
-          $select.selectmenu('refresh');
           refreshSelectMenu($select)
         }
       });
