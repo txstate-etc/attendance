@@ -219,7 +219,7 @@ jQuery(document).ready(function ($) {
         if (ua.checkins.length) {
           var checkin = ua.checkins[0];
           var time = moment(checkin.time);
-          $select.closest('td').next().append('<span>' + time.format('h:mma') + '</span>');
+          $select.closest('td').next().empty().append('<span>' + time.format('h:mma') + '</span>');
           refreshSelectMenu($select)
         }
       });

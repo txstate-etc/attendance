@@ -235,9 +235,9 @@ class SectionsController < ApplicationController
       end
 
       ua = meeting.userattendances.find_by_membership_id(membership)
-      if ua.checkins.empty?
-        ua.checkins.create({source: params['source'], time: time})
-      end
+
+      ua.checkins.first.destroy if ua.checkins.any? && ua.checkins.first.time > time
+      ua.checkins.create({source: params['source'], time: time}) if ua.checkins.empty?
     end
 
     head :no_content
