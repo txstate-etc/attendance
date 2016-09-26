@@ -44,7 +44,7 @@ class SectionsController < ApplicationController
         next if !ua.membership.record_attendance?
         @attendances[ua.membership.id] ||= {}
         @attendances[ua.membership.id][meeting.id] = ua
-        @show_checkin_col[meeting.id] ||= ua.checkins.any?
+        @show_checkin_col[meeting.id] ||= ua.checkins.any? && !meeting.cancelled
       end
     end
 
