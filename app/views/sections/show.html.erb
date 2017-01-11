@@ -39,7 +39,7 @@
 <div id="table-name-head">
 <table>
   <thead>
-    <tr><th <% if @section.site.enable_code %>style="height: 47px;"<% end %>><%=t 'general.name' %></th></tr>
+    <tr><th style="height: 47px;"><%=t 'general.name' %></th></tr>
   </thead>
 </table>
 </div>
@@ -52,14 +52,12 @@
         <div class="start-header"><%= meeting.starttime.strftime('%b %-d at %l:%M%P') %>
           <%= link_to '', edit_meeting_path(meeting), class: 'fa fa-pencil', title: 'Edit session and record attendance' %>
         </div>
-        <% if @section.site.enable_code %>
           <div class="code-div">
             <button type="button" class="code-action" data-code="<%= meeting.checkin_code %>" title="Show checkin code">
               <i class="fa fa-th-large"></i>
               <span><%= meeting.checkin_code.blank? ? 'Add' : 'Show' %> Checkin Code</span>
             </button>
           </div>
-        <% end %>
       </th>
       <% if @show_checkin_col[meeting.id] %>
         <th class="checkin-col"><i class="fa fa-credit-card" title="Checkin time"></i></th>

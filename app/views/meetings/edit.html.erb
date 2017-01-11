@@ -26,13 +26,11 @@
     <%= render 'errors' %>
     <%= render 'starttime' %>
 
-    <% if @meeting.section.site.enable_code %>
-      <p>
-        Checkin code: <span id="checkin-code"><%= @meeting.checkin_code %></span>
-        <button type="button" data-action="/meetings/<%= @meeting.id %>/code?remove=1" id="remove-code">Remove</button>
-        <button type="button" data-action="/meetings/<%= @meeting.id %>/code" id="new-code">New</button>
-      </p>
-    <% end %>
+    <p>
+      Checkin code: <span id="checkin-code"><%= @meeting.checkin_code %></span>
+      <button type="button" data-action="/meetings/<%= @meeting.id %>/code?remove=1" id="remove-code">Remove</button>
+      <button type="button" data-action="/meetings/<%= @meeting.id %>/code" id="new-code">New</button>
+    </p>
     <%= f.submit 'Save session', class: 'linkbutton' %>
   <% end %>
 

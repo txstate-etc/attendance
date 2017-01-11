@@ -30,7 +30,6 @@ class Site < ActiveRecord::Base
       outcomes_url: params['lis_outcome_service_url'],
       points_url: params['ext_ims_lti_set_max_points_url']
     )
-    site.enable_code = params['custom_code'] == '1'
     site.save
     Gradeupdate.register_site_change(site) if do_grade_update
     site
