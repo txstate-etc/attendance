@@ -18,16 +18,14 @@
 @import "font-awesome";
 
 body {
-	margin: 0px;
+	margin-left: 20px;
     -webkit-font-smoothing: subpixel-antialiased;
     text-rendering: optimizeLegibility;
 }
 
 header {
-  margin-bottom: 15px;
   margin-top: 10px;
   padding-bottom: 10px;
-  border-bottom: 1px solid black;
   h1, h2, h3, h4 {
     display: inline-block;
     margin: 0 15px 0 0;
@@ -135,6 +133,10 @@ table.attendancetypes {
 			}
 		}
 	}
+}
+
+th {
+  font-weight: normal;
 }
 
 .linkbutton {

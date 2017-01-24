@@ -49,7 +49,7 @@
   <tr>
     <% @meetings.each_with_index do |meeting, index| %>
       <th class="<%= meeting.cancelled && !@force_show_cancelled ? 'cancelled' : '' %> <%= index == 0 ? 'first_col' : '' %>" data-meeting-id="<%= meeting.id %>">
-        <div class="start-header"><%= meeting.starttime.strftime('%b %-d at %l:%M%P') %>
+        <div class="start-header"><%= meeting.starttime.strftime('%^b %-d at %l:%M%P') %>
           <%= link_to '', edit_meeting_path(meeting), class: 'fa fa-pencil', title: 'Edit session and record attendance' %>
         </div>
           <div class="code-div">
@@ -60,7 +60,7 @@
           </div>
       </th>
       <% if @show_checkin_col[meeting.id] %>
-        <th class="checkin-col"><i class="fa fa-credit-card" title="Checkin time"></i></th>
+        <th class="checkin-col"><i class="fa fa-clock-o" title="Checkin time"></i></th>
       <% end %>
     <% end %>
   </tr>
