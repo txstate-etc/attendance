@@ -153,7 +153,7 @@
         </td>
         <% if @show_checkin_col[meeting.id] %>
           <td class="checkin-col">
-            <% if ua.checkins.any? %>
+            <% if ua && ua.checkins.any? %>
               <span <% if ua.override %>class="override" title="Recorded changed after checkin"<% end %>>
                 <%= ua.checkins.first.time.strftime('%l:%M%P').strip %>
               </span>
