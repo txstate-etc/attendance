@@ -8,7 +8,8 @@ development: &defaults
   encoding: utf8
   username: <%= begin MYSQL_USER rescue "root" end %>
   password: <%= begin MYSQL_PASSWORD rescue "" end %>
-  host: localhost
+  host: <%= ENV['DB_1_PORT_3306_TCP_ADDR'] %>
+  port: <%= ENV['DB_1_PORT_3306_TCP_PORT'] %>
   pool: 5
   timeout: 5000
 

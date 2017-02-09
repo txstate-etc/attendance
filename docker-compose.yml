@@ -1,0 +1,19 @@
+web:
+  build: .
+  links:
+    - db
+  ports:
+    - "80:80"
+  volumes:
+    - .:/attendance
+db:
+  image: mysql:5.6
+  command: mysqld --sql_mode=""
+  ports:
+    - "3306:3306"
+  volumes:
+    - attendancedata:/var/lib/mysql
+  environment:
+    MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    MYSQL_USER: root
+    MYSQL_DATABASE: attendance
