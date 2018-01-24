@@ -14,6 +14,7 @@ class MembershipsController < ApplicationController
   # GET /memberships/1.json
   def show
     @membership ||= Membership.find(params[:id])
+    eager_load(@membership, :siteroles, {:userattendances => [:checkins, :meeting]})
     @section = Section.find(params[:section_id])
     @attendancetypes = Attendancetype.getall
     @show_back = (@auth_user && @auth_user.take_attendance?(@section.site)) || params[:skip_code]
