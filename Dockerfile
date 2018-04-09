@@ -5,14 +5,15 @@ RUN apt-get update &&\
 	apt-get install software-properties-common -y &&\
 	apt-add-repository ppa:brightbox/ruby-ng &&\
 	apt-get update &&\
-	apt-get install ruby1.9.3 git build-essential libz-dev libxml2-dev libmysqlclient-dev -y &&\
+	apt-get install ruby1.9.3 git build-essential libz-dev libxml2-dev libmysqlclient-dev apache2 apache2-dev libcurl4-openssl-dev libssl-dev -y &&\
 	gem install bundler
 
 WORKDIR /tmp/docker
 
 # two step copy is for faster rebuilds. bundle is only run when Gemfile changes
 COPY Gemfile /tmp/docker/
-RUN bundle install --without test development
+RUN bundle install --without test development &&\
+	/usr/local/bin/passenger-install-apache2-module -a
 COPY . /tmp/docker/
 
 ENV DB_DATABASE=attendance DB_USER=attendance DB_HOST=mysql DB_PORT=3306

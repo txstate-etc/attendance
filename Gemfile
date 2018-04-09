@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+gem 'passenger'
+
 gem 'rails', '3.2.22'
 
 # Bundle edge Rails instead:
