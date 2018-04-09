@@ -64,21 +64,21 @@ Attendance::Application.configure do
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
-
+  
   # Configure how the app sends email
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
-    :address => 'your.test.smtp.server',
-    :domain => 'your.domain'
-  }
-  config.action_mailer.default_url_options = { :host => "your.staging.server.edu" }
+  # config.action_mailer.delivery_method = :smtp
+  # config.action_mailer.smtp_settings = {
+  #   :address => 'your.smtp.server',
+  #   :domain => 'your.domain'
+  # }
+  # config.action_mailer.default_url_options = { :host => "your.server.edu" }
 
   # Configure the ExceptionNotification gem
-  config.middleware.use ExceptionNotification::Rack,
-    :email => {
-      :email_prefix => "[attendance-staging] ",
-      :sender_address => %{"Attendance Error" <nobody@yourinstitute.edu>},
-      :exception_recipients => %w{you@yourinstitute.edu them@yourinstitute.edu},
-      :normalize_subject => true
-    }
+  # config.middleware.use ExceptionNotification::Rack,
+  #   :email => {
+  #     :email_prefix => "[attendance-production] ",
+  #     :sender_address => %{"Attendance Error" <nobody@yourinstitute.edu>},
+  #     :exception_recipients => %w{you@yourinstitute.edu them@yourinstitute.edu},
+  #     :normalize_subject => true
+  #   }
 end

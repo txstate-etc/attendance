@@ -7,11 +7,7 @@ tmproj
 .DS_Store
 auth\.rb
 secret_token\.rb
-oauth_secret\.rb
-checkin_token\.rb
 tracs_user\.rb
 dump.attendance.sql
-config/environments/production.rb
-config/environments/staging.rb
 .idea
 *.iml

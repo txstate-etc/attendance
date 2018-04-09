@@ -4,22 +4,20 @@
 
 development: &defaults
   adapter: mysql2
-  database: attendance
+  database: <%= ENV['DB_DATABASE'] %>
   encoding: utf8
-  username: <%= begin MYSQL_USER rescue "root" end %>
-  password: <%= begin MYSQL_PASSWORD rescue "" end %>
-  host: <%= ENV['DB_1_PORT_3306_TCP_ADDR'] %>
-  port: <%= ENV['DB_1_PORT_3306_TCP_PORT'] %>
+  username: <%= ENV['DB_USER'] %>
+  password: <%= ENV['DB_PASS'] %>
+  host: <%= ENV['DB_HOST'] %>
+  port: <%= ENV['DB_PORT'] %>
   pool: 5
   timeout: 5000
 
 staging:
   <<: *defaults
-  database: attendance_staging
 
 production:
   <<: *defaults
-  database: attendance_production
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".

@@ -1,29 +1,21 @@
-FROM ubuntu:trusty
-RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+FROM ubuntu:16.04
 
-RUN apt-get update -qq
-RUN apt-get install -y build-essential libmysqlclient-dev curl
+RUN apt-get update &&\
+	apt-get upgrade -y &&\
+	apt-get install software-properties-common -y &&\
+	apt-add-repository ppa:brightbox/ruby-ng &&\
+	apt-get update &&\
+	apt-get install ruby1.9.3 git build-essential libz-dev libxml2-dev libmysqlclient-dev -y &&\
+	gem install bundler
 
-RUN curl -sSL https://get.rvm.io | bash
-RUN source /etc/profile.d/rvm.sh
-ENV PATH="${PATH}:/usr/local/rvm/bin"
+WORKDIR /tmp/docker
 
-RUN rvm install ruby-1.9.3-p392
-RUN rvm ruby-1.9.3-p392@global --default --create
+# two step copy is for faster rebuilds. bundle is only run when Gemfile changes
+COPY Gemfile /tmp/docker/
+RUN bundle install --without test development
+COPY . /tmp/docker/
 
-ENV PATH="${PATH}:/usr/local/rvm/rubies/ruby-1.9.3-p392/bin"
+ENV DB_DATABASE=attendance DB_USER=attendance DB_HOST=mysql DB_PORT=3306
 
-ENV APP_HOME /attendance
-RUN mkdir $APP_HOME
-WORKDIR $APP_HOME
-
-RUN gem install bundler
-
-RUN apt-get install -y git libxml2-dev
-
-ADD Gemfile* $APP_HOME/
-RUN bundle install
-
-ADD . $APP_HOME
-
-CMD rails server --port 80 --binding 0.0.0.0
+SHELL ["/bin/bash","-c"]
+CMD ["rails","server","--port","80","--binding","0.0.0.0","--environment","production"]
