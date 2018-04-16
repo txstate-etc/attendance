@@ -4,12 +4,12 @@
 
 development: &defaults
   adapter: mysql2
-  database: <%= ENV['DB_DATABASE'] %>
+  database: {{DB_DATABASE}}
   encoding: utf8
-  username: <%= ENV['DB_USER'] %>
-  password: <%= ENV['DB_PASS'] %>
-  host: <%= ENV['DB_HOST'] %>
-  port: <%= ENV['DB_PORT'] %>
+  username: {{DB_USER}}
+  password: {{DB_PASS}}
+  host: {{DB_HOST}}
+  port: {{DB_PORT}}
   pool: 5
   timeout: 5000
 

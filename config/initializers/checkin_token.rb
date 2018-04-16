@@ -1,1 +1,1 @@
-Attendance::Application.config.checkin_token = ENV['CHECKIN_SECRET']
+Attendance::Application.config.checkin_token = {{CHECKIN_SECRET}}

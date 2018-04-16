@@ -14,9 +14,17 @@ WORKDIR /tmp/docker
 COPY Gemfile /tmp/docker/
 RUN bundle install --without test development &&\
 	/usr/local/bin/passenger-install-apache2-module -a
+
+RUN apt-get install wget -y &&\
+	wget https://raw.githubusercontent.com/txstate-etc/SSLConfig/master/SSLConfig-TxState.conf -O /etc/apache2/SSLConfig-TxState.conf
+
+RUN mkdir -p /etc/pki/attendance &&\
+	openssl genrsa -out /etc/pki/attendance/attendance.key.pem 4096 &&\
+	openssl req -new -x509 -key /etc/pki/attendance/attendance.key.pem -out /etc/pki/attendance/attendance.cert.pem -sha256 -days 3650 -subj '/CN=localhost'
+
 COPY . /tmp/docker/
+COPY apache2.conf /etc/apache2/apache2.conf
+COPY entrypoint.sh /entrypoint.sh
 
-ENV DB_DATABASE=attendance DB_USER=attendance DB_HOST=mysql DB_PORT=3306
-
-SHELL ["/bin/bash","-c"]
-CMD ["rails","server","--port","80","--binding","0.0.0.0","--environment","production"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/usr/sbin/apache2","-DFOREGROUND"]
