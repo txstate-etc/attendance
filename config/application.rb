@@ -77,7 +77,7 @@ module Attendance
     config.assets.paths << Rails.root.join("app", "templates", "mobile", "assets", "stylesheets")
     
     # rubycas-client-rails for CAS logins: https://github.com/rubycas/rubycas-client-rails
-    config.rubycas.cas_base_url = {{CAS_BASE_URL}}
+    config.rubycas.cas_base_url = '{{CAS_BASE_URL}}'
     config.rubycas.logger = Rails.logger
     config.rubycas.enable_single_sign_out = true
     

@@ -23,6 +23,8 @@ RUN mkdir -p /etc/pki/attendance &&\
 	openssl req -new -x509 -key /etc/pki/attendance/attendance.key.pem -out /etc/pki/attendance/attendance.cert.pem -sha256 -days 3650 -subj '/CN=localhost'
 
 COPY . /tmp/docker/
+RUN mkdir -p tmp/sessions &&\
+	chown -R www-data /tmp/docker
 COPY apache2.conf /etc/apache2/apache2.conf
 COPY entrypoint.sh /entrypoint.sh
 

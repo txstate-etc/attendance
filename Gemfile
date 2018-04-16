@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'passenger'
+gem 'passenger', '5.2.3'
 
 gem 'rails', '3.2.22'
 
