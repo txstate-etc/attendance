@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'passenger', '5.2.3'
+gem 'rails_stdout_logging'
 
 gem 'rails', '3.2.22'
 
