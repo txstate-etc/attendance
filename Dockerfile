@@ -21,12 +21,14 @@ RUN bundle install --without test development &&\
 	/usr/local/bin/passenger-install-apache2-module -a
 
 COPY . /tmp/docker/
+RUN rake assets:precompile
 
 RUN mkdir -p tmp/sessions &&\
 	chown -R www-data /tmp/docker
 
 COPY apache2.conf /etc/apache2/apache2.conf
 COPY entrypoint.sh /entrypoint.sh
+
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/sbin/apache2","-DFOREGROUND"]

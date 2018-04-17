@@ -27,6 +27,4 @@ perl -i -pe 's/\Q{{OAUTH_SECRET}}\E/$ENV{OAUTH_SECRET}/' /tmp/docker/config/init
 perl -i -pe 's/\Q{{sslkeyfile}}\E/glob("\/ssl\/*.key.pem")/e' /etc/apache2/apache2.conf
 perl -i -pe 's/\Q{{sslcertfile}}\E/glob("\/ssl\/*.cert.pem")/e' /etc/apache2/apache2.conf
 
-cd /tmp/docker && runuser -u www-data rake assets:precompile
-
 exec "$@"
