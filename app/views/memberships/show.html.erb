@@ -29,7 +29,7 @@
               <li class="date">
                 <%= ua.meeting.starttime.strftime('%-m/%d/%y at %l:%M%P') %>
                 <% if ua.checkins.any? %>
-                  <i class="fa fa-clock-o" title="<%= ua.checkins.first.source + ' at ' + ua.checkins.first.time.strftime('%l:%M%P').strip %>"></i>
+                  <i class="fa fa-clock-o" title="<%= ua.checkins.first.source + ' at ' + ua.checkins.first.time.strftime('%l:%M%P').strip %>"></i> <%= ua.checkins.first.time.strftime('%l:%M%P').strip %>
                 <% end %>
               </li>
             <% end %>
