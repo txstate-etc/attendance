@@ -2,6 +2,11 @@ FROM ubuntu:16.04
 
 RUN apt-get update &&\
 	apt-get upgrade -y &&\
+	apt-get install tzdata locales -y &&\
+	echo America/Chicago > /etc/timezone &&\
+	ln -snf /usr/share/zoneinfo/`cat /etc/timezone` /etc/localtime &&\
+	locale-gen en_US.UTF-8 &&\
+	update-locale LANG=en_US.UTF-8 &&\
 	apt-get install software-properties-common -y &&\
 	apt-add-repository ppa:brightbox/ruby-ng &&\
 	apt-get update &&\
@@ -28,6 +33,7 @@ RUN mkdir -p tmp/sessions &&\
 
 COPY apache2.conf /etc/apache2/apache2.conf
 COPY entrypoint.sh /entrypoint.sh
+COPY cmd.sh /cmd.sh
 
 
 ENTRYPOINT ["/entrypoint.sh"]
