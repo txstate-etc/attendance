@@ -37,4 +37,4 @@ COPY cmd.sh /cmd.sh
 
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/sbin/apache2","-DFOREGROUND"]
+CMD ["/cmd.sh"]
