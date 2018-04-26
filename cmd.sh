@@ -26,7 +26,7 @@ CLEANERPID=$!
 (
 	while true; do
 		script/rails runner -e production Gradeupdate.update_sections_with_recent_meetings
-		# script/rails runner -e production Gradeupdate.process_all
+		script/rails runner -e production Gradeupdate.process_all
 		for i in {1..300}; do sleep 1; done
 	done
 )&
