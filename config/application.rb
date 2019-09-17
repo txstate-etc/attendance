@@ -72,16 +72,17 @@ module Attendance
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
-    
+
     # Add asset paths for any additional templates here
     config.assets.paths << Rails.root.join("app", "templates", "mobile", "assets", "images")
     config.assets.paths << Rails.root.join("app", "templates", "mobile", "assets", "javascripts")
     config.assets.paths << Rails.root.join("app", "templates", "mobile", "assets", "stylesheets")
-    
+
     # rubycas-client-rails for CAS logins: https://github.com/rubycas/rubycas-client-rails
     config.rubycas.cas_base_url = '{{CAS_BASE_URL}}'
+    config.rubycas.validate_url = '{{CAS_VALIDATE_URL}}'
     config.rubycas.logger = Rails.logger
     config.rubycas.enable_single_sign_out = true
-    
+
   end
 end

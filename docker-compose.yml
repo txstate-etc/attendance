@@ -1,19 +1,29 @@
-web:
-  build: .
-  links:
-    - db
-  ports:
-    - "80:80"
-  volumes:
-    - .:/attendance
-db:
-  image: mysql:5.6
-  command: mysqld --sql_mode=""
-  ports:
-    - "3306:3306"
-  volumes:
-    - attendancedata:/var/lib/mysql
-  environment:
-    MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-    MYSQL_USER: root
-    MYSQL_DATABASE: attendance
+version: '3'
+services:
+  web:
+    build: .
+    depends_on:
+      - mysql
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      WEB_HOSTNAME: localhost
+    volumes:
+      - .:/attendance
+  mysql:
+    image: mysql:5.6
+    command: mysqld --sql_mode=""
+    ports:
+      - "3306:3306"
+    volumes:
+      - attendancedata:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: attendance
+  fakecas:
+    image: registry.its.txstate.edu/cas-stub:base
+    ports:
+      - 2000:80
+volumes:
+  attendancedata: {}

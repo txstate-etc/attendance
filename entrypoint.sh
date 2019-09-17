@@ -1,10 +1,11 @@
 #!/bin/bash
 
-export CAS_BASE_URL=${CAS_BASE_URL:-https://auth.yourinstitution.edu/cas/}
+export CAS_BASE_URL=${CAS_BASE_URL:-http://localhost:2000/}
+export CAS_VALIDATE_URL=${CAS_VALIDATE_URL:-http://fakecas/serviceValidate}
 export WEB_HOSTNAME=${WEB_HOSTNAME:-`hostname`}
 
 export DB_DATABASE=${DB_DATABASE:-attendance}
-export DB_USER=${DB_USER:-attendance}
+export DB_USER=${DB_USER:-root}
 export DB_PASS=${DB_PASS:-}
 export DB_HOST=${DB_HOST:-mysql}
 export DB_PORT=${DB_PORT:-3306}
@@ -13,6 +14,7 @@ export CHECKIN_SECRET=${CHECKIN_SECRET:-`openssl rand -hex 64`}
 export OAUTH_SECRET=${OAUTH_SECRET:-`openssl rand -hex 64`}
 
 perl -i -pe 's/\Q{{CAS_BASE_URL}}\E/$ENV{CAS_BASE_URL}/' /tmp/docker/config/application.rb
+perl -i -pe 's/\Q{{CAS_VALIDATE_URL}}\E/$ENV{CAS_VALIDATE_URL}/' /tmp/docker/config/application.rb
 perl -i -pe 's/\Q{{WEB_HOSTNAME}}\E/$ENV{WEB_HOSTNAME}/' /etc/apache2/apache2.conf
 
 perl -i -pe 's/\Q{{DB_DATABASE}}\E/$ENV{DB_DATABASE}/' /tmp/docker/config/database.yml

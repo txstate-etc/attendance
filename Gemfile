@@ -4,13 +4,18 @@ gem 'passenger', '5.2.3'
 gem 'rails_stdout_logging'
 
 gem 'rails', '3.2.22'
+gem 'rake', '12.2.1'
+gem 'rack-cache', '1.7.1'
+gem 'ffi', '1.9.25'
+gem 'rb-inotify', '0.9.10'
+gem 'sass', '3.4.25'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'mysql2', '0.3.17'
 
-gem 'oauth'
+gem 'oauth', '0.5.1'
 gem 'ims-lti'
 
 gem 'libxml-ruby'
@@ -34,23 +39,12 @@ group :assets do
   gem 'jquery-ui-rails', '~> 5.0.5'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  gem 'therubyracer', '>= 0.12.1', :platforms => :ruby 
+  gem 'therubyracer', '>= 0.12.1', :platforms => :ruby
 
   gem 'uglifier', '>= 1.0.3'
 end
 
 gem 'jquery-rails', '>= 3.1.3'
-
-group :development do
-	gem 'thin'
-	gem 'capistrano'
-	gem 'capistrano-ext'
-	gem 'rvm-capistrano', require: false
-	#gem 'rack-mini-profiler'
-end
-
-# Cron jobs, e.g., cache cleanup
-gem "whenever"
 
 # for per-request caching in static methods
 gem 'request_store'
