@@ -11,7 +11,7 @@ RUN apt-get update &&\
 	apt-add-repository ppa:brightbox/ruby-ng &&\
 	apt-get update &&\
 	apt-get install wget ruby1.9.3 git build-essential libz-dev libxml2-dev libmysqlclient-dev apache2 apache2-dev libcurl4-openssl-dev libssl-dev -y &&\
-	gem install bundler &&\
+	gem install bundler -v '1.16.1'&&\
 	wget https://raw.githubusercontent.com/txstate-etc/SSLConfig/master/SSLConfig-TxState.conf -O /etc/apache2/SSLConfig-TxState.conf &&\
 	mkdir -p /ssl &&\
 	openssl genrsa -out /ssl/localhost.key.pem 4096 &&\
@@ -32,9 +32,17 @@ RUN mkdir -p tmp/sessions &&\
 	chown -R www-data /tmp/docker
 
 COPY apache2.conf /etc/apache2/apache2.conf
+COPY apache2.dev.conf /tmp/docker/apache2.dev.conf
 COPY entrypoint.sh /entrypoint.sh
 COPY cmd.sh /cmd.sh
+COPY createTables.sh /createTables.sh
 
+ARG BUILD_ENV
+
+RUN if [ "${BUILD_ENV}" = "development" ]; then \
+    mv /tmp/docker/apache2.dev.conf /etc/apache2/apache2.conf; else \
+		echo Non development - ${BUILD_ENV};\
+		fi
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/cmd.sh"]
