@@ -1,33 +1,15 @@
+#combining use of docker-compose.override.yml
+#EX: build staging, do following steps:
+#ln -s docker-compose.staging.yml docker-compose.override.yml
+#docker-compose up (or build)
 version: "3"
 services:
   web:
     build:
       context: .
-      args:
-          BUILD_ENV: development
       dockerfile: Dockerfile
-    env_file: .dev.env
-    links:
-      - db
     ports:
-      - "80:80"
+      - 80:80
     volumes:
       - .:/attendance
     container_name: attendance
-    depends_on:
-      - db
-  db:
-    image: mysql:5.6
-    command: mysqld --sql_mode=""
-    ports:
-      - "3304:3306"
-    volumes:
-      - attendancedata:/var/lib/mysql
-    environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-      MYSQL_USER: root
-      DB_DATABASE: attendance_development
-    container_name: attendance_db
-
-volumes:
-  attendancedata:

@@ -1,0 +1,10 @@
+version: "3"
+services:
+  web:
+    build:
+      args:
+          BUILD_ENV: staging
+    env_file: .env.staging
+    ports:
+      - 80:80
+      - 443:443
