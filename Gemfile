@@ -3,12 +3,12 @@ source 'https://rubygems.org'
 gem 'passenger', '5.2.3'
 gem 'rails_stdout_logging'
 
-gem 'rails', '3.2.22'
+gem 'rails', '3.2.22.5'
 gem 'rake', '12.2.1'
 gem 'rack-cache', '1.7.1'
 gem 'ffi', '1.9.25'
 gem 'rb-inotify', '0.9.10'
-gem 'sass', '3.4.25'
+gem 'sass', '3.2.19'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -34,8 +34,8 @@ gem 'font-awesome-sass', '~> 4.6.2'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
-  gem 'coffee-rails', '~> 3.2.1'
+  gem 'sass-rails',   '~> 3.2.6'
+  gem 'coffee-rails', '~> 3.2.2'
   gem 'jquery-ui-rails', '~> 5.0.5'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes

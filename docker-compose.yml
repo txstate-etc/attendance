@@ -9,6 +9,7 @@ services:
       - 443:443
     environment:
       WEB_HOSTNAME: localhost
+      OAUTH_SECRET: supersecret
     volumes:
       - .:/attendance
   mysql:
