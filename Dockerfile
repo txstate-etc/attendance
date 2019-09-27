@@ -19,7 +19,7 @@ RUN apt-get update &&\
 
 WORKDIR /usr/app
 
-RUN mkdir -p tmp/sessions && chown -R www-data /usr/app
+RUN mkdir -p tmp/sessions && chown -R www-data /usr/app tmp/sessions
 
 # two step copy is for faster rebuilds. bundle is only run when Gemfile changes
 COPY Gemfile ./
