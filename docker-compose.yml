@@ -8,10 +8,12 @@ services:
       - 80:80
       - 443:443
     environment:
-      WEB_HOSTNAME: localhost
+      WEB_HOSTNAME: nickbook.jck.txstate.edu
+      CANVAS_API_BASE: https://txstate.instructure.com/api
       OAUTH_SECRET: supersecret
+    env_file: .env
     volumes:
-      - .:/attendance
+      - ./app:/usr/app/app
   mysql:
     image: mysql:5.6
     command: mysqld --sql_mode=""

@@ -19,7 +19,7 @@ class LaunchController < ApplicationController
     roles = Role.getRolesFromString(params['roles'])
     sections = @site.getSectionsFromString(params[:ext_sakai_provider_ids])
 
-    user = User.from_launch_params(params)  
+    user = User.from_launch_params(params)
     membership = user.verify_membership(@site, roles, true, sections, user.memberships.find_by_site_id(@site.id), params['lis_result_sourcedid'])
 
     session[:user_id] = user.id
@@ -28,6 +28,7 @@ class LaunchController < ApplicationController
     if membership.take_attendance? && fetchRoster?
       session[:ext_ims_lis_memberships_url] = params[:ext_ims_lis_memberships_url]
       session[:ext_ims_lis_memberships_id] = params[:ext_ims_lis_memberships_id]
+      session[:custom_canvas_course_id] = params[:custom_canvas_course_id]
       session[:ext_sakai_roster_hash] = params[:ext_sakai_roster_hash]
       redirect_to controller: 'rosterupdate', action: 'index', siteid: @site.id and return
     end
@@ -45,7 +46,7 @@ private
     @toolprovider = IMS::LTI::ToolProvider.new("", Attendance::Application.config.oauth_secret, params)
 
     return authorize_fail unless @toolprovider.valid_request?(request)
-  
+
     # Request shouldn't be older than 5 minutes
     return authorize_fail if @toolprovider.request_oauth_timestamp.to_i < 5.minutes.ago.to_i
 
@@ -54,8 +55,8 @@ private
     return authorize_fail if conn.select_one(sanitize_sql('select * from nonces where nonce=?', @toolprovider.request_oauth_nonce))
 
     conn.insert(
-      sanitize_sql('insert into nonces (nonce, request_time) values(?,?)', 
-                   @toolprovider.request_oauth_nonce, 
+      sanitize_sql('insert into nonces (nonce, request_time) values(?,?)',
+                   @toolprovider.request_oauth_nonce,
                    @toolprovider.request_oauth_timestamp.to_i)
     )
     true

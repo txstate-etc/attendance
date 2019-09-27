@@ -7,6 +7,8 @@ killall() {
 	exit
 }
 
+rake db:migrate
+
 (/usr/sbin/apache2 -DFOREGROUND)&
 HTTPDPID=$!
 

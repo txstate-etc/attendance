@@ -11,3 +11,4 @@ tracs_user\.rb
 dump.attendance.sql
 .idea
 *.iml
+.env

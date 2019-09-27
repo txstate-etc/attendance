@@ -17,24 +17,31 @@ RUN apt-get update &&\
 	openssl genrsa -out /ssl/localhost.key.pem 4096 &&\
 	openssl req -new -x509 -key /ssl/localhost.key.pem -out /ssl/localhost.cert.pem -sha256 -days 3650 -subj '/CN=localhost'
 
+WORKDIR /usr/app
 
-WORKDIR /tmp/docker
+RUN mkdir -p tmp/sessions && chown -R www-data /usr/app
 
 # two step copy is for faster rebuilds. bundle is only run when Gemfile changes
-COPY Gemfile /tmp/docker/
+COPY Gemfile ./
 RUN bundle install --without test development &&\
 	/usr/local/bin/passenger-install-apache2-module -a
 
-COPY . /tmp/docker/
+COPY Rakefile ./
+COPY config config
+COPY app/assets app/assets
+COPY vendor vendor
 RUN rake assets:precompile
 
-RUN mkdir -p tmp/sessions &&\
-	chown -R www-data /tmp/docker
+COPY app app
+COPY db db
+COPY lib lib
+COPY public public
+COPY script script
+COPY config.ru ./
 
 COPY apache2.conf /etc/apache2/apache2.conf
 COPY entrypoint.sh /entrypoint.sh
 COPY cmd.sh /cmd.sh
-
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/cmd.sh"]

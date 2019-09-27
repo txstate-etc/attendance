@@ -84,5 +84,8 @@ module Attendance
     config.rubycas.logger = Rails.logger
     config.rubycas.enable_single_sign_out = true
 
+    config.canvas_api_base = '{{CANVAS_API_BASE}}'
+    config.canvas_api_token = '{{CANVAS_API_TOKEN}}'
+
   end
 end

@@ -5,13 +5,13 @@ class ApplicationController < ActionController::Base
   before_filter :authorize
   before_filter :check_for_mobile
   before_filter :set_locale
-  
+
   ##### CAS AUTHENTICATION #####
   # for admin screens
   def cas_setup
     RubyCAS::Filter.config[:service_url] = url_for :login
   end
-  
+
   def cas_require
     session[:cas_redirect] = request.url
     if RubyCAS::Filter.filter(self)
@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
   ##### AUTHORIZATION #####
   # authorization will always pass if the user is marked as a server admin
   def authorize
-  
+
     # this authorization method should ONLY be used over SSL, otherwise the key
     # is out in the wild for the taking
     # TODO: OAuth or something similar
@@ -44,7 +44,7 @@ class ApplicationController < ActionController::Base
     return authorize_fail unless yield
     return true
   end
-  
+
   # renders an error message after a failed authorization
   # returns false so that the authorize filter can return false, thus
   # halting execution
@@ -56,15 +56,15 @@ class ApplicationController < ActionController::Base
     end
     return false
   end
-  
+
   def api_read?
     (request.format == :json || request.format == :xml) && request.get?
   end
-  
+
   def eager_load(records, associations, options = {})
     ActiveRecord::Associations::Preloader.new(records, associations, options).run
   end
-  
+
   def check_for_mobile
     session[:mobile_override] = params[:mobile] if params[:mobile]
     prepare_for_mobile if use_mobile_template?
@@ -73,7 +73,7 @@ class ApplicationController < ActionController::Base
   def prepare_for_mobile
     prepend_view_path Rails.root.join('app','templates','mobile','views')
   end
-  
+
   def use_mobile_template?
     return true if session[:mobile_override] == '1'
     return false if session[:mobile_override] == '0'
@@ -95,5 +95,45 @@ class ApplicationController < ActionController::Base
 
   def default_url_options(options = {})
     { locale: I18n.locale }.merge options
+  end
+
+  def canvas_req(path)
+    if @http.nil?
+      @http = HTTPClient.new
+      @http.connect_timeout = 5
+      @http.receive_timeout = 5
+      @http.send_timeout = 5
+    end
+
+    logger.info('fetching from canvas ' + Attendance::Application.config.canvas_api_base + path)
+    logger.info('bearer token ' + Attendance::Application.config.canvas_api_token)
+    res = @http.get(Attendance::Application.config.canvas_api_base + path, nil, { 'Authorization' => 'Bearer ' + Attendance::Application.config.canvas_api_token })
+    return JSON.parse(res.content, :symbolize_names => true) rescue {}
+  end
+
+  def canvas_lti(path)
+    uri = URI(Attendance::Application.config.canvas_api_base + '/lti' + path)
+    logger.info(uri.path)
+
+    options = {
+      :scheme => 'body',
+      :timestamp => Time.now.utc.to_i,
+      :nonce => SecureRandom.hex
+    }
+
+    host = uri.port == uri.default_port ? uri.host : "#{uri.host}:#{uri.port}"
+    consumer = OAuth::Consumer.new(
+      "notused",
+      Attendance::Application.config.oauth_secret,
+      {
+        site: "#{uri.scheme}://#{host}",
+        signature_method: "HMAC-SHA1"
+      }
+    )
+    consumer.http.read_timeout = 120
+
+    response = consumer.request(:get, uri.path, nil, options)
+    logger.info(response.body)
+    return JSON.parse(response.body, :symbolize_names => true) rescue {}
   end
 end

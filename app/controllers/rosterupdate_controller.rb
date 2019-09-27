@@ -8,19 +8,19 @@ class RosterupdateController < ApplicationController
   end
 
   def fetchRoster?
-    return false if session[:ext_ims_lis_memberships_url].to_s.empty? || session[:ext_ims_lis_memberships_id].to_s.empty?
+    return false if session[:custom_canvas_course_id].to_s.empty? && (session[:ext_ims_lis_memberships_url].to_s.empty? || session[:ext_ims_lis_memberships_id].to_s.empty?)
     return @site.roster_fetched_at < 1.day.ago if session[:ext_sakai_roster_hash].to_s.empty?
     return session[:ext_sakai_roster_hash] != @site.roster_hash
   end
 
   def create
+    logger.info('rosterupdate create')
     @site = Site.find(params[:siteid])
     render text: intro_page_for_site(@site, User.find(session[:user_id])) and return if !fetchRoster?
     count = Site.where('id=? and (update_in_progress is NULL or update_in_progress < ?)', @site.id, 10.minutes.ago).update_all(update_in_progress: Time.zone.now)
-
     # If update is in progress, check every half second to see if it's finished. Repeat up to 10 times before sending response.
     respond_to do |format|
-      format.html { 
+      format.html {
         10.times do
           render text: intro_page_for_site(@site, User.find(session[:user_id])) and return if Site.where('id=? and update_in_progress is NULL', params[:siteid]).first
           sleep 0.5
@@ -30,7 +30,7 @@ class RosterupdateController < ApplicationController
     end and return if count == 0
 
     10.times do
-      if (parse_roster_xml get_roster_data) || @site.roster_fetched_at > 1.year.ago
+      if (save_roster_data) || @site.roster_fetched_at > 1.year.ago
         break
       else
         sleep 0.5
@@ -42,6 +42,34 @@ class RosterupdateController < ApplicationController
     Site.where(id: @site.id).update_all(update_in_progress: nil)
     respond_to do |format|
       format.html { render text: intro_page_for_site(@site, User.find(session[:user_id])) }
+    end
+  end
+
+  def save_roster_data
+    canvas_mode = session[:custom_canvas_course_id].present?
+    if canvas_mode
+      return canvas_get_roster_data
+    else
+      return get_roster_data
+    end
+  end
+
+  def canvas_get_roster_data
+    userToSection = canvas_get_user_sections
+    memberships = canvas_lti("/courses/#{session[:custom_canvas_course_id]}/names_and_roles")
+    logger.info(memberships)
+    return true
+  end
+
+  def canvas_get_user_sections
+    sections = canvas_req("/v1/courses/#{session[:custom_canvas_course_id]}/sections?include[]=students")
+    sections.reduce({}) do |userToSection, section|
+      dbsection = @site.sections.find_or_create_by_lms_id(section[:id])
+      dbsection.name = section[:name]
+      dbsection.save
+      section[:students].each do |student|
+        userToSection[student[:sis_user_id]] = dbsection[:id]
+      end unless section[:students].nil?
     end
   end
 
@@ -63,11 +91,11 @@ class RosterupdateController < ApplicationController
 
     host = uri.port == uri.default_port ? uri.host : "#{uri.host}:#{uri.port}"
     consumer = OAuth::Consumer.new(
-      "notused", 
-      Attendance::Application.config.oauth_secret, 
-      { 
+      "notused",
+      Attendance::Application.config.oauth_secret,
+      {
         site: "#{uri.scheme}://#{host}",
-        signature_method: "HMAC-SHA1" 
+        signature_method: "HMAC-SHA1"
       }
     )
     consumer.http.read_timeout = 120
@@ -78,7 +106,7 @@ class RosterupdateController < ApplicationController
 
   def parse_roster_xml(rosterxml)
     Rosterupdate.log(@site, rosterxml)
-    
+
     begin
       document = LibXML::XML::Parser.string(rosterxml).parse
     rescue => exception
@@ -115,10 +143,10 @@ class RosterupdateController < ApplicationController
 
       sourcedid_node = member.find_first('lis_result_sourcedid')
       user_info["sourcedid"] = sourcedid_node.content if sourcedid_node
-      
+
       users[user.id] = user_info
     end
-    
+
     # cache away our memberships for each user for use in user.verify_membership
     Membership.where(:user_id => users.values.map{|uinfo| uinfo['user'].id}, :site_id => @site.id).each do |membership|
       users[membership.user_id]["membership"] = membership
@@ -146,7 +174,7 @@ class RosterupdateController < ApplicationController
       section.users_hash = md5
       section.save
     end
-    
+
     # Verify user memberships
     users.each do |user_id, user_info|
       sections = @site.getSectionsFromString(user_info["sections"])
