@@ -56,20 +56,24 @@ class RosterupdateController < ApplicationController
 
   def canvas_get_roster_data
     userToSection = canvas_get_user_sections
-    memberships = canvas_lti("/courses/#{session[:custom_canvas_course_id]}/names_and_roles")
-    logger.info(memberships)
     return true
   end
 
   def canvas_get_user_sections
-    sections = canvas_req("/v1/courses/#{session[:custom_canvas_course_id]}/sections?include[]=students")
+    sections = ActionController::Base.helpers.canvas_req("/v1/courses/#{session[:custom_canvas_course_id]}/sections?include[]=students")
+    valid_sections = {}
     sections.reduce({}) do |userToSection, section|
       dbsection = @site.sections.find_or_create_by_lms_id(section[:id])
       dbsection.name = section[:name]
       dbsection.save
+      valid_sections[dbsection.id] = dbsection
+      valid_users = {}
       section[:students].each do |student|
-        userToSection[student[:sis_user_id]] = dbsection[:id]
+        user = User.find_or_create_by_netid(User.netidfromshibb(student[:login_id]))
+        membership = Membership.find_or_create_by({ site_id: @site.id, user_id: user.id })
+        valid_users[user.id] = user
       end unless section[:students].nil?
+
     end
   end
 

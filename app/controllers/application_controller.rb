@@ -96,44 +96,4 @@ class ApplicationController < ActionController::Base
   def default_url_options(options = {})
     { locale: I18n.locale }.merge options
   end
-
-  def canvas_req(path)
-    if @http.nil?
-      @http = HTTPClient.new
-      @http.connect_timeout = 5
-      @http.receive_timeout = 5
-      @http.send_timeout = 5
-    end
-
-    logger.info('fetching from canvas ' + Attendance::Application.config.canvas_api_base + path)
-    logger.info('bearer token ' + Attendance::Application.config.canvas_api_token)
-    res = @http.get(Attendance::Application.config.canvas_api_base + path, nil, { 'Authorization' => 'Bearer ' + Attendance::Application.config.canvas_api_token })
-    return JSON.parse(res.content, :symbolize_names => true) rescue {}
-  end
-
-  def canvas_lti(path)
-    uri = URI(Attendance::Application.config.canvas_api_base + '/lti' + path)
-    logger.info(uri.path)
-
-    options = {
-      :scheme => 'body',
-      :timestamp => Time.now.utc.to_i,
-      :nonce => SecureRandom.hex
-    }
-
-    host = uri.port == uri.default_port ? uri.host : "#{uri.host}:#{uri.port}"
-    consumer = OAuth::Consumer.new(
-      "notused",
-      Attendance::Application.config.oauth_secret,
-      {
-        site: "#{uri.scheme}://#{host}",
-        signature_method: "HMAC-SHA1"
-      }
-    )
-    consumer.http.read_timeout = 120
-
-    response = consumer.request(:get, uri.path, nil, options)
-    logger.info(response.body)
-    return JSON.parse(response.body, :symbolize_names => true) rescue {}
-  end
 end

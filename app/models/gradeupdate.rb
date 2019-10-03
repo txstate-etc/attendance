@@ -33,7 +33,7 @@ class Gradeupdate < ActiveRecord::Base
         update_max_points(s) if s.auto_max_points
       end
       m.future_meeting = false
-      m.save      
+      m.save
     end
   end
 
@@ -166,10 +166,10 @@ class Gradeupdate < ActiveRecord::Base
     host = uri.port == uri.default_port ? uri.host : "#{uri.host}:#{uri.port}"
     consumer = OAuth::Consumer.new(
       "notused",
-      Attendance::Application.config.oauth_secret, 
-      { 
+      Attendance::Application.config.oauth_secret,
+      {
         site: "#{uri.scheme}://#{host}",
-        signature_method: "HMAC-SHA1" 
+        signature_method: "HMAC-SHA1"
       }
     )
 
@@ -184,7 +184,7 @@ class Gradeupdate < ActiveRecord::Base
     max_points = settings.max_points
     max_points = settings.site.max_points_section.past_meetings.count - settings.forgiven_absences if settings.auto_max_points
     max_points = 1 if max_points < 1
-    
+
     # Sakai requires a sourcedid for the lti service call, so pick a valid one from the section's members.
     # TODO: Look into modifying sakai code to not require a sourcedid for updating max points.
     m = settings.site.memberships.find {|m| m.sourcedid}
@@ -206,11 +206,11 @@ class Gradeupdate < ActiveRecord::Base
 
     host = uri.port == uri.default_port ? uri.host : "#{uri.host}:#{uri.port}"
     consumer = OAuth::Consumer.new(
-      "notused", 
-      Attendance::Application.config.oauth_secret, 
-      { 
+      "notused",
+      Attendance::Application.config.oauth_secret,
+      {
         site: "#{uri.scheme}://#{host}",
-        signature_method: "HMAC-SHA1" 
+        signature_method: "HMAC-SHA1"
       }
     )
     consumer.http.read_timeout = 10
