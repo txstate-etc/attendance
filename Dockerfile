@@ -29,6 +29,7 @@ RUN bundle install --without test development &&\
 COPY Rakefile ./
 COPY config config
 COPY app/assets app/assets
+COPY app/templates/mobile/assets app/templates/mobile/assets
 COPY vendor vendor
 RUN rake assets:precompile
 
