@@ -15,17 +15,22 @@ class LaunchController < ApplicationController
 
   def index
     @site = Site.from_launch_params(params)
-
-    roles = Role.getRolesFromString(params['roles'])
-    sections = @site.getSectionsFromString(params[:ext_sakai_provider_ids])
-
     user = User.from_launch_params(params)
-    membership = user.verify_membership(@site, roles, true, sections, user.memberships.find_by_site_id(@site.id), params['lis_result_sourcedid'])
-
     session[:user_id] = user.id
     session[:site_id] = @site.id
 
-    if membership.take_attendance? && fetchRoster?
+    should_fetch_roster = fetchRoster?
+    if params[:custom_canvas_course_id].nil?
+      roles = Role.getRolesFromString(params['roles'])
+      sections = @site.getSectionsFromString(params[:ext_sakai_provider_ids])
+      membership = user.verify_membership(@site, roles, true, sections, user.memberships.find_by_site_id(@site.id), params['lis_result_sourcedid'])
+      should_fetch_roster = false unless membership.take_attendance?
+    else
+      membership = @site.memberships.find_by_user_id(user.id)
+      should_fetch_roster = true if membership.nil?
+    end
+
+    if should_fetch_roster
       session[:ext_ims_lis_memberships_url] = params[:ext_ims_lis_memberships_url]
       session[:ext_ims_lis_memberships_id] = params[:ext_ims_lis_memberships_id]
       session[:custom_canvas_course_id] = params[:custom_canvas_course_id]
