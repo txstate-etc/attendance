@@ -240,7 +240,7 @@ class RosterupdateController < ApplicationController
     def authorize
       site_id = params[:siteid].to_i
       return super do
-        site_id == session[:site_id] && @auth_user.take_attendance?(site_id)
+        site_id == session[:site_id] && (@auth_user.take_attendance?(site_id) || !session[:custom_canvas_course_id].nil?)
       end
     end
 end
