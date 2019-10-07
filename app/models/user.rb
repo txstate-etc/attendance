@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   has_many :userattendances, :inverse_of => :user, :dependent => :destroy
 
   def self.netidfromshibb(loginid)
-    return loginid.split(/@/, 2)[0] if loginid.match(/@/)
+    loginid.split(/@/, 2)[0]
   end
 
   def self.from_launch_params(params)
@@ -35,6 +35,17 @@ class User < ActiveRecord::Base
     user.lastname = lastname_node.content if lastname_node
     user.fullname = fullname_node.content if fullname_node
     user.netid = netid_node.content if netid_node
+
+    user.save if user.changed?
+    user
+  end
+
+  def self.from_canvas_api(netid, info, user = nil)
+    user ||= User.find_or_initialize_by_netid(netid)
+    firstlast = info[:user][:short_name].split(/\s+/, 2)
+    user.firstname = firstlast[0]
+    user.lastname = firstlast[1] if firstlast.count == 2
+    user.fullname = info[:user][:name]
 
     user.save if user.changed?
     user

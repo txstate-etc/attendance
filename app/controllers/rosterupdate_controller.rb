@@ -14,7 +14,6 @@ class RosterupdateController < ApplicationController
   end
 
   def create
-    logger.info('rosterupdate create')
     @site = Site.find(params[:siteid])
     render text: intro_page_for_site(@site, User.find(session[:user_id])) and return if !fetchRoster?
     count = Site.where('id=? and (update_in_progress is NULL or update_in_progress < ?)', @site.id, 10.minutes.ago).update_all(update_in_progress: Time.zone.now)
@@ -48,33 +47,80 @@ class RosterupdateController < ApplicationController
   def save_roster_data
     canvas_mode = session[:custom_canvas_course_id].present?
     if canvas_mode
-      return canvas_get_roster_data
+      canvas_get_roster_data
     else
-      return get_roster_data
+      get_roster_data
     end
+  end
+
+  def teacherrole
+    @allroles ||= Role.all
+    @teacherrole ||= @allroles.find {|r| r.roletype == 'Instructor'}
+  end
+  def studentrole
+    @allroles ||= Role.all
+    @studentrole ||= @allroles.find {|r| r.roletype == 'Learner'}
+  end
+  def tarole
+    @allroles ||= Role.all
+    @tarole ||= @allroles.find {|r| r.roletype == 'TeachingAssistant'}
+  end
+  def graderrole
+    @allroles ||= Role.all
+    @graderrole ||= @allroles.find {|r| r.roletype == 'TeachingAssistant/Grader'}
+  end
+  def observerrole
+    @allroles ||= Role.all
+    @observerrole ||= @allroles.find {|r| r.roletype == 'Instructor/ExternalInstructor'}
   end
 
   def canvas_get_roster_data
-    userToSection = canvas_get_user_sections
-    return true
-  end
-
-  def canvas_get_user_sections
-    sections = ActionController::Base.helpers.canvas_req("/v1/courses/#{session[:custom_canvas_course_id]}/sections?include[]=students")
+    sections = Canvas.get("/v1/courses/#{session[:custom_canvas_course_id]}/sections?include[]=students")
     valid_sections = {}
-    sections.reduce({}) do |userToSection, section|
+    netids = []
+    userToSections = sections.reduce({}) do |userToSections, section|
       dbsection = @site.sections.find_or_create_by_lms_id(section[:id])
       dbsection.name = section[:name]
       dbsection.save
-      valid_sections[dbsection.id] = dbsection
-      valid_users = {}
+      valid_sections[dbsection.id] = true
       section[:students].each do |student|
-        user = User.find_or_create_by_netid(User.netidfromshibb(student[:login_id]))
-        membership = Membership.find_or_create_by({ site_id: @site.id, user_id: user.id })
-        valid_users[user.id] = user
+        userToSections[student[:id]] ||= []
+        userToSections[student[:id]].push(dbsection)
+        netids.push(User.netidfromshibb(student[:login_id]))
       end unless section[:students].nil?
-
+      userToSections
     end
+    users = User.where(:netid => netids)
+    userHash = users.reduce({}) do |userHash, user|
+      userHash[user.netid] = user
+      userHash
+    end
+    eager_load(@site, {:memberships => [:sections, :siteroles]})
+
+    enrollments = Canvas.get("/v1/courses/#{session[:custom_canvas_course_id]}/enrollments")
+    valid_users = {}
+    enrollments.each do |enrollment|
+      netid = User.netidfromshibb(enrollment[:user][:login_id])
+      user = User.from_canvas_api(netid, enrollment, userHash[netid])
+      membership = @site.memberships.find {|m| m.user_id == user.id}
+      role = teacherrole if enrollment[:type] == 'TeacherEnrollment'
+      role = tarole if enrollment[:type] == 'TeacherEnrollment'
+      role = observerrole if enrollment[:type] == 'ObserverEnrollment'
+      role = observerrole if enrollment[:type] == 'DesignerEnrollment'
+      role = studentrole if enrollment[:type] == 'StudentEnrollment'
+      role = graderrole if enrollment[:role] == 'Grader'
+      next if role.nil?
+      valid_users[user.id] = true
+      user.verify_membership(@site, {role.id => role}, enrollment[:enrollment_state] == 'active', userToSections[enrollment[:user_id]], membership)
+    end
+    @site.memberships.each do |membership|
+      if valid_users[membership.user_id].nil? && membership.active
+        membership.active = false
+        membership.save
+      end
+    end
+    @site.roster_fetched_at = Time.zone.now
+    @site.save
   end
 
   def get_roster_data
