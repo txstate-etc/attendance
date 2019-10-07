@@ -1,6 +1,6 @@
 class Site < ActiveRecord::Base
   attr_accessible :context_id, :context_label, :context_name, :siteroles_attributes, :outcomes_url, :points_url, :checkinsettings_attributes, :gradesettings_attributes
-  
+
   has_many :memberships, :inverse_of => :site, :dependent => :destroy
   has_many :sections, :inverse_of => :site, :dependent => :destroy
   has_many :siteroles, :inverse_of => :site, :dependent => :destroy
@@ -8,9 +8,9 @@ class Site < ActiveRecord::Base
   has_many :users, :through => :memberships
   has_one :gradesettings, :inverse_of => :site, :dependent => :destroy
   has_one :checkinsettings, inverse_of: :site, dependent: :destroy
-  
+
   accepts_nested_attributes_for :siteroles, :gradesettings, :checkinsettings
-  
+
   before_create :roster_fetched_at_init
 
   def gradesettings
@@ -20,9 +20,10 @@ class Site < ActiveRecord::Base
   def checkinsettings
     super || Checkinsettings.find_or_create_by_site_id(id)
   end
-  
+
   def self.from_launch_params(params)
     site = Site.find_or_initialize_by_context_id(params['context_id'])
+    site.is_canvas = !params['custom_canvas_course_id'].nil?
     do_grade_update = site.outcomes_url.nil? && !params['lis_outcome_service_url'].nil?
     site.assign_attributes(
       context_label: params['context_label'],
@@ -34,15 +35,15 @@ class Site < ActiveRecord::Base
     Gradeupdate.register_site_change(site) if do_grade_update
     site
   end
-  
+
   def safe_context_name
     context_name.gsub(/\W+/, '_')
   end
-  
+
   def sections_for_user(auth_user)
     memberships.find_by_user_id(auth_user).recorded_sections
   end
-  
+
   def default_section
     @default_section ||= sections.find_by_is_default(true)
     if @default_section.nil?
@@ -53,11 +54,11 @@ class Site < ActiveRecord::Base
     end
     @default_section
   end
-  
+
   def roster_fetched_at_init
     self.roster_fetched_at = 5.years.ago
   end
-  
+
   def roster_fetched_at
     super || 5.years.ago
   end

@@ -8,9 +8,18 @@ class LaunchController < ApplicationController
   skip_before_filter :verify_authenticity_token
   include UsersHelper
 
-  def fetchRoster?
-    return @site.roster_fetched_at < 1.day.ago if params[:ext_sakai_roster_hash].to_s == ''
-    return params[:ext_sakai_roster_hash] != @site.roster_hash
+  def fetchRoster?(membership)
+    if !params[:ext_sakai_roster_hash].blank?
+      return params[:ext_sakai_roster_hash] != @site.roster_hash
+    else
+      if (@site.is_canvas)
+        return true if membership.nil? || !membership.active
+        return true if membership.take_attendance? && @site.roster_fetched_at < 5.minutes.ago
+        return @site.roster_fetched_at < 1.day.ago
+      else
+        return membership.take_attendance? && @site.roster_fetched_at < 1.day.ago
+      end
+    end
   end
 
   def index
@@ -19,18 +28,14 @@ class LaunchController < ApplicationController
     session[:user_id] = user.id
     session[:site_id] = @site.id
 
-    should_fetch_roster = fetchRoster?
-    if params[:custom_canvas_course_id].nil?
+    if !@site.is_canvas
       roles = Role.getRolesFromString(params['roles'])
       sections = @site.getSectionsFromString(params[:ext_sakai_provider_ids])
       membership = user.verify_membership(@site, roles, true, sections, user.memberships.find_by_site_id(@site.id), params['lis_result_sourcedid'])
-      should_fetch_roster = false unless membership.take_attendance?
     else
       membership = @site.memberships.find_by_user_id(user.id)
-      should_fetch_roster = true if membership.nil?
     end
-
-    if should_fetch_roster
+    if fetchRoster?(membership)
       session[:ext_ims_lis_memberships_url] = params[:ext_ims_lis_memberships_url]
       session[:ext_ims_lis_memberships_id] = params[:ext_ims_lis_memberships_id]
       session[:custom_canvas_course_id] = params[:custom_canvas_course_id]

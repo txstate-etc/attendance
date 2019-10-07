@@ -7,15 +7,8 @@ class RosterupdateController < ApplicationController
     end
   end
 
-  def fetchRoster?
-    return false if session[:custom_canvas_course_id].to_s.empty? && (session[:ext_ims_lis_memberships_url].to_s.empty? || session[:ext_ims_lis_memberships_id].to_s.empty?)
-    return @site.roster_fetched_at < 1.day.ago if session[:ext_sakai_roster_hash].to_s.empty?
-    return session[:ext_sakai_roster_hash] != @site.roster_hash
-  end
-
   def create
     @site = Site.find(params[:siteid])
-    render text: intro_page_for_site(@site, User.find(session[:user_id])) and return if !fetchRoster?
     count = Site.where('id=? and (update_in_progress is NULL or update_in_progress < ?)', @site.id, 10.minutes.ago).update_all(update_in_progress: Time.zone.now)
     # If update is in progress, check every half second to see if it's finished. Repeat up to 10 times before sending response.
     respond_to do |format|
@@ -45,8 +38,7 @@ class RosterupdateController < ApplicationController
   end
 
   def save_roster_data
-    canvas_mode = session[:custom_canvas_course_id].present?
-    if canvas_mode
+    if @site.is_canvas
       canvas_get_roster_data
     else
       get_roster_data
