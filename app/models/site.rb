@@ -24,8 +24,12 @@ class Site < ActiveRecord::Base
   def self.from_launch_params(params)
     site = Site.find_or_initialize_by_context_id(params['context_id'])
     site.is_canvas = !params['custom_canvas_course_id'].nil?
-    do_grade_update = site.outcomes_url.nil? && !params['lis_outcome_service_url'].nil?
-    site.outcomes_url = (params['lis_outcome_service_url'].nil?) ? site.outcomes_url : params['lis_outcome_service_url']
+    if site.is_canvas
+      site.lms_id = params['custom_canvas_course_id']
+    else
+      do_grade_update = site.outcomes_url.nil? && !params['lis_outcome_service_url'].nil?
+      site.outcomes_url = params['lis_outcome_service_url']
+    end
     site.assign_attributes(
       context_label: params['context_label'],
       context_name: params['context_title'],

@@ -16,7 +16,7 @@ class Gradeupdate < ActiveRecord::Base
 
       # Destroy before sending the update request
       update.destroy
-      next unless update.membership.site.assignment_id || update.membership.site.outcomes_url
+      next unless update.membership.site.outcomes_url
       response = update.process_update
       error = get_error_msg(response)
       next if error.nil? || update.tries > @max_retries
