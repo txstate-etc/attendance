@@ -80,4 +80,18 @@ class Site < ActiveRecord::Base
     return nil if assigned_sections.count > 1
     return assigned_sections.first
   end
+
+  def assignment_id
+    if @assignmentid.nil?
+      assignments = Canvas.get("/v1/courses/#{self.lms_id}/assignments")
+      assignments.each do |assignment|
+        if !assignment[:external_tool_tag_attributes].nil? &&
+           !assignment[:external_tool_tag_attributes][:url] &&
+           assignment[:external_tool_tag_attributes][:url].include?(ENV["WEB_HOSTNAME"])
+          @assignmentid = assignment[:id]
+        end
+      end
+    end
+    @assignmentid
+  end
 end
