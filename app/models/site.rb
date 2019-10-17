@@ -28,11 +28,11 @@ class Site < ActiveRecord::Base
       site.lms_id = params['custom_canvas_course_id']
     else
       do_grade_update = site.outcomes_url.nil? && !params['lis_outcome_service_url'].nil?
-      site.outcomes_url = params['lis_outcome_service_url']
     end
     site.assign_attributes(
       context_label: params['context_label'],
       context_name: params['context_title'],
+      outcomes_url: params['lis_outcome_service_url'],
       points_url: params['ext_ims_lti_set_max_points_url']
     )
     site.save
