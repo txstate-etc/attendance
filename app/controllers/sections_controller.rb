@@ -50,7 +50,7 @@ class SectionsController < ApplicationController
 
     @attendances = @attendances.sort_by{|membership_id, ua_hash|
       m = ua_hash.values.first.membership
-      [m.sections.include?(@section) ? 0 : 1, m.active ? 0 : 1, m.user.lastname.downcase, m.user.firstname.downcase]
+      [m.sections.include?(@section) ? 0 : 1, m.active ? 0 : 1, m.user.lastname.to_s.downcase.gsub(/\s+/, ''), m.user.firstname.to_s.downcase.gsub(/\s+/, '')]
     }
 
     uncancelled_meetings = @meetings.reject { |m| m.cancelled }
