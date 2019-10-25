@@ -112,8 +112,8 @@ class RosterupdateController < ApplicationController
         membership.save
       end
     end
-    Gradeupdate.register_site_change(@site) if @site.outcomes_url.blank? && !@site.assignment_id.nil?
-    @site.outcomes_url = @site.assignment_id
+    #Gradeupdate.register_site_change(@site) if @site.outcomes_url.blank? && !@site.assignment_id.nil?
+    #@site.outcomes_url = @site.assignment_id
     @site.roster_fetched_at = Time.zone.now
     @site.save
   end

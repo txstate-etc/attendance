@@ -23,16 +23,20 @@ class Site < ActiveRecord::Base
 
   def self.from_launch_params(params)
     site = Site.find_or_initialize_by_context_id(params['context_id'])
+    do_grade_update = site.outcomes_url.nil? && !params['lis_outcome_service_url'].nil?
     site.is_canvas = !params['custom_canvas_course_id'].nil?
     if site.is_canvas
       site.lms_id = params['custom_canvas_course_id']
+      # only update outcomes_url when launched from assignment or when no assignment is associated with it
+      if !params['lis_outcome_service_url'].nil? || site.assignment_id(params['custom_canvas_course_id']).nil?
+        site.outcomes_url = params['lis_outcome_service_url']
+      end
     else
-      do_grade_update = site.outcomes_url.nil? && !params['lis_outcome_service_url'].nil?
+      site.outcomes_url = params['lis_outcome_service_url']
     end
     site.assign_attributes(
       context_label: params['context_label'],
       context_name: params['context_title'],
-      outcomes_url: params['lis_outcome_service_url'],
       points_url: params['ext_ims_lti_set_max_points_url']
     )
     site.save
@@ -85,12 +89,12 @@ class Site < ActiveRecord::Base
     return assigned_sections.first
   end
 
-  def assignment_id
+  def assignment_id(lms_id)
     if @assignmentid.nil?
-      assignments = Canvas.get("/v1/courses/#{self.lms_id}/assignments")
+      assignments = Canvas.get("/v1/courses/#{lms_id}/assignments")
       assignments.each do |assignment|
         if !assignment[:external_tool_tag_attributes].nil? &&
-           !assignment[:external_tool_tag_attributes][:url] &&
+           !assignment[:external_tool_tag_attributes][:url].nil? &&
            assignment[:external_tool_tag_attributes][:url].include?(ENV["WEB_HOSTNAME"])
           @assignmentid = assignment[:id]
         end
