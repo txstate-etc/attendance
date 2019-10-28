@@ -34,6 +34,7 @@ class LaunchController < ApplicationController
       membership = user.verify_membership(@site, roles, true, sections, user.memberships.find_by_site_id(@site.id), params['lis_result_sourcedid'])
     else
       membership = @site.memberships.find_by_user_id(user.id)
+      Gradesettings.save_max_points(@site.id, params[:custom_canvas_assignment_points_possible])
     end
     if fetchRoster?(membership)
       session[:ext_ims_lis_memberships_url] = params[:ext_ims_lis_memberships_url]

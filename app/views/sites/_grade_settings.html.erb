@@ -32,22 +32,30 @@
   </div>
 </div>
 <div class="settings-group">
-  <%=t 'grade_settings.max_points' %>:
-  <div>
-    <% if !@multiple_sections %>
+  <% if @site.is_canvas %>
+    <%=t 'grade_settings.max_points' %>: <%= settings.max_points %>
+    <br>
+    <div class="indent">
+      <%=t 'grade_settings.set_from_assignment' %>
+    </div>
+  <% else %>
+    <%=t 'grade_settings.max_points' %>:
+    <div>
+      <% if !@multiple_sections %>
         <div class="indent">
           <%= s.radio_button :auto_max_points, true %>
           <%= s.label :auto_max_points, t('grade_settings.auto_max_points'), value: true  %>
           <p class="indent2"><%=t 'grade_settings.auto_max_expl' %></p>
         </div>
-    <% end %>
-    <div class="indent">
-      <%= s.radio_button :auto_max_points, false %>
-      <%= s.label :auto_max_points, capture { %>
-        <%=t 'grade_settings.set_max_points' %> <%= s.text_field :max_points, size: 3, class: 'control', disabled: settings.auto_max_points %>
-      <% }, value: false %>
+      <% end %>
+      <div class="indent">
+        <%= s.radio_button :auto_max_points, false %>
+        <%= s.label :auto_max_points, capture { %>
+          <%=t 'grade_settings.set_max_points' %> <%= s.text_field :max_points, size: 3, class: 'control', disabled: settings.auto_max_points %>
+        <% }, value: false %>
+      </div>
     </div>
-  </div>
+  <% end %>
 </div>
 <div class="settings-group"><%=t 'grade_settings.update_expl' %></div>
 <% end %>
