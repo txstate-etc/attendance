@@ -61,6 +61,6 @@ class Gradesettings < ActiveRecord::Base
     settings.assign_attributes(
       max_points: maxPoints.to_i
     )
-    settings.save
+    settings.save if settings.max_points_changed?
   end
 end
