@@ -29,6 +29,7 @@ class Site < ActiveRecord::Base
       site.lms_id = params['custom_canvas_course_id']
       # only update outcomes_url when launched from assignment or when no assignment is associated with it
       if !params['lis_outcome_service_url'].nil? || site.assignment.nil?
+        site.assignment_id = params['custom_canvas_assignment_id']
         site.outcomes_url = params['lis_outcome_service_url']
       end
     else
@@ -96,6 +97,8 @@ class Site < ActiveRecord::Base
         if !assignment[:external_tool_tag_attributes].nil? &&
            !assignment[:external_tool_tag_attributes][:url].nil? &&
            assignment[:external_tool_tag_attributes][:url].include?(ENV["WEB_HOSTNAME"])
+          self.assignment_id = assignment[:id]
+          self.save if self.assignment_id_changed?
           @assignment = assignment
         end
       end

@@ -1,4 +1,5 @@
 require 'libxml'
+require 'json'
 
 class Gradeupdate < ActiveRecord::Base
   belongs_to :membership
@@ -17,8 +18,13 @@ class Gradeupdate < ActiveRecord::Base
       # Destroy before sending the update request
       update.destroy
       next unless update.membership.site.outcomes_url
-      response = update.process_update
-      error = get_error_msg(response)
+      if(update.membership.site.is_canvas)
+        response = update.canvas_process_update
+        error = get_error_msg(response)
+      else
+        response = update.process_update
+        error = get_error_msg(response)
+      end
       next if error.nil? || update.tries > @max_retries
       # Add update back to database if it failed
       Gradeupdate.find_or_create_by_membership_id(update.membership.id, tries: update.tries + 1, last_error: error)
@@ -144,6 +150,22 @@ class Gradeupdate < ActiveRecord::Base
 
     doc.root = root
     doc.to_s
+  end
+
+  def canvas_process_update
+    site = self.membership.site
+    url = "/v1/courses/#{site.lms_id}/assignments/#{site.assignment_id}/submissions/update_grades";
+    # studentsGrades = {"grade_data[3855633][posted_grade]"=>"5.3",
+    #          "grade_data[3202496][posted_grade]"=>"7.1",
+    #          "grade_data[3812498][posted_grade]"=>"7.8"}
+    # Canvas.post(url, studentsGrades)
+    user =  self.membership.user
+    studentGrade =
+                {
+                  "grade_data[#{user.lms_user_id}][posted_grade]" => calculate_grade
+                }
+    logger.info("Posted grade data is " + studentGrade.to_json)
+    Canvas.post(url, studentGrade)
   end
 
   def process_update
