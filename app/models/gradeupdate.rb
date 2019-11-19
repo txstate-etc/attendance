@@ -81,29 +81,29 @@ class Gradeupdate < ActiveRecord::Base
   end
 
   def calculate_grade
-    settings = Gradesettings.find_or_create_by_site_id(self.membership.site.id)
+    @settings = Gradesettings.find_or_create_by_site_id(self.membership.site.id)
 
     # Calculate grade based only on attendances for meetings in the past
     # Use attendances from all sections to calculate grade.
     attendances = []
     self.membership.sections.each {|s| attendances += self.membership.recorded_attendances(s) if self.membership.site.sections.count == 1 || s.name != "Unassigned"}
-    return 1.0 if attendances.empty? || settings.forgiven_absences >= attendances.count
+    return 1.0 if attendances.empty? || @settings.forgiven_absences >= attendances.count
 
     # User chooses to deduct x points per attendance after a certain number of absences
-    if settings.deduction > 0
+    if @settings.deduction > 0
       total_absent = 0.0
       total_tardy = 0
       attendances.each do |a|
         total_absent += 1.0 if a.attendancetype.grade_as_absent?
         total_tardy += 1 if a.attendancetype.grade_as_tardy?
       end
-      if settings.tardy_per_absence == 0
-        total_absent += (1 - settings.tardy_value) * total_tardy
+      if @settings.tardy_per_absence == 0
+        total_absent += (1 - @settings.tardy_value) * total_tardy
       else
-        total_absent += total_tardy / settings.tardy_per_absence
+        total_absent += total_tardy / @settings.tardy_per_absence
       end
-      total_absent = [total_absent - settings.forgiven_absences, 0].max
-      return [1 - total_absent * settings.deduction, 0].max
+      total_absent = [total_absent - @settings.forgiven_absences, 0].max
+      return [1 - total_absent * @settings.deduction, 0].max
     end
 
     total_present = 0.0
@@ -112,13 +112,13 @@ class Gradeupdate < ActiveRecord::Base
       total_present += 1.0 if a.attendancetype.grade_as_present?
       total_tardy += 1 if a.attendancetype.grade_as_tardy?
     end
-    if settings.tardy_per_absence == 0
-      total_present += settings.tardy_value * total_tardy
+    if @settings.tardy_per_absence == 0
+      total_present += @settings.tardy_value * total_tardy
     else
-      total_present += total_tardy - total_tardy / settings.tardy_per_absence
+      total_present += total_tardy - total_tardy / @settings.tardy_per_absence
     end
 
-    [total_present / (attendances.count - settings.forgiven_absences), 1.0].min
+    [total_present / (attendances.count - @settings.forgiven_absences), 1.0].min
   end
 
   def create_xml
@@ -162,7 +162,7 @@ class Gradeupdate < ActiveRecord::Base
     user =  self.membership.user
     studentGrade =
                 {
-                  "grade_data[#{user.lms_user_id}][posted_grade]" => calculate_grade
+                  "grade_data[#{user.lms_user_id}][posted_grade]" => calculate_grade*@settings.max_points
                 }
     logger.info("Posted grade data is " + studentGrade.to_json)
     Canvas.post(url, studentGrade)
