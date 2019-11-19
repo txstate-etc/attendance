@@ -25,7 +25,7 @@ class Canvas
 
     self.logger.info('Updating grade to canvas ' + Attendance::Application.config.canvas_api_base + path)
     res = @http.post(Attendance::Application.config.canvas_api_base + path, data, { 'Authorization' => 'Bearer ' + Attendance::Application.config.canvas_api_token })
-    return JSON.parse(res.content, :symbolize_names => true) rescue {}
+    return res
   end
 
 end

@@ -20,7 +20,7 @@ class Gradeupdate < ActiveRecord::Base
       next unless update.membership.site.outcomes_url
       if(update.membership.site.is_canvas)
         response = update.canvas_process_update
-        error = get_error_msg(response)
+        error = get_error_code(response)
       else
         response = update.process_update
         error = get_error_msg(response)
@@ -73,6 +73,10 @@ class Gradeupdate < ActiveRecord::Base
       return description.content
     end
     return nil
+  end
+
+  def self.get_error_code (res)
+      return res.status if res.status != 200
   end
 
   # If update has already tried and failed (tries > 0), then try less frequently
