@@ -40,11 +40,6 @@ class Gradesettings < ActiveRecord::Base
     self.deduction = self.deduction / 100.0
   end
 
-  before_validation on: :update do
-    self.tardy_value = (self.tardy_value * 100).to_i
-    self.deduction = (self.deduction * 100.0).to_i
-  end
-
   before_update do
     site = Site.find_by_id(self.site_id)
     if(!site.is_canvas)
