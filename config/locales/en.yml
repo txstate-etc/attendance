@@ -37,6 +37,7 @@ en:
     set_max_points: "Set maximum points to"
     title: "Grade settings for %{site_title}"
     update_expl: "Note: score will automatically update to Gradebook every 5 minutes on the hour."
+    set_from_assignment: "(set by the LMS assignment)"
 
   meeting:
     at: "at"

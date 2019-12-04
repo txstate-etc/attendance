@@ -1,4 +1,5 @@
 require 'libxml'
+require 'json'
 
 class Gradeupdate < ActiveRecord::Base
   belongs_to :membership
@@ -17,8 +18,13 @@ class Gradeupdate < ActiveRecord::Base
       # Destroy before sending the update request
       update.destroy
       next unless update.membership.site.outcomes_url
-      response = update.process_update
-      error = get_error_msg(response)
+      if(update.membership.site.is_canvas)
+        response = update.canvas_process_update
+        error = get_error_code(response)
+      else
+        response = update.process_update
+        error = get_error_msg(response)
+      end
       next if error.nil? || update.tries > @max_retries
       # Add update back to database if it failed
       Gradeupdate.find_or_create_by_membership_id(update.membership.id, tries: update.tries + 1, last_error: error)
@@ -69,35 +75,39 @@ class Gradeupdate < ActiveRecord::Base
     return nil
   end
 
+  def self.get_error_code (res)
+      return res.status if res.status != 200
+  end
+
   # If update has already tried and failed (tries > 0), then try less frequently
   def process?
     self.tries == 0 || self.updated_at + (2 ** self.tries).minutes < Time.zone.now
   end
 
   def calculate_grade
-    settings = Gradesettings.find_or_create_by_site_id(self.membership.site.id)
+    @settings = Gradesettings.find_or_create_by_site_id(self.membership.site.id)
 
     # Calculate grade based only on attendances for meetings in the past
     # Use attendances from all sections to calculate grade.
     attendances = []
     self.membership.sections.each {|s| attendances += self.membership.recorded_attendances(s) if self.membership.site.sections.count == 1 || s.name != "Unassigned"}
-    return 1.0 if attendances.empty? || settings.forgiven_absences >= attendances.count
+    return 1.0 if attendances.empty? || @settings.forgiven_absences >= attendances.count
 
     # User chooses to deduct x points per attendance after a certain number of absences
-    if settings.deduction > 0
+    if @settings.deduction > 0
       total_absent = 0.0
       total_tardy = 0
       attendances.each do |a|
         total_absent += 1.0 if a.attendancetype.grade_as_absent?
         total_tardy += 1 if a.attendancetype.grade_as_tardy?
       end
-      if settings.tardy_per_absence == 0
-        total_absent += (1 - settings.tardy_value) * total_tardy
+      if @settings.tardy_per_absence == 0
+        total_absent += (1 - @settings.tardy_value) * total_tardy
       else
-        total_absent += total_tardy / settings.tardy_per_absence
+        total_absent += total_tardy / @settings.tardy_per_absence
       end
-      total_absent = [total_absent - settings.forgiven_absences, 0].max
-      return [1 - total_absent * settings.deduction, 0].max
+      total_absent = [total_absent - @settings.forgiven_absences, 0].max
+      return [1 - total_absent * @settings.deduction, 0].max
     end
 
     total_present = 0.0
@@ -106,13 +116,13 @@ class Gradeupdate < ActiveRecord::Base
       total_present += 1.0 if a.attendancetype.grade_as_present?
       total_tardy += 1 if a.attendancetype.grade_as_tardy?
     end
-    if settings.tardy_per_absence == 0
-      total_present += settings.tardy_value * total_tardy
+    if @settings.tardy_per_absence == 0
+      total_present += @settings.tardy_value * total_tardy
     else
-      total_present += total_tardy - total_tardy / settings.tardy_per_absence
+      total_present += total_tardy - total_tardy / @settings.tardy_per_absence
     end
 
-    [total_present / (attendances.count - settings.forgiven_absences), 1.0].min
+    [total_present / (attendances.count - @settings.forgiven_absences), 1.0].min
   end
 
   def create_xml
@@ -144,6 +154,22 @@ class Gradeupdate < ActiveRecord::Base
 
     doc.root = root
     doc.to_s
+  end
+
+  def canvas_process_update
+    site = self.membership.site
+    url = "/v1/courses/#{site.lms_id}/assignments/#{site.assignment_id}/submissions/update_grades";
+    # studentsGrades = {"grade_data[3855633][posted_grade]"=>"5.3",
+    #          "grade_data[3202496][posted_grade]"=>"7.1",
+    #          "grade_data[3812498][posted_grade]"=>"7.8"}
+    # Canvas.post(url, studentsGrades)
+    user =  self.membership.user
+    studentGrade =
+                {
+                  "grade_data[#{user.lms_user_id}][posted_grade]" => calculate_grade*@settings.max_points
+                }
+    logger.info("Posted grade data is " + studentGrade.to_json)
+    Canvas.post(url, studentGrade)
   end
 
   def process_update

@@ -41,10 +41,22 @@ class Gradesettings < ActiveRecord::Base
   end
 
   before_update do
-    if self.max_points_changed? || self.auto_max_points_changed? || self.auto_max_points
-      return false unless Gradeupdate.update_max_points(self)
+    site = Site.find_by_id(self.site_id)
+    if(!site.is_canvas)
+      if self.max_points_changed? || self.auto_max_points_changed? || self.auto_max_points
+        return false unless Gradeupdate.update_max_points(self)
+      end
     end
   end
 
   after_update {|settings| Gradeupdate.register_site_change(settings.site)}
+
+  def self.save_max_points(siteid, maxPoints)
+    settings = Gradesettings.find_or_initialize_by_site_id(siteid)
+    settings.assign_attributes(
+      max_points: maxPoints.to_i
+    )
+    settings.save if settings.max_points_changed?
+  end
+
 end

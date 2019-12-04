@@ -12,6 +12,7 @@ development: &defaults
   port: {{DB_PORT}}
   pool: 5
   timeout: 5000
+  init_command: "SET @@SESSION.sql_mode = ''"
 
 staging:
   <<: *defaults

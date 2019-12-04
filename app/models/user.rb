@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  attr_accessible :admin, :firstname, :fullname, :lastname, :netid, :tc_user_id
+  attr_accessible :admin, :firstname, :fullname, :lastname, :netid, :tc_user_id, :lms_user_id
 
   has_many :memberships, :inverse_of => :user, :dependent => :destroy
   has_many :sites, :through => :memberships
@@ -18,7 +18,8 @@ class User < ActiveRecord::Base
       fullname: params['lis_person_name_full'],
       netid: netid,
       tc_user_id: params['user_id'],
-      admin: !(params['roles'] =~ /ims\/lis\/Administrator/).nil?
+      admin: !(params['roles'] =~ /ims\/lis\/Administrator/).nil?,
+      lms_user_id: params['custom_canvas_user_id'].nil? ? params['user_id'] :  params['custom_canvas_user_id']
     )
     user.save
     user
@@ -46,6 +47,7 @@ class User < ActiveRecord::Base
     user.firstname = firstlast[0]
     user.lastname = firstlast[1] if firstlast.count == 2
     user.fullname = info[:user][:name]
+    user.lms_user_id = info[:user_id]
 
     user.save if user.changed?
     user
