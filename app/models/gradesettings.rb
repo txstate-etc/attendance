@@ -54,7 +54,9 @@ class Gradesettings < ActiveRecord::Base
   def self.save_max_points(siteid, maxPoints)
     settings = Gradesettings.find_or_initialize_by_site_id(siteid)
     settings.assign_attributes(
-      max_points: maxPoints.to_i
+      max_points: maxPoints.to_i,
+      tardy_value: (settings.tardy_value*100).to_i,
+      deduction: (settings.deduction*100).to_i
     )
     settings.save if settings.max_points_changed?
   end
