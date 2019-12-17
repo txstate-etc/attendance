@@ -92,7 +92,7 @@ class Site < ActiveRecord::Base
 
   def assignment
     if @assignment.nil?
-      assignments = Canvas.get("/v1/courses/#{self.lms_id}/assignments")
+      assignments = Canvas.getall("/v1/courses/#{self.lms_id}/assignments")
       assignments.each do |assignment|
         if !assignment[:external_tool_tag_attributes].nil? &&
            !assignment[:external_tool_tag_attributes][:url].nil? &&

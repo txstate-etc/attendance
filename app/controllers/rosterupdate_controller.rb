@@ -67,7 +67,7 @@ class RosterupdateController < ApplicationController
   end
 
   def canvas_get_roster_data
-    sections = Canvas.get("/v1/courses/#{session[:custom_canvas_course_id]}/sections?include[]=students")
+    sections = Canvas.getall("/v1/courses/#{session[:custom_canvas_course_id]}/sections?include[]=students")
     valid_sections = {}
     netids = []
     userToSections = sections.reduce({}) do |userToSections, section|
@@ -90,7 +90,7 @@ class RosterupdateController < ApplicationController
     end
     eager_load(@site, {:memberships => [:sections, :siteroles]})
 
-    enrollments = Canvas.get("/v1/courses/#{session[:custom_canvas_course_id]}/enrollments")
+    enrollments = Canvas.getall("/v1/courses/#{session[:custom_canvas_course_id]}/enrollments")
     valid_users = {}
     enrollments.each do |enrollment|
       netid = User.netidfromshibb(enrollment[:user][:login_id])
