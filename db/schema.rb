@@ -154,7 +154,7 @@ ActiveRecord::Schema.define(:version => 20191219125420) do
 
   create_table "sections", :force => true do |t|
     t.integer "site_id",                         :null => false
-    t.string  "name",         :default => "",    :null => false
+    t.string  "name"
     t.boolean "is_default",   :default => false, :null => false
     t.string  "users_hash"
     t.string  "lms_id"

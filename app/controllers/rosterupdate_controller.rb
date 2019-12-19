@@ -72,7 +72,7 @@ class RosterupdateController < ApplicationController
     netids = []
     userToSections = sections.reduce({}) do |userToSections, section|
       dbsection = @site.sections.find_or_create_by_lms_id(section[:id])
-      dbsection.name = section[:sis_section_id]
+      dbsection.name = section[:sis_section_id] || ''
       dbsection.display_name = section[:name]
       dbsection.save
       valid_sections[dbsection.id] = true
