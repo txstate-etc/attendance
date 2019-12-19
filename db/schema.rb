@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20170111061400) do
+ActiveRecord::Schema.define(:version => 20191219125420) do
 
   create_table "attendancetypes", :force => true do |t|
     t.string  "name"
@@ -153,10 +153,12 @@ ActiveRecord::Schema.define(:version => 20170111061400) do
   add_index "rosterupdates", ["site_id", "fetched_at"], :name => "index_rosterupdates_on_site_id_and_fetched_at"
 
   create_table "sections", :force => true do |t|
-    t.integer "site_id",                       :null => false
-    t.string  "name"
-    t.boolean "is_default", :default => false, :null => false
+    t.integer "site_id",                         :null => false
+    t.string  "name",         :default => "",    :null => false
+    t.boolean "is_default",   :default => false, :null => false
     t.string  "users_hash"
+    t.string  "lms_id"
+    t.string  "display_name"
   end
 
   add_index "sections", ["name"], :name => "index_sections_on_name"
@@ -187,11 +189,14 @@ ActiveRecord::Schema.define(:version => 20170111061400) do
     t.string   "context_id"
     t.string   "context_label"
     t.string   "context_name"
-    t.datetime "roster_fetched_at",  :null => false
+    t.datetime "roster_fetched_at",                     :null => false
     t.string   "roster_hash"
     t.datetime "update_in_progress"
     t.string   "outcomes_url"
     t.string   "points_url"
+    t.string   "lms_id"
+    t.boolean  "is_canvas",          :default => false, :null => false
+    t.string   "assignment_id"
   end
 
   add_index "sites", ["context_id"], :name => "index_sites_on_context_id"
@@ -214,8 +219,9 @@ ActiveRecord::Schema.define(:version => 20170111061400) do
     t.string  "lastname"
     t.string  "firstname"
     t.string  "fullname"
-    t.boolean "admin",      :default => false, :null => false
+    t.boolean "admin",       :default => false, :null => false
     t.string  "tc_user_id"
+    t.string  "lms_user_id"
   end
 
   add_index "users", ["lastname"], :name => "index_users_on_lastname"

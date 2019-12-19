@@ -1,6 +1,6 @@
 class SectionNameNotNull < ActiveRecord::Migration
   def up
-    Section.connection.execute("UPDATE sections SET name='' WHERE name IS NULL")
+    Section.where('name IS NULL').update_all(:name => '')
     change_column :sections, :name, :string, null: false, default: ''
   end
 
