@@ -19,7 +19,7 @@ class Canvas
     if @http.nil?
       @http = HTTPClient.new
       @http.connect_timeout = 5
-      @http.receive_timeout = 5
+      @http.receive_timeout = 30
       @http.send_timeout = 5
     end
 
@@ -32,7 +32,6 @@ class Canvas
       links = self.parse_link_header(res.header['link'][0])
       next_path = links[:next]
     end
-
     return ret
   end
 
