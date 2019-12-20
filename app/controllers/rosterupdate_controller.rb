@@ -67,30 +67,24 @@ class RosterupdateController < ApplicationController
   end
 
   def canvas_get_roster_data
-    sections = Canvas.getall("/v1/courses/#{session[:custom_canvas_course_id]}/sections?include[]=students")
-    valid_sections = {}
-    netids = []
-    userToSections = sections.reduce({}) do |userToSections, section|
+    sections = Canvas.getall("/v1/courses/#{session[:custom_canvas_course_id]}/sections")
+    sectionsByLmsId = sections.reduce({}) do |sectionsByLmsId, section|
       dbsection = @site.sections.find_or_create_by_lms_id(section[:id])
       dbsection.name = section[:sis_section_id] || ''
       dbsection.display_name = section[:name]
       dbsection.save
-      valid_sections[dbsection.id] = true
-      section[:students].each do |student|
-        userToSections[student[:id]] ||= []
-        userToSections[student[:id]].push(dbsection)
-        netids.push(User.netidfromshibb(student[:login_id]))
-      end unless section[:students].nil?
-      userToSections
+      sectionsByLmsId[dbsection.lms_id] = dbsection
+      sectionsByLmsId
     end
+
+    enrollments = Canvas.getall("/v1/courses/#{session[:custom_canvas_course_id]}/enrollments")
+    netids = enrollments.map {|e| User.netidfromshibb(e[:user][:login_id])}
     users = User.where(:netid => netids)
     userHash = users.reduce({}) do |userHash, user|
       userHash[user.netid] = user
       userHash
     end
     eager_load(@site, {:memberships => [:sections, :siteroles]})
-
-    enrollments = Canvas.getall("/v1/courses/#{session[:custom_canvas_course_id]}/enrollments")
     valid_users = {}
     enrollments.each do |enrollment|
       netid = User.netidfromshibb(enrollment[:user][:login_id])
@@ -104,7 +98,8 @@ class RosterupdateController < ApplicationController
       role = graderrole if enrollment[:role] == 'Grader'
       next if role.nil?
       valid_users[user.id] = true
-      user.verify_membership(@site, {role.id => role}, enrollment[:enrollment_state] == 'active', userToSections[enrollment[:user_id]], membership)
+      verifiedmembership = user.verify_membership(@site, {role.id => role}, enrollment[:enrollment_state] == 'active', sectionsByLmsId[enrollment[:course_section_id]], membership)
+      @site.memberships.push(verifiedmembership) if membership.nil?
     end
     @site.memberships.each do |membership|
       if valid_users[membership.user_id].nil? && membership.active

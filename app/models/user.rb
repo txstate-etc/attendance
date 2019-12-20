@@ -6,7 +6,10 @@ class User < ActiveRecord::Base
   has_many :userattendances, :inverse_of => :user, :dependent => :destroy
 
   def self.netidfromshibb(loginid)
-    loginid.split(/@/, 2)[0]
+    if loginid.match(/^(su-)?\w{2,3}\d{1,6}@txstate.edu$/i)
+      return loginid.split(/@/, 2)[0]
+    end
+    return loginid
   end
 
   def self.from_launch_params(params)
@@ -83,7 +86,7 @@ class User < ActiveRecord::Base
     membership.sourcedid = sourcedid || membership.sourcedid
 
     membership.save if membership.changed?
-    membership.sections = sections if sections && sections.count > 0 && sections != membership.sections
+    membership.sections = sections if !sections.nil? && sections.count > 0 && sections != membership.sections
 
     # Add user to unassigned section if they don't have any sections
     if membership.sections.empty? && record_attendance?(site)
