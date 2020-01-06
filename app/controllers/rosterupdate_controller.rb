@@ -39,7 +39,14 @@ class RosterupdateController < ApplicationController
 
   def save_roster_data
     if @site.is_canvas
-      canvas_get_roster_data
+      begin
+        canvas_get_roster_data
+        return true
+      rescue StandardError => error
+        logger.error(error.message)
+        logger.error(error.backtrace.join("\n"))
+        return false
+      end
     else
       get_roster_data
     end
@@ -73,13 +80,19 @@ class RosterupdateController < ApplicationController
       dbsection.name = section[:sis_section_id] || ''
       dbsection.display_name = section[:name]
       dbsection.save
-      sectionsByLmsId[dbsection.lms_id] = dbsection
+      sectionsByLmsId[dbsection.lms_id.to_i] = dbsection
       sectionsByLmsId
     end
 
     enrollments = Canvas.getall("/v1/courses/#{session[:custom_canvas_course_id]}/enrollments")
-    netids = enrollments.map {|e| User.netidfromshibb(e[:user][:login_id])}
-    users = User.where(:netid => netids)
+    userToSections = enrollments.reduce({}) do |userToSections, e|
+      netid = User.netidfromshibb(e[:user][:login_id])
+      sectionid = e[:course_section_id].to_i
+      userToSections[netid] ||= []
+      userToSections[netid].push(sectionsByLmsId[sectionid]) if !sectionsByLmsId[sectionid].nil?
+      userToSections
+    end
+    users = User.where(:netid => userToSections.keys)
     userHash = users.reduce({}) do |userHash, user|
       userHash[user.netid] = user
       userHash
@@ -98,7 +111,7 @@ class RosterupdateController < ApplicationController
       role = graderrole if enrollment[:role] == 'Grader'
       next if role.nil?
       valid_users[user.id] = true
-      verifiedmembership = user.verify_membership(@site, {role.id => role}, enrollment[:enrollment_state] == 'active', sectionsByLmsId[enrollment[:course_section_id]], membership)
+      verifiedmembership = user.verify_membership(@site, {role.id => role}, enrollment[:enrollment_state] == 'active', userToSections[netid], membership)
       @site.memberships.push(verifiedmembership) if membership.nil?
     end
     @site.memberships.each do |membership|
