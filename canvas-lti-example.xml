@@ -20,11 +20,6 @@
         <lticm:property name="default">enabled</lticm:property>
         <lticm:property name="enabled">true</lticm:property>
       </lticm:options>
-      <lticm:options name="assignment_edit">
-        <lticm:property name="visibility">public</lticm:property>
-        <lticm:property name="default">enabled</lticm:property>
-        <lticm:property name="enabled">true</lticm:property>
-      </lticm:options>
     </blti:extensions>
     <cartridge_bundle identifierref="BLTI001_Bundle"/>
     <cartridge_icon identifierref="BLTI001_Icon"/>
