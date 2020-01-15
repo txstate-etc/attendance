@@ -10,7 +10,7 @@ class LaunchController < ApplicationController
 
   def fetchRoster?(membership)
     if !params[:ext_sakai_roster_hash].blank?
-      return params[:ext_sakai_roster_hash] != @site.roster_hash
+      return membership.take_attendance? && params[:ext_sakai_roster_hash] != @site.roster_hash
     else
       if (@site.is_canvas)
         return true if membership.nil? || !membership.active
