@@ -24,7 +24,7 @@ class LaunchController < ApplicationController
 
   def index
     @site = Site.from_launch_params(params)
-    user = User.from_launch_params(params)
+    user = @site.is_canvas ? User.from_canvas_launch(params) : User.from_launch_params(params)
     session[:user_id] = user.id
     session[:site_id] = @site.id
 

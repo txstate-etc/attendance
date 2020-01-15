@@ -13,32 +13,47 @@ class User < ActiveRecord::Base
   end
 
   def self.from_launch_params(params)
-    netid = params['custom_canvas_user_login_id'].nil? ? params['lis_person_sourcedid'] : User.netidfromshibb(params['custom_canvas_user_login_id'])
+    netid = params['lis_person_sourcedid']
+    user = User.find_or_initialize_by_netid(netid)
+    user.assign_attributes(
+      firstname: params['lis_person_name_given'] || user.firstname || '',
+      lastname: params['lis_person_name_family'] || user.lastname || '',
+      fullname: params['lis_person_name_full'] || user.fullname || '',
+      tc_user_id: params['user_id']
+      admin: !(params['roles'] =~ /ims\/lis\/Administrator/).nil?
+    )
+    user.save
+    user
+  end
+
+  def self.from_canvas_launch(params)
+    netid = User.netidfromshibb(params['custom_canvas_user_login_id']
     user = User.find_or_initialize_by_netid(netid)
     user.assign_attributes(
       firstname: params['lis_person_name_given'] || '',
       lastname: params['lis_person_name_family'] || '',
-      fullname: params['lis_person_name_full'],
-      netid: netid,
-      tc_user_id: params['user_id'],
+      fullname: params['lis_person_name_full'] || '',
       admin: !(params['roles'] =~ /ims\/lis\/Administrator/).nil?,
-      lms_user_id: params['custom_canvas_user_id'].nil? ? params['user_id'] :  params['custom_canvas_user_id']
+      lms_user_id: params['custom_canvas_user_id']
     )
     user.save
     user
   end
 
   def self.from_roster_xml(xmlnode, user = nil)
-    user ||= User.find_or_initialize_by_tc_user_id(xmlnode.find_first('user_id').content)
+    userid_node = xmlnode.find_first('user_id')
     firstname_node = xmlnode.find_first('person_name_given')
     lastname_node = xmlnode.find_first('person_name_family')
     fullname_node = xmlnode.find_first('person_name_full')
     netid_node = xmlnode.find_first('person_sourcedid')
 
+    netid = netid_node ? netid_node.content : ''
+    return if netid.blank?
+    user ||= User.find_or_initialize_by_netid(netid)
+    user.tc_user_id = userid_node.content if userid_node
     user.firstname = firstname_node.content if firstname_node
     user.lastname = lastname_node.content if lastname_node
     user.fullname = fullname_node.content if fullname_node
-    user.netid = netid_node.content if netid_node
 
     user.save if user.changed?
     user

@@ -92,7 +92,7 @@ class RosterupdateController < ApplicationController
       userToSections[netid].push(sectionsByLmsId[sectionid]) if !sectionsByLmsId[sectionid].nil?
       userToSections
     end
-    users = User.where(:netid => userToSections.keys)
+    users = User.where(:netid => userToSections.keys).order('lms_user_id, id DESC')
     userHash = users.reduce({}) do |userHash, user|
       userHash[user.netid] = user
       userHash
