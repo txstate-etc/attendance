@@ -15,10 +15,14 @@ class User < ActiveRecord::Base
   def self.from_launch_params(params)
     netid = params['lis_person_sourcedid']
     user = User.find_or_initialize_by_netid(netid)
+    if (!user.new_record? && user.tc_user_id != params['user_id'])
+      alt_user = User.find(:netid => netid, :tc_user_id => params['user_id'])
+      user = alt_user unless alt_user.nil?
+    end
     user.assign_attributes(
-      firstname: params['lis_person_name_given'] || user.firstname || '',
-      lastname: params['lis_person_name_family'] || user.lastname || '',
-      fullname: params['lis_person_name_full'] || user.fullname || '',
+      firstname: params['lis_person_name_given'] || '',
+      lastname: params['lis_person_name_family'] || '',
+      fullname: params['lis_person_name_full'] || '',
       tc_user_id: params['user_id'],
       admin: !(params['roles'] =~ /ims\/lis\/Administrator/).nil?
     )
@@ -29,6 +33,10 @@ class User < ActiveRecord::Base
   def self.from_canvas_launch(params)
     netid = User.netidfromshibb(params['custom_canvas_user_login_id'])
     user = User.find_or_initialize_by_netid(netid)
+    if (!user.new_record? && user.lms_user_id != params['custom_canvas_user_id'])
+      alt_user = User.find(:netid => netid, :lms_user_id => params['custom_canvas_user_id'])
+      user = alt_user unless alt_user.nil?
+    end
     user.assign_attributes(
       firstname: params['lis_person_name_given'] || '',
       lastname: params['lis_person_name_family'] || '',
@@ -47,10 +55,17 @@ class User < ActiveRecord::Base
     fullname_node = xmlnode.find_first('person_name_full')
     netid_node = xmlnode.find_first('person_sourcedid')
 
-    netid = netid_node ? netid_node.content : ''
+    netid = netid_node.nil? ? '' : netid_node.content
     return if netid.blank?
+    userid = userid_node.nil? ? '' : userid_node.content
+    return if userid.blank?
+
     user ||= User.find_or_initialize_by_netid(netid)
-    user.tc_user_id = userid_node.content if userid_node
+    if (!user.new_record? && user.tc_user_id != userid)
+      alt_user = User.find(:netid => netid, :tc_user_id => userid)
+      user = alt_user unless alt_user.nil?
+    end
+    user.tc_user_id = userid
     user.firstname = firstname_node.content if firstname_node
     user.lastname = lastname_node.content if lastname_node
     user.fullname = fullname_node.content if fullname_node
@@ -61,6 +76,10 @@ class User < ActiveRecord::Base
 
   def self.from_canvas_api(netid, info, user = nil)
     user ||= User.find_or_initialize_by_netid(netid)
+    if (!user.new_record? && user.lms_user_id != info[:user_id])
+      alt_user = User.find(:netid => netid, :lms_user_id => info[:user_id])
+      user = alt_user unless alt_user.nil?
+    end
     firstlast = info[:user][:short_name].split(/\s+/, 2)
     user.firstname = firstlast[0]
     user.lastname = firstlast[1] if firstlast.count == 2
