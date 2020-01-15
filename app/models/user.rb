@@ -19,7 +19,7 @@ class User < ActiveRecord::Base
       firstname: params['lis_person_name_given'] || user.firstname || '',
       lastname: params['lis_person_name_family'] || user.lastname || '',
       fullname: params['lis_person_name_full'] || user.fullname || '',
-      tc_user_id: params['user_id']
+      tc_user_id: params['user_id'],
       admin: !(params['roles'] =~ /ims\/lis\/Administrator/).nil?
     )
     user.save
@@ -27,7 +27,7 @@ class User < ActiveRecord::Base
   end
 
   def self.from_canvas_launch(params)
-    netid = User.netidfromshibb(params['custom_canvas_user_login_id']
+    netid = User.netidfromshibb(params['custom_canvas_user_login_id'])
     user = User.find_or_initialize_by_netid(netid)
     user.assign_attributes(
       firstname: params['lis_person_name_given'] || '',
