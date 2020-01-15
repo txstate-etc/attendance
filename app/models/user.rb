@@ -153,7 +153,7 @@ class User < ActiveRecord::Base
   # returns a User, if one doesn't exist for that netid it gets created
   def self.bynetid(netid)
     return nil if netid.blank?
-    User.find_or_create_by_netid(:netid => netid, :admin => false)
+    User.where(:netid => netid, :admin => 1).first
   end
 
   def membership_for_site(site)
