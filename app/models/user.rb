@@ -34,7 +34,7 @@ class User < ActiveRecord::Base
     netid = User.netidfromshibb(params['custom_canvas_user_login_id'])
     user = User.find_or_initialize_by_netid(netid)
     if (!user.new_record? && user.lms_user_id != params['custom_canvas_user_id'])
-      alt_user = User.find_by(:netid => netid, :lms_user_id => params['custom_canvas_user_id']).first
+      alt_user = User.where(:netid => netid, :lms_user_id => params['custom_canvas_user_id']).first
       user = alt_user unless alt_user.nil?
     end
     user.assign_attributes(
@@ -77,7 +77,7 @@ class User < ActiveRecord::Base
   def self.from_canvas_api(netid, info, user = nil)
     user ||= User.find_or_initialize_by_netid(netid)
     if (!user.new_record? && user.lms_user_id != info[:user_id])
-      alt_user = User.find(:netid => netid, :lms_user_id => info[:user_id])
+      alt_user = User.where(:netid => netid, :lms_user_id => info[:user_id]).first
       user = alt_user unless alt_user.nil?
     end
     firstlast = info[:user][:short_name].split(/\s+/, 2)
