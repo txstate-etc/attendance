@@ -48,7 +48,7 @@ class RosterupdateController < ApplicationController
         return false
       end
     else
-      get_roster_data
+      parse_roster_xml get_roster_data
     end
   end
 
