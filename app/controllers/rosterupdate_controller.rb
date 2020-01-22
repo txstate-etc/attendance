@@ -105,7 +105,7 @@ class RosterupdateController < ApplicationController
       user = User.from_canvas_api(netid, enrollment, userHash[netid])
       membership = @site.memberships.find {|m| m.user_id == user.id}
       role = teacherrole if enrollment[:type] == 'TeacherEnrollment'
-      role = tarole if enrollment[:type] == 'TeacherEnrollment'
+      role = tarole if enrollment[:type] == 'TaEnrollment'
       role = observerrole if enrollment[:type] == 'ObserverEnrollment'
       role = observerrole if enrollment[:type] == 'DesignerEnrollment'
       role = studentrole if enrollment[:type] == 'StudentEnrollment'
