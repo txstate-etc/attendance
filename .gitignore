@@ -7,7 +7,6 @@ tmproj
 .DS_Store
 auth\.rb
 secret_token\.rb
-tracs_user\.rb
 dump.attendance.sql
 .idea
 *.iml

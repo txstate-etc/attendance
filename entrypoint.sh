@@ -27,6 +27,8 @@ perl -i -pe 's/\Q{{DB_PORT}}\E/$ENV{DB_PORT}/' /usr/app/config/database.yml
 
 perl -i -pe 's/\Q{{CHECKIN_SECRET}}\E/$ENV{CHECKIN_SECRET}/' /usr/app/config/initializers/checkin_token.rb
 perl -i -pe 's/\Q{{OAUTH_SECRET}}\E/$ENV{OAUTH_SECRET}/' /usr/app/config/initializers/oauth_secret.rb
+perl -i -pe 's/\Q{{TRACS_USER}}\E/$ENV{TRACS_USER}/' /usr/app/config/initializers/tracs_user.rb
+perl -i -pe 's/\Q{{TRACS_PW}}\E/$ENV{TRACS_PW}/' /usr/app/config/initializers/tracs_user.rb
 
 perl -i -pe 's/\Q{{sslkeyfile}}\E/glob("\/ssl\/*.key.pem")/e' /etc/apache2/apache2.conf
 perl -i -pe 's/\Q{{sslcertfile}}\E/glob("\/ssl\/*.cert.pem")/e' /etc/apache2/apache2.conf
