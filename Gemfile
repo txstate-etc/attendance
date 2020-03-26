@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+gem 'thor', '0.20.3'
+
 gem 'passenger', '5.2.3'
 gem 'rails_stdout_logging'
 
