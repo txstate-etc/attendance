@@ -20,7 +20,7 @@ gem 'mysql2', '0.3.17'
 gem 'oauth', '0.5.1'
 gem 'ims-lti'
 
-gem 'libxml-ruby'
+gem 'libxml-ruby', '2.6.0'
 
 gem 'composite_primary_keys'
 
